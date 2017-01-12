@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>app-media demo</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../webrtc-polyfill/index.js"></script>
+
+    <link rel="import" href="../app-media-devices.html">
+    <link rel="import" href="../app-media-stream.html">
+    <link rel="import" href="../app-media-video.html">
+    <link rel="import" href="../app-media-audio.html">
+    <link rel="import" href="../app-media-waveform.html">
+    <link rel="import" href="../app-media-recorder.html">
+
+  </head>
+  <body>
+    <dom-module id="x-video-camera">
+      <template>
+        <style>
+          :host {
+            position: relative;
+            display: block;
+            overflow: hidden;
+          }
+
+          :host(.recording) #waveform {
+            transform: translateY(0);
+            transition-delay: 0s;
+          }
+
+          :host(.recording) #progress {
+            opacity: 1;
+            transition-delay: 0s;
+          }
+
+          #progress {
+            position: absolute;
+            pointer-events: none;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 170px;
+            transform: translateX(-100%);
+            transition: transform 0.3s linear, opacity 0.3s 0.3s;
+            will-change: transform;
+            background-color: #24CAFF;
+            opacity: 0;
+          }
+
+          #waveform {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            transition: transform 0.3s;
+            transition-delay: 0.3s;
+            transform: translateY(100%);
+            z-index: 1;
+          }
+
+          #recordings {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            overflow-x: scroll;
+            align-items: flex-start;
+            justify-content: flex-start;
+            background-color: #444;
+            box-sizing: border-box;
+            height: 160px;
+            padding: 14px;
+          }
+
+          #recordings app-media-video {
+            width: 128px;
+            height: 128px;
+            margin-right: 17px;
+          }
+
+          app-media-waveform {
+            height: 160px;
+          }
+        </style>
+
+        <!-- The computer is connected to devices... -->
+        <app-media-devices
+            kind="videoinput"
+            selected-device="{{videoDevice}}">
+        </app-media-devices>
+        <app-media-devices
+            kind="audioinput"
+            selected-device="{{audioDevice}}">
+        </app-media-devices>
+
+        <!-- ...devices are connected to the media stream.... -->
+        <app-media-stream
+            video-device="[[videoDevice]]"
+            audio-device="[[audioDevice]]"
+            stream="{{stream}}"
+            active>
+        </app-media-stream>
+
+        <!-- ...media stream is connected to the video output... -->
+        <app-media-video
+            id="video"
+            source="[[stream]]"
+            on-click="record"
+            autoplay
+            muted
+            mirror>
+        </app-media-video>
+
+        <!-- ...and the recorder... -->
+        <app-media-recorder
+            id="recorder"
+            stream="[[stream]]"
+            duration="[[duration]]"
+            elapsed="{{elapsed}}"
+            data="{{recording}}">
+        </app-media-recorder>
+
+        <!-- ...and the audio analyser... -->
+        <app-media-audio
+            source="[[stream]]"
+            analyser="{{analyser}}">
+        </app-media-audio>
+
+        <section id="recordings">
+          <template is="dom-repeat" items="[[recordings]]" as="recording">
+            <a href="[[_toObjectURL(recording)]]" download="video.webm">
+              <app-media-video
+                  source="[[recording]]"
+                  loop
+                  autoplay
+                  muted>
+              <app-media-video>
+            </a>
+          </template>
+        </section>
+
+        <div id="progress"></div>
+
+        <!-- ...analyser is connceted to the waveform visualizer! -->
+        <app-media-waveform
+            id="waveform"
+            analyser="[[analyser]]"
+            active>
+        </app-media-waveform>
+      </template>
+      <script>
+        Polymer({
+          is: 'x-video-camera',
+
+          properties: {
+            recording: {
+              type: Blob,
+              observer: '_recordingChanged'
+            },
+
+            recordings: {
+              type: Array,
+              value: function() {
+                return [];
+              }
+            },
+
+            duration: {
+              type: Number,
+              value: 3000
+            },
+
+            elapsed: {
+              type: Number,
+              observer: '_elapsedChanged'
+            }
+          },
+
+          record: function() {
+            this.classList.add('recording');
+            this.$.recorder.start();
+          },
+
+          _recordingChanged: function(recording) {
+            if (recording != null) {
+              this.push('recordings', recording);
+            }
+
+            this.classList.remove('recording');
+            this.async(function() {
+              this.$.progress.style.transform = '';
+            }, 600);
+          },
+
+          _elapsedChanged: function(elapsed) {
+            var progress = Math.min(100 * elapsed / this.duration, 100);
+            this.$.progress.style.transform = 'translateX(' + (-100 + progress) + '%)';
+          },
+
+          _toObjectURL: function(blob) {
+            return URL.createObjectURL(blob);
+          }
+        });
+      </script>
+    </dom-module>
+    <x-video-camera></x-video-camera>
+  </body>
+</html>

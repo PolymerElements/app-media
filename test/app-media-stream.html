@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>app-media-stream test</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../webrtc-polyfill/index.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+    <script src="helpers.js"></script>
+
+    <link rel="import" href="../app-media-stream.html">
+  </head>
+  <body>
+    <test-fixture id="basic">
+      <template>
+        <app-media-stream></app-media-stream>
+      </template>
+    </test-fixture>
+
+    <script>
+      suite('app-media-stream', function() {
+        var awaitEvent = AppMediaTestHelpers.awaitEvent;
+        var createDevice = AppMediaTestHelpers.createDevice;
+
+        suite('with basic configuration', function() {
+          var element;
+
+          setup(function() {
+            element = fixture('basic');
+            element.videoDevice = createDevice('videoinput');
+            element.active = true;
+
+            return awaitEvent(element, 'stream-changed');
+          });
+
+          test('yields a media stream', function() {
+            expect(element.stream).to.be.okay;
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
