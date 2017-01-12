@@ -32,7 +32,7 @@ Before you begin, make sure that you are loading the
 the most up to date versions of the necessary APIs are usable in all of your
 target browsers.
 
-### `\<app-media-devices\>`
+### `<app-media-devices>`
 
 `app-media` offers the `app-media-devices` element to assist in looking up the
 available cameras, microphones and other inputs on the current device. You can
@@ -56,7 +56,7 @@ which points to a single device in the list at a time:
 </app-media-devices>
 ```
 
-### `\<app-media-stream\>`
+### `<app-media-stream>`
 
 Once you have found a device that you like, you'll need to access a
 `MediaStream` of the input from the device. The `app-media-stream` makes it
@@ -92,7 +92,7 @@ Any combination of devices and constraints can be used when configuring:
 </app-media-stream>
 ```
 
-### `\<app-media-video\>`
+### `<app-media-video>`
 
 Suppose you are planning to build an awesome camera app. At some point, you will
 need to convert your `MediaStream` instance into video that the user can see, so
@@ -103,21 +103,21 @@ element to make this work. You can actually just use a basic `<video>` element:
 <video src-object="[[backFacingCameraStream]]" autoplay></video>
 ```
 
-Once the `backFacingCameraStream` is available, the `\<video\>` element will
+Once the `backFacingCameraStream` is available, the `<video>` element will
 display video from the camera. But, without further intervention, the video will
 change its size to be the pixel dimensions of the incoming video feed. If you
 are building a camera app, you may want a video that scales predictably inside
-of its container. An easy way to get this is to use `\<app-media-video\>`:
+of its container. An easy way to get this is to use `<app-media-video>`:
 
 ```html
 <app-media-video source="[[backFacingCameraStream]]" autoplay>
 </app-media-video>
 ```
 
-By default, `\<app-media-video\>` will automatically scale the video so that it
-is "full bleed" relative to the dimensions of the `\<app-media-video\>` element.
+By default, `<app-media-video>` will automatically scale the video so that it
+is "full bleed" relative to the dimensions of the `<app-media-video>` element.
 It can also be configured to scale the video so that it is contained instead of
-cropped by the boundary of `\<app-media-video\>`:
+cropped by the boundary of `<app-media-video>`:
 
 ```html
 <app-media-video source="[[backFacingCameraStream]]" autoplay contain>
@@ -127,11 +127,11 @@ cropped by the boundary of `\<app-media-video\>`:
 Note that when using a combined stream of camera and microphone data, you may
 wish to mute the video in order to avoid creating a feedback loop.
 
-### `\<app-media-recorder\>`
+### `<app-media-recorder>`
 
 Eventually you will want to record actual video and audio from the
 `MediaStream`. This is where the MediaStream Recording API comes in, and there
-is an element to make it nice and declarative called `\<app-media-recorder\>`.
+is an element to make it nice and declarative called `<app-media-recorder>`.
 In order to use it, configure the element with an optional duration and bind the
 stream to it:
 
@@ -162,7 +162,7 @@ Polymer({
 </script>
 ```
 
-The `\<app-media-recorder\>` will start recording from the configured stream and
+The `<app-media-recorder>` will start recording from the configured stream and
 automatically stop after the configured duration. Once the recording is
 is available, it will assign it to the `data` property (this will also update
 the bound `recordedVideo` property in the example above).
@@ -170,11 +170,11 @@ the bound `recordedVideo` property in the example above).
 If you don't configure a `duration`, then the recording will continue until you
 call the `stop` method on the recorder instance.
 
-### `\<app-media-audio\>`
+### `<app-media-audio>`
 
 If you are building a voice memo app, you may wish to access an audio analyzer
 so that you can visualize microphone input in real time. This can be done with
-the `\<app-media-audio\>` element:
+the `<app-media-audio>` element:
 
 ```html
 <app-media-audio
@@ -187,12 +187,12 @@ When the `microphoneStream` becomes available, the `microphoneAnalyser` property
 will be assigned an instance of a Web Audio
 [`AnalyserNode`](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode)
 that corresponds to the audio input from that stream. Any stream with at least
-once audio track can be used as an input for `\<app-media-audio\>`.
+once audio track can be used as an input for `<app-media-audio>`.
 
-### `\<app-media-waveform\>`
+### `<app-media-waveform>`
 
 There are many kinds of visualization that might be useful for demonstrating to
-your users that there is a hot mic on their devices. `\<app-media-waveform\>` is
+your users that there is a hot mic on their devices. `<app-media-waveform>` is
 a basic SVG visualization that can suit a wide-range of visualization needs. It
 is very easy to use if you have an `AnalyzerNode` instance:
 
