@@ -11,7 +11,7 @@ APIs allow you to access inputs such as microphones and cameras, and to a
 limited extent they also let you record and visualize the data.
 
 Browsers of yet greater modernity support an API called
-[MediaStream Recordering](https://www.w3.org/TR/mediastream-recording/). This
+[MediaStream Recording](https://www.w3.org/TR/mediastream-recording/). This
 API makes recording and processing the data from these inputs really easy and
 fun.
 
