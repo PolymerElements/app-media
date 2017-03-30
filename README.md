@@ -208,7 +208,7 @@ achieve some level of customized look and feel:
 <style>
   :host {
     --app-media-waveform-background-color: red;
-    --app-media-waveform-background-color: lightblue;
+    --app-media-waveform-foreground-color: lightblue;
   }
 </style>
 ```

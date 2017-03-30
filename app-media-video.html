@@ -155,10 +155,8 @@ scaled video that is displayed to the viewer of the page.
 
         _sourceChanged: function() {
           var oldSrc = this.$.videoElement.src;
-          console.log('oldsrc', oldSrc);
 
           if (typeof this.source === 'string') {
-            console.log('string????', this.source);
             this.$.videoElement.src = this.source;
           } else {
             try {

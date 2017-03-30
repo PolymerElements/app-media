@@ -2,29 +2,16 @@
   "name": "app-media",
   "version": "1.0.0",
   "description": "Elements for accessing data from media input devices",
-  "main": "app-media.html",
+  "main": "app-media-stream.html",
   "dependencies": {
     "polymer": "Polymer/polymer#1.0.0 - 2",
     "iron-resizable-behavior": "PolymerElements/iron-resizable-behavior#1.0.0 - 2"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#1.0.0 - 2",
-    "web-component-tester": "^4.0.0",
-    "webcomponentsjs": "webcomponents/webcomponentsjs#~0.7.0",
+    "web-component-tester": "Polymer/web-component-tester#^6.0.0-prerelease.6",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#0.7.0 - 1",
+    "test-fixture": "PolymerElements/test-fixture#^1.0.0 - 3",
     "webrtc-polyfill": "https://webrtc.github.io/adapter/adapter-latest.js"
-  },
-
-  "variants": {
-    "2.0-preview": {
-      "dependencies": {
-        "polymer": "Polymer/polymer#2.0-preview",
-        "iron-resizable-behavior": "PolymerElements/iron-resizable-behavior#2.0-preview"
-      },
-      "devDependencies": {
-        "iron-component-page": "PolymerElements/iron-component-page#2.0-preview",
-        "web-component-tester": "^4.0.0",
-        "webcomponentsjs": "webcomponents/webcomponentsjs#v1"
-      }
-    }
   }
 }
