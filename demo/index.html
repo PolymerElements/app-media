@@ -161,57 +161,59 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </app-media-waveform>
       </template>
       <script>
-        Polymer({
-          is: 'x-video-camera',
+        document.addEventListener('WebComponentsReady', function() {
+          Polymer({
+            is: 'x-video-camera',
 
-          properties: {
-            recording: {
-              type: Blob,
-              observer: '_recordingChanged'
-            },
+            properties: {
+              recording: {
+                type: Blob,
+                observer: '_recordingChanged'
+              },
 
-            recordings: {
-              type: Array,
-              value: function() {
-                return [];
+              recordings: {
+                type: Array,
+                value: function() {
+                  return [];
+                }
+              },
+
+              duration: {
+                type: Number,
+                value: 3000
+              },
+
+              elapsed: {
+                type: Number,
+                observer: '_elapsedChanged'
               }
             },
 
-            duration: {
-              type: Number,
-              value: 3000
+            record: function() {
+              this.classList.add('recording');
+              this.$.recorder.start();
             },
 
-            elapsed: {
-              type: Number,
-              observer: '_elapsedChanged'
+            _recordingChanged: function(recording) {
+              if (recording != null) {
+                this.push('recordings', recording);
+              }
+
+              this.classList.remove('recording');
+              this.async(function() {
+                this.$.progress.style.transform = '';
+              }, 600);
+            },
+
+            _elapsedChanged: function(elapsed) {
+              var progress = Math.min(100 * elapsed / this.duration, 100);
+              this.$.progress.style.transform = 'translateX(' + (-100 + progress) + '%)';
+            },
+
+            _toObjectURL: function(blob) {
+              return URL.createObjectURL(blob);
             }
-          },
-
-          record: function() {
-            this.classList.add('recording');
-            this.$.recorder.start();
-          },
-
-          _recordingChanged: function(recording) {
-            if (recording != null) {
-              this.push('recordings', recording);
-            }
-
-            this.classList.remove('recording');
-            this.async(function() {
-              this.$.progress.style.transform = '';
-            }, 600);
-          },
-
-          _elapsedChanged: function(elapsed) {
-            var progress = Math.min(100 * elapsed / this.duration, 100);
-            this.$.progress.style.transform = 'translateX(' + (-100 + progress) + '%)';
-          },
-
-          _toObjectURL: function(blob) {
-            return URL.createObjectURL(blob);
-          }
+          });
         });
       </script>
     </dom-module>

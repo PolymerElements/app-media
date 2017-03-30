@@ -11,7 +11,7 @@
     "iron-component-page": "PolymerElements/iron-component-page#1.0.0 - 2",
     "web-component-tester": "Polymer/web-component-tester#^6.0.0-prerelease.6",
     "webcomponentsjs": "webcomponents/webcomponentsjs#0.7.0 - 1",
-    "test-fixture": "PolymerElements/test-fixture#^1.0.0 - 3",
+    "test-fixture": "PolymerElements/test-fixture#1.0.0 - 3",
     "webrtc-polyfill": "https://webrtc.github.io/adapter/adapter-latest.js"
   }
 }

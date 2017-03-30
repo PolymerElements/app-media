@@ -68,15 +68,17 @@ analyser suitable for generating audio visualizations such as the ones made by
         },
 
         _computeSourceNode: function(context, source, analyser) {
-          if (context == null
-              || source == null
-              || analyser == null) {
+          if (context == null ||
+              source == null ||
+              analyser == null) {
             return;
           }
 
+          // NOTE(cdata): The source can be either an HTMLVideo element (that
+          // happens to have audio tracks) or a MediaStream.
           if (source instanceof MediaStream) {
             if (source.getAudioTracks().length === 0) {
-              console.warn('Media Stream does not have any audio tracks!');
+              this._warn(this._logf('Media Stream does not have any audio tracks!'));
             }
             return context.createMediaStreamSource(source);
           } else {
@@ -86,6 +88,8 @@ analyser suitable for generating audio visualizations such as the ones made by
 
         _computeAnalyser: function(context) {
           var analyser = context.createAnalyser();
+          // NOTE(cdata): Size of the fast fourier transform that determines the
+          // frequency domain
           analyser.fftSize = 2048;
           return analyser;
         },

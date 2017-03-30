@@ -200,6 +200,12 @@ in browsers that do not support the Media Recorder API.
           }
 
           if (codecs) {
+            // NOTE(cdata): This specifies a codec if one is preferred by the user
+            // configuration of an element.
+            // A reference for the mimetype format can be found here:
+            // https://tools.ietf.org/html/rfc2046
+            // Examples of specifying codecs in mimetypes can be found here:
+            // https://www.w3.org/TR/mediastream-recording/#check-for-mediarecorder-and-mimetype.x
             candidate += '\;codecs=' + codecs;
           }
 

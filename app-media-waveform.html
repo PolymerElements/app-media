@@ -15,6 +15,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 `app-media-waveform` is an element that visualizes the data from an analyser
 node, such as one produced by `app-media-audio`.
 
+Custom property | Description | Default
+----------------|-------------|----------
+`--app-media-waveform-background-color` | Background color | `#EF2D5E`
+`--app-media-waveform-foreground-color` | Foreground color | `rgba(255, 255, 255, 0.85)`
+`--app-media-waveform-stroke-width` | Width of the foreground | `2px`
+
 @group App Elements
 @demo demo/index.html
 -->
@@ -38,8 +44,8 @@ node, such as one produced by `app-media-audio`.
       }
 
       path {
-        stroke-width: 2px;
-        stroke: var(--app-media-waveform-forground-color, rgba(255, 255, 255, 0.85));
+        stroke-width: var(--app-media-waveform-stroke-width, 2px);
+        stroke: var(--app-media-waveform-foreground-color, rgba(255, 255, 255, 0.85));
         fill: transparent;
       }
     </style>
@@ -158,7 +164,6 @@ node, such as one produced by `app-media-audio`.
         _updateMetrics: function() {
           this.debounce('_updateMetrics', function() {
             this._selfRect = this.getBoundingClientRect();
-            // TODO: Set svg viewbox
           });
         }
       })
