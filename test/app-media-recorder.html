@@ -96,6 +96,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               expect(element.data).to.be.instanceof(Blob);
             });
           });
+
+          test('can record using the recording property', function() {
+            var dataChanges = awaitEvent(element, 'data-changed');
+
+            element.recording = true;
+
+            Polymer.Base.async(function() {
+              element.recording = false;
+            });
+
+            return dataChanges.then(function() {
+              expect(element.data).to.be.instanceof(Blob);
+            });
+          });
         });
       });
     </script>

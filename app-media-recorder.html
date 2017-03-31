@@ -31,6 +31,12 @@ in browsers that do not support the Media Recorder API.
         return;
       }
 
+      var AnimationPlayState = {
+        INACTIVE: 'inactive',
+        RECORDING: 'recording',
+        PAUSED: 'paused'
+      };
+
       Polymer({
         is: 'app-media-recorder',
 
@@ -118,8 +124,25 @@ in browsers that do not support the Media Recorder API.
             type: Blob,
             readOnly: true,
             notify: true
+          },
+
+          /**
+           * When set to true, the recorder will start recording. When set to false,
+           * the recorder will stop recording and data will be updated as the
+           * recording becomes available. Calling `start` will cause this property
+           * to be set to true. Calling `stop` will cause this property to be set to
+           * false.
+           */
+          recording: {
+            type: Boolean,
+            value: false,
+            notify: true
           }
         },
+
+        observers: [
+          '_recordingChanged(recording, recorder)'
+        ],
 
         /**
          * Start recording from the source media stream.
@@ -160,6 +183,7 @@ in browsers that do not support the Media Recorder API.
           this.recorder.addEventListener('stop', onStop);
 
           this.recorder.start(this.timeslice);
+          this.recording = true;
         },
 
         /**
@@ -169,8 +193,25 @@ in browsers that do not support the Media Recorder API.
          */
         stop: function() {
           this._setElapsed(0);
-          if (this.recorder.state !== 'inactive') {
+          if (this.recorder.state !== AnimationPlayState.INACTIVE) {
             this.recorder.stop();
+            this.recording = false;
+          }
+        },
+
+        /**
+         * Pause recording.
+         */
+        pause: function() {
+          this.recorder.pause();
+        },
+
+        /**
+         * Resume recording if paused.
+         */
+        resume: function() {
+          if (this.recorder.state === AnimationPlayState.PAUSED) {
+            this.recorder.resume();
           }
         },
 
@@ -210,6 +251,18 @@ in browsers that do not support the Media Recorder API.
           }
 
           return candidate || '';
+        },
+
+        _recordingChanged: function(recording, recorder) {
+          if (recorder == null) {
+            return;
+          }
+
+          if (recording && this.recorder.state === AnimationPlayState.INACTIVE) {
+            this.start();
+          } else if (!recording && this.recorder.state !== AnimationPlayState.INACTIVE) {
+            this.stop();
+          }
         },
 
         _mimeTypeChanged: function(mimeType) {
