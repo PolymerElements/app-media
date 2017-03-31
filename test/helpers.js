@@ -71,7 +71,54 @@
         reject(new Error((element.is || element.tagName) + ' never fired ' + event + '!'));
       }, timeout);
     });
-  };
+  }
+
+  function createAudioMediaStream() {
+    var context = new OfflineAudioContext(2,44100*40,44100);
+    return context.createMediaStreamDestination().stream;
+  }
+
+  function createFakeMediaStream(config) {
+    var stream = new MediaStream();
+    var tracks = [];
+    var track;
+
+    if (config.audioTracks) {
+      var audioTracks = [];
+
+      for (var i = 0; i < config.audioTracks; ++i) {
+        track = { stop: function() {} };
+        audioTracks.push(track);
+        tracks.push(track);
+      }
+
+      stream.getAudioTracks = function() {
+        return audioTracks;
+      };
+    }
+
+    if (config.videoTracks) {
+      var videoTracks = [];
+
+      for (var i = 0; i < config.videoTracks; ++i) {
+        track = { stop: function() {} };
+        videoTracks.push(track);
+        tracks.push(track);
+      }
+
+      stream.getVideoTracks = function() {
+        return videoTracks;
+      };
+    }
+
+    if (tracks.length) {
+      stream.getTracks = function() {
+        return tracks;
+      };
+    }
+
+    return stream;
+  }
 
   mediaDevices.enumerateDevices = function() {
     if (devices == null) {
@@ -86,29 +133,10 @@
       return Promise.reject('API access not allowed!');
     }
 
-    var stream = new MediaStream();
-    var track = { stop: function() {} };
-    var tracks = [];
-
-    if (stream.audio) {
-      stream.getAudioTracks = function() {
-        return [track];
-      };
-      tracks.push(track);
-    }
-
-    if (stream.video) {
-      stream.getVideoTracks = function() {
-        return [track];
-      };
-      tracks.push(track);
-    }
-
-    stream.getTracks = function() {
-      return tracks;
-    };
-
-    return Promise.resolve(stream);
+    return Promise.resolve(createMediaStream({
+      audioTracks: constraints.audio ? 1 : 0,
+      videoTracks: constraints.video ? 1 : 0
+    }));
   };
 
   MediaRecorder.prototype.start = function() {
@@ -147,6 +175,8 @@
     restoreDevices: restoreDevices,
     createDevice: createDevice,
     awaitEvent: awaitEvent,
+    createAudioMediaStream: createAudioMediaStream,
+    createFakeMediaStream: createFakeMediaStream,
     setRecorderData: setRecorderData,
     restoreRecorderData: restoreRecorderData
   };

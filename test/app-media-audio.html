@@ -1,3 +1,4 @@
+<!doctype html>
 <!--
 @license
 Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
@@ -7,3 +8,56 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>app-media-audio test</title>
+
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../webrtc-polyfill/index.js"></script>
+    <script src="../../web-component-tester/browser.js"></script>
+    <script src="helpers.js"></script>
+
+    <link rel="import" href="../app-media-audio.html">
+  </head>
+  <body>
+    <test-fixture id="basic">
+      <template>
+        <app-media-audio></app-media-audio>
+      </template>
+    </test-fixture>
+
+    <script>
+      suite('app-media-audio', function() {
+        var awaitEvent = AppMediaTestHelpers.awaitEvent;
+        var createAudioMediaStream = AppMediaTestHelpers.createAudioMediaStream;
+        var stream;
+
+        setup(function() {
+          stream = createAudioMediaStream();
+        });
+
+        suite('with basic configuration', function() {
+          var element;
+
+          setup(function() {
+            element = fixture('basic');
+          });
+
+          test('produces a source node connected to the audio context', function() {
+            var result = awaitEvent(element, 'source-node-changed').then(function() {
+              expect(element.sourceNode).to.be.instanceof(AudioNode);
+              expect(element.sourceNode.context).to.be.equal(element.context);
+            });
+
+            element.source = stream;
+
+            return result;
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

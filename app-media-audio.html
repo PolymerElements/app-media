@@ -62,6 +62,7 @@ analyser suitable for generating audio visualizations such as the ones made by
            */
           sourceNode: {
             type: Object,
+            notify: true,
             computed: '_computeSourceNode(context, source, analyser)',
             observer: '_sourceNodeChanged'
           }
