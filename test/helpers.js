@@ -133,7 +133,7 @@
       return Promise.reject('API access not allowed!');
     }
 
-    return Promise.resolve(createMediaStream({
+    return Promise.resolve(createFakeMediaStream({
       audioTracks: constraints.audio ? 1 : 0,
       videoTracks: constraints.video ? 1 : 0
     }));
