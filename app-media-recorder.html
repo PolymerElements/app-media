@@ -27,7 +27,7 @@ in browsers that do not support the Media Recorder API.
   <script>
     (function() {
       if (window.MediaRecorder == null) {
-        console.warn('Media Recorder API is not supported in this browser!');
+        Polymer.Base._warn('Media Recorder API is not supported in this browser!');
         return;
       }
 
@@ -271,7 +271,7 @@ in browsers that do not support the Media Recorder API.
           }
 
           if (!MediaRecorder.isTypeSupported(mimeType)) {
-            console.warn('Browser does not support mime-type', mimeType);
+            this._warn(this._logf('Browser does not support mime-type', mimeType));
           }
         }
       });
