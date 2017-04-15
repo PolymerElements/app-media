@@ -142,9 +142,11 @@ audio device into a media stream.
                           self._setStream(self.active ? stream : null);
                         })
                         .catch(function(e) {
-                          this._error(this._logf('Media stream access rejected.', e));
+                          self.fire('media-stream-error', e);
+                          self._error(self._logf('Media stream access rejected.', e));
                         });
               } catch (e) {
+                this.fire('media-stream-error', e);
                 this._error(this._logf('Failed to access media stream.', e));
               }
             }, 1);
