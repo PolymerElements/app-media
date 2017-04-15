@@ -19,6 +19,22 @@ NOTE: As of today (January 6th, 2017), Media Recorder API is only supported in
 Chrome, Firefox and Opera. This element will politely neglect to register itself
 in browsers that do not support the Media Recorder API.
 
+Some polyfill-esque libraries (like
+[this one](https://www.webrtc-experiment.com/msr/)) exist at the time of this
+writing, but do not work as drop-in substitutes. If you have a polyfill that
+you consider to be a suitable substitute, load it first and ensure that
+`window.MediaRecorder` points to the correct constructor. For example:
+
+```
+<script src="/some/path/MediaStreamRecorder.js"></script>
+<script>
+  // Substitute the MediaStreamRecorder constructor for MediaRecorder before
+  // <app-media-recorder> is loaded:
+  window.MediaRecorder = MediaStreamRecorder;
+</script>
+<link rel="import" href="/bower_components/app-media/app-media-recorder.html">
+```
+
 @group App Elements
 @demo demo/index.html
 -->
@@ -31,7 +47,10 @@ in browsers that do not support the Media Recorder API.
         return;
       }
 
-      var AnimationPlayState = {
+      Polymer.AppMedia = Polymer.AppMedia || {};
+
+      /** @see https://www.w3.org/TR/mediastream-recording/#enumdef-recordingstate */
+      Polymer.AppMedia.RecordingState = {
         INACTIVE: 'inactive',
         RECORDING: 'recording',
         PAUSED: 'paused'
@@ -193,7 +212,8 @@ in browsers that do not support the Media Recorder API.
          */
         stop: function() {
           this._setElapsed(0);
-          if (this.recorder.state !== AnimationPlayState.INACTIVE) {
+          if (this.recorder.state !==
+              Polymer.AppMedia.RecordingState.INACTIVE) {
             this.recorder.stop();
             this.recording = false;
           }
@@ -210,7 +230,8 @@ in browsers that do not support the Media Recorder API.
          * Resume recording if paused.
          */
         resume: function() {
-          if (this.recorder.state === AnimationPlayState.PAUSED) {
+          if (this.recorder.state ===
+              Polymer.AppMedia.RecordingState.PAUSED) {
             this.recorder.resume();
           }
         },
@@ -258,9 +279,11 @@ in browsers that do not support the Media Recorder API.
             return;
           }
 
-          if (recording && this.recorder.state === AnimationPlayState.INACTIVE) {
+          if (recording && this.recorder.state ===
+              Polymer.AppMedia.RecordingState.INACTIVE) {
             this.start();
-          } else if (!recording && this.recorder.state !== AnimationPlayState.INACTIVE) {
+          } else if (!recording && this.recorder.state !==
+              Polymer.AppMedia.RecordingState.INACTIVE) {
             this.stop();
           }
         },

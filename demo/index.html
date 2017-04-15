@@ -25,6 +25,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <link rel="import" href="../app-media-waveform.html">
     <link rel="import" href="../app-media-recorder.html">
 
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
   </head>
   <body>
     <dom-module id="x-video-camera">
@@ -159,6 +165,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             analyser="[[analyser]]"
             active>
         </app-media-waveform>
+
       </template>
       <script>
         document.addEventListener('WebComponentsReady', function() {
