@@ -34,8 +34,10 @@ scaled video that is displayed to the viewer of the page.
       }
 
       video {
-        flex: 0 0 100%;
+        flex: 0 0 auto;
         transform-origin: center center;
+        position: relative;
+        will-change: transform;
       }
     </style>
     <video
@@ -122,6 +124,38 @@ scaled video that is displayed to the viewer of the page.
             type: HTMLVideoElement,
             notify: true,
             readOnly: true
+          },
+
+          /**
+           * A rect-like object that describes the projection of the source
+           * video element to the viewport (the bounding box of the
+           * app-media-video element).
+           *
+           * This rectangle is useful to understand the space within the
+           * source video element that is visible to the user at any given
+           * time. Depending on the value of contain, and also any transforms
+           * that affect the scale of the video element, this rectangle could
+           * have a range of values that are opportunistically calculated
+           * and made available through this property.
+           */
+          sourceRect: {
+            type: Object,
+            notify: true,
+            readOnly: true,
+            value: function() {
+              return { top: 0, left: 0, width: 0, height: 0 };
+            }
+          },
+
+          /**
+           * This is the bounding ClientRect of the app-media-video element.
+           * This is kept here for easy future access by users of the element
+           * and is useful in conjunction with sourceRect.
+           */
+          viewportRect: {
+            type: ClientRect,
+            notify: true,
+            readOnly: true
           }
         },
 
@@ -198,22 +232,39 @@ scaled video that is displayed to the viewer of the page.
               this.$.videoElement.style.visibility = '';
             }
 
+            this.$.videoElement.style.transform = '';
+
+            var videoRect = this.$.videoElement.getBoundingClientRect();
             var selfRect = this.getBoundingClientRect();
             var selfRatio = selfRect.width / selfRect.height;
             var videoRatio = videoWidth / videoHeight;
-            var videoScale;
             var scaleByHeight = this.contain
                 ? videoRatio < selfRatio
                 : videoRatio > selfRatio;
+            var sourceScale = videoWidth / videoRect.width;
+            var videoScale;
 
             if (scaleByHeight) {
-              videoScale = selfRect.height / videoHeight;
+              videoScale = selfRect.height / videoRect.height;
             } else {
-              videoScale = selfRect.width / videoWidth;
+              videoScale = selfRect.width / videoRect.width;
             }
 
+            this._setViewportRect(selfRect);
+
+            this._setSourceRect({
+              left: (videoRect.width * videoScale - selfRect.width) /
+                  (2 * videoScale) * sourceScale,
+              top: (videoRect.height * videoScale - selfRect.height) /
+                  (2 * videoScale) * sourceScale,
+              width: selfRect.width / videoScale * sourceScale,
+              height: selfRect.height / videoScale * sourceScale
+            });
+
             this.$.videoElement.style.transform =
-                'scale(' + (this.mirror ? -videoScale : videoScale) + ',' + videoScale + ')';
+                'scale(' + (this.mirror
+                    ? -videoScale
+                    : videoScale) + ',' + videoScale + ')';
           });
         }
       });
