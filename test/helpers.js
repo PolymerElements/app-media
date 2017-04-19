@@ -16,12 +16,48 @@
       (mediaDevices.getUserMedia || function(){}).bind(mediaDevices);
   var mediaRecorderStart = MediaRecorder.prototype.start;
   var mediaRecorderStop = MediaRecorder.prototype.stop;
+  var ImageCapture = window.ImageCapture;
 
   var allowed = true;
   var devices = null;
   var recorderState = null;
   var recorderData = null;
   var fakeId = 0;
+
+  function createFakeImageCapture(config) {
+    var capabilities = (config && config.capabilities)
+        ? config.capabilities
+        : {};
+    return function FakeImageCapture(videoTrack) {
+      return {
+        $videoTrack: videoTrack,
+
+        takePhoto: function() {
+          return Promise.resolve(new Blob());
+        },
+
+        grabFrame: function() {
+          return Promise.resolve(new ImageBitmap());
+        },
+
+        setOptions: function() {
+          return Promise.resolve();
+        },
+
+        getPhotoCapabilities: function() {
+          return Promise.resolve(capabilities);
+        }
+      }
+    }
+  }
+
+  function fakeImageCapture(capabilities) {
+    window.ImageCapture = createFakeImageCapture(capabilities || {});
+  }
+
+  function restoreImageCapture() {
+    window.ImageCapture = ImageCapture;
+  }
 
   function setRecorderData(data) {
     recorderData = data;
@@ -178,6 +214,8 @@
     createAudioMediaStream: createAudioMediaStream,
     createFakeMediaStream: createFakeMediaStream,
     setRecorderData: setRecorderData,
-    restoreRecorderData: restoreRecorderData
+    restoreRecorderData: restoreRecorderData,
+    fakeImageCapture: fakeImageCapture,
+    restoreImageCapture: restoreImageCapture
   };
 })();
