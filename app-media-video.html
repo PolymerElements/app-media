@@ -222,9 +222,14 @@ scaled video that is displayed to the viewer of the page.
 
         _updateMetrics: function() {
           this.debounce('_updateMetrics', function() {
+            // These values are the width and the height of the video source
+            // being displayed by the video element. They stay the same
+            // regardless of the dimensions of the video element itself:
             var videoWidth = this.$.videoElement.videoWidth;
             var videoHeight = this.$.videoElement.videoHeight;
 
+            // If the source video dimensions describe an effectively invisible
+            // or unavailable video, we can just hide the element and exit early.
             if (!videoWidth || !videoHeight) {
               this.$.videoElement.style.visibility = 'hidden';
               return;
@@ -232,6 +237,8 @@ scaled video that is displayed to the viewer of the page.
               this.$.videoElement.style.visibility = '';
             }
 
+            // Clear the current transform so that we can get the natural
+            // bounding rect of the video element:
             this.$.videoElement.style.transform = '';
 
             var videoRect = this.$.videoElement.getBoundingClientRect();
@@ -250,8 +257,16 @@ scaled video that is displayed to the viewer of the page.
               videoScale = selfRect.width / videoRect.width;
             }
 
+            // Since we already grabbed this element's bounding rect, cache it
+            // for future comparisons with the source rect:
             this._setViewportRect(selfRect);
 
+            // The source rect needs to account for:
+            //  - The (eventual) scale of the video element within this element
+            //  - Any transforms on this or ancestor elements that may change
+            //    the effective scale of the video element.
+            //  - Vertical and horizontal centering of the video element within
+            //    this element due to flex layout rules.
             this._setSourceRect({
               left: (videoRect.width * videoScale - selfRect.width) /
                   (2 * videoScale) * sourceScale,
