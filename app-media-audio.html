@@ -29,6 +29,7 @@ analyser suitable for generating audio visualizations such as the ones made by
           /**
            * The input source for the element. This can be a Media Stream or a
            * Media Element (such as an audio or video element).
+           *
            * @type {MediaStream|HTMLMediaElement}
            */
           source: {
@@ -37,9 +38,11 @@ analyser suitable for generating audio visualizations such as the ones made by
 
           /**
            * The audio context that the analyser is associated with.
+           *
+           * @type AudioContext
            */
           context: {
-            type: AudioContext,
+            type: Object,
             readOnly: true,
             value: function() {
               return new AudioContext();
@@ -49,15 +52,18 @@ analyser suitable for generating audio visualizations such as the ones made by
           /**
            * An AnalyserNode that is linked to the audio input source.
            * https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode
+           *
+           * @type AnalyserNode
            */
           analyser: {
-            type: AnalyserNode,
+            type: Object,
             notify: true,
             computed: '_computeAnalyser(context)'
           },
 
           /**
            * An AudioNode that is associated with the audio source.
+           *
            * @type {MediaStreamAudioSourceNode|MediaElementAudioSourceNode}
            */
           sourceNode: {

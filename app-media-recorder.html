@@ -70,9 +70,11 @@ you consider to be a suitable substitute, load it first and ensure that
           /**
            * A reference to the media recorder that is used to generate
            * recordings of the stream.
+           *
+           * @type MediaRecorder
            */
           recorder: {
-            type: MediaRecorder,
+            type: Object,
             notify: true,
             computed: '_computeRecorder(stream, mimeType)'
           },
@@ -138,9 +140,11 @@ you consider to be a suitable substitute, load it first and ensure that
 
           /**
            * A blob for the most recently completed recording.
+           *
+           * @type Blob
            */
           data: {
-            type: Blob,
+            type: Object,
             readOnly: true,
             notify: true
           },

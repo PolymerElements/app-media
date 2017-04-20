@@ -55,9 +55,11 @@ devices one at a time.
            * A selected device in the list of devices. This starts as the first
            * item in the devices array. The user can change this value by using
            * the selectNextDevice and selectPreviousDevice methods.
+           *
+           * @type MediaDeviceInfo
            */
           selectedDevice: {
-            type: MediaDeviceInfo,
+            type: Object,
             readOnly: true,
             notify: true
           },
