@@ -137,7 +137,12 @@
       var videoTracks = [];
 
       for (var i = 0; i < config.videoTracks; ++i) {
-        track = { stop: function() {} };
+        track = {
+          stop: function() {},
+          getCapabilities: function() {
+            return config.videoTrackCapabilities || {};
+          }
+        };
         videoTracks.push(track);
         tracks.push(track);
       }

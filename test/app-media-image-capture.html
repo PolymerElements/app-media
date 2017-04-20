@@ -32,15 +32,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </template>
     </test-fixture>
 
-    <test-fixture id="configured">
+    <test-fixture id="configure-photo-settings">
       <template>
         <app-media-image-capture
-            exposure-mode="single-shot"
-            fill-light-mode="flash"
+            fill-light-mode="auto"
+            image-width="1024"
             red-eye-reduction>
         </app-media-image-capture>
       </template>
     </test-fixture>
+
+    <test-fixture id="configure-track-constraints">
+      <template>
+        <app-media-image-capture
+            iso="1600"
+            brightness="15"
+            focus="manual"
+            torch>
+        </app-media-image-capture>
+      </template>
+    </test-fixture>
+
 
     <script>
       suite('app-media-image-capture', function() {
@@ -54,11 +66,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         setup(function() {
           fakeImageCapture({
             capabilities: {
-              fillLightMode: true,
-              exposureMode: true
+              redEyeReduction: 'controllable',
+              fillLightMode: ['auto', 'off'],
             }
           });
-          stream = createFakeMediaStream({ videoTracks: 1 });
+          stream = createFakeMediaStream({
+            videoTracks: 1,
+            videoTrackCapabilities: {
+              brightness: {
+                min: 0,
+                max: 10,
+                step: 1
+              },
+
+              torch: true,
+
+              focusMode: [Polymer.AppMedia.MeteringMode.SINGLE_SHOT]
+            }
+          });
         });
 
         teardown(function() {
@@ -81,20 +106,44 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         suite('when photo settings are configured', function() {
           setup(function() {
-            element = fixture('configured');
+            element = fixture('configure-photo-settings');
             element.stream = stream;
             return awaitEvent(element, 'photo-settings-changed')
           });
 
           test('compiles settings into a photoSettings object', function() {
             expect(element.photoSettings).to.be.ok;
-            expect(element.photoSettings.exposureMode).to.be.equal('single-shot');
-            expect(element.photoSettings.fillLightMode).to.be.equal('flash');
+            expect(element.photoSettings.redEyeReduction).to.be.equal(true);
+            expect(element.photoSettings.fillLightMode).to.be.equal(Polymer.AppMedia.FillLightMode.AUTO);
           });
 
           test('ignores settings that are not supported', function() {
             expect(element.photoSettings).to.be.ok;
-            expect(element.photoSettings.redEyeReduction).to.be.equal(undefined);
+            expect(element.photoSettings.imageWidth).to.be.equal(undefined);
+          });
+        });
+
+        suite('when track constraints are configured', function() {
+          setup(function() {
+            element = fixture('configure-track-constraints');
+            element.stream = stream;
+            return awaitEvent(element, 'track-constraints-changed');
+          });
+
+          test('compiles constraints into a trackConstraints object', function() {
+            expect(element.trackConstraints).to.be.ok;
+            expect(element.trackConstraints.torch).to.be.equal(true);
+          });
+
+          test('clamps out of bounds values to allowed ranges', function() {
+            expect(element.trackConstraints).to.be.ok;
+            expect(element.trackConstraints.brightness).to.be.equal(10);
+          });
+
+          test('ignores constraints that are not supported', function() {
+            expect(element.trackConstraints).to.be.ok;
+            expect(element.trackConstraints.iso).to.be.equal(undefined);
+            expect(element.trackConstraints.focus).to.be.equal(undefined);
           });
         });
       });
