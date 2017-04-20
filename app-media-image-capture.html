@@ -85,9 +85,11 @@ the appropriate ImageRecorder global constructor.
            * The input media stream to capture images from. Note that the
            * stream must have at least one video track in order to be a suitable
            * source for image capture.
+           *
+           * @type MediaStream
            */
           stream: {
-            type: MediaStream
+            type: Object
           },
 
           /**
@@ -102,36 +104,44 @@ the appropriate ImageRecorder global constructor.
           /**
            * The video track selected from the input MediaStream. This track will
            * be the source for any images captured.
+           *
+           * @type MediaStreamTrack
            */
           videoTrack: {
-            type: MediaStreamTrack,
+            type: Object,
             notify: true,
             computed: '__computeVideoTrack(stream, trackIndex)'
           },
 
           /**
            * An ImageCapture instance associated with the selected video track.
+           *
+           * @type ImageCapture
            */
           imageCapture: {
-            type: ImageCapture,
+            type: Object,
             notify: true,
             computed: '__computeImageCapture(videoTrack)'
           },
 
           /**
            * The last photo captured by the image capture instance.
+           *
+           * @type Blob
            */
           lastPhoto: {
-            type: Blob,
+            type: Object,
             notify: true,
             readOnly: true
           },
 
           /**
            * The last frame grabbed by the image capture instance.
+           *
+           * @type ImageBitmap
            */
           lastFrame: {
-            type: ImageBitmap,
+            type: Object,
             notify: true,
             readOnly: true
           },
@@ -169,9 +179,12 @@ the appropriate ImageRecorder global constructor.
             notify: true
           },
 
-          /** @see https://www.w3.org/TR/image-capture/#PhotoSettings */
+          /**
+           * @type Polymer.AppMedia.MeteringMode
+           * @see https://www.w3.org/TR/image-capture/#PhotoSettings
+           */
           whiteBalanceMode: {
-            type: Polymer.AppMedia.MeteringMode,
+            type: String
             value: null
           },
 
@@ -181,9 +194,12 @@ the appropriate ImageRecorder global constructor.
             value: null
           },
 
-          /** @see https://www.w3.org/TR/image-capture/#PhotoSettings */
+          /**
+           * @type Polymer.AppMedia.MeteringMode
+           * @see https://www.w3.org/TR/image-capture/#PhotoSettings
+           */
           exposureMode: {
-            type: Polymer.AppMedia.MeteringMode,
+            type: String,
             value: null
           },
 
@@ -205,9 +221,12 @@ the appropriate ImageRecorder global constructor.
             value: null
           },
 
-          /** @see https://www.w3.org/TR/image-capture/#PhotoSettings */
+          /**
+           * @type Polymer.AppMedia.MeteringMode
+           * @see https://www.w3.org/TR/image-capture/#PhotoSettings
+           */
           focusMode: {
-            type: Polymer.AppMedia.MeteringMode,
+            type: String,
             value: null
           },
 
@@ -259,9 +278,12 @@ the appropriate ImageRecorder global constructor.
             value: null
           },
 
-          /** @see https://www.w3.org/TR/image-capture/#PhotoSettings */
+          /**
+           * @type Polymer.AppMedia.FillLightMode
+           * @see https://www.w3.org/TR/image-capture/#PhotoSettings
+           */
           fillLightMode: {
-            type: Polymer.AppMedia.FillLightMode,
+            type: String,
             value: null
           }
         },
@@ -275,6 +297,7 @@ the appropriate ImageRecorder global constructor.
         /**
          * Take a photo. Returns a promise that resolves a photographic Blob.
          *
+         * @return Promise<Blob>
          * @see https://www.w3.org/TR/image-capture/#dom-imagecapture-takephoto
          */
         takePhoto: function() {
@@ -293,6 +316,7 @@ the appropriate ImageRecorder global constructor.
          * ImageBitmap suitable for drawing to a canvas or used in conjunction
          * with object detection.
          *
+         * @return Promise<ImageBitmap>
          * @see https://www.w3.org/TR/image-capture/#dom-imagecapture-grabframe
          */
         grabFrame: function() {

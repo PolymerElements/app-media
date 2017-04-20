@@ -61,6 +61,7 @@ scaled video that is displayed to the viewer of the page.
           /**
            * The input source for the element. This can be a Media Stream, a
            * Blob or a string URL.
+           *
            * @type {MediaStream|Blob|string}
            */
           source: {
@@ -119,9 +120,11 @@ scaled video that is displayed to the viewer of the page.
            * source. This is sometimes useful in conjunction with
            * `app-media-audio`, which can accept an HTMLVideoElement as its
            * source.
+           *
+           * @type HTMLVideoElement
            */
           videoElement: {
-            type: HTMLVideoElement,
+            type: Object,
             notify: true,
             readOnly: true
           },
@@ -151,9 +154,11 @@ scaled video that is displayed to the viewer of the page.
            * This is the bounding ClientRect of the app-media-video element.
            * This is kept here for easy future access by users of the element
            * and is useful in conjunction with sourceRect.
+           *
+           * @type ClientRect
            */
           viewportRect: {
-            type: ClientRect,
+            type: Object,
             notify: true,
             readOnly: true
           }

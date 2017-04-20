@@ -75,9 +75,11 @@ Custom property | Description | Default
 
           /**
            * An analyser node that should be visualized.
+           *
+           * @type AnalyserNode
            */
           analyser: {
-            type: AnalyserNode
+            type: Object
           },
 
           /**
@@ -92,9 +94,11 @@ Custom property | Description | Default
           /**
            * The computed typed array that is used to temporarily store waveform
            * values for converting into a visualization.
+           *
+           * @type Uint8Array
            */
           data: {
-            type: Uint8Array,
+            type: Object,
             computed: '_computeData(bufferLength)'
           }
         },
