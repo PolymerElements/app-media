@@ -175,6 +175,7 @@ you consider to be a suitable substitute, load it first and ensure that
             var elapsed = performance.now() - start;
 
             if (event.data && event.data.size > 0) {
+              this.fire('app-media-recorder-chunk', event.data);
               data.push(event.data);
             }
 
