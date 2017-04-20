@@ -2,7 +2,29 @@
   "name": "app-media",
   "version": "0.1.0",
   "description": "Elements for accessing data from media input devices",
+  "authors": [
+    "The Polymer Authors"
+  ],
+  "keywords": [
+    "web-components",
+    "web-component",
+    "polymer",
+    "app",
+    "user",
+    "media",
+    "stream",
+    "camera",
+    "audio",
+    "video"
+  ],
   "main": "app-media-stream.html",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/PolymerElements/app-media.git"
+  },
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "homepage": "https://github.com/PolymerElements/app-media",
   "dependencies": {
     "polymer": "Polymer/polymer#1.8.0 - 2",
     "iron-resizable-behavior": "PolymerElements/iron-resizable-behavior#1.0.0 - 2"
@@ -14,5 +36,6 @@
     "test-fixture": "PolymerElements/test-fixture#1.0.0 - 3",
     "imagecapture-polyfill": "https://unpkg.com/image-capture@0.3.2/lib/imagecapture.js",
     "webrtc-polyfill": "https://webrtc.github.io/adapter/adapter-latest.js"
-  }
+  },
+  "ignore": []
 }
