@@ -1,6 +1,6 @@
 {
   "name": "app-media",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Elements for accessing data from media input devices",
   "main": "app-media-stream.html",
   "dependencies": {
