@@ -248,7 +248,11 @@ scaled video that is displayed to the viewer of the page.
             var scaleByHeight = this.contain
                 ? videoRatio < selfRatio
                 : videoRatio > selfRatio;
+            // This is the scale of the source video's width compared to the
+            // width of the video tag's bounding box.
             var sourceScale = videoWidth / videoRect.width;
+            // This is the scale applied to the video to transform it based
+            // on whether it should be contained within the viewport or not.
             var videoScale;
 
             if (scaleByHeight) {
@@ -267,13 +271,18 @@ scaled video that is displayed to the viewer of the page.
             //    the effective scale of the video element.
             //  - Vertical and horizontal centering of the video element within
             //    this element due to flex layout rules.
+            var downScaledSelfWidth = selfRect.width / videoScale;
+            var downScaledSelfHeight = selfRect.height / videoScale;
+            var realHorizontalOverlap =
+                (videoRect.width - downScaledSelfWidth) * sourceScale;
+            var realVerticalOverlap =
+                (videoRect.height - downScaledSelfHeight) * sourceScale;
+
             this._setSourceRect({
-              left: (videoRect.width * videoScale - selfRect.width) /
-                  (2 * videoScale) * sourceScale,
-              top: (videoRect.height * videoScale - selfRect.height) /
-                  (2 * videoScale) * sourceScale,
-              width: selfRect.width / videoScale * sourceScale,
-              height: selfRect.height / videoScale * sourceScale
+              left: realHorizontalOverlap / 2,
+              top: realVerticalOverlap / 2,
+              width: downScaledSelfWidth * sourceScale,
+              height: downScaledSelfHeight * sourceScale
             });
 
             this.$.videoElement.style.transform =
