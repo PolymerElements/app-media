@@ -1,0 +1,378 @@
+<!--
+@license
+Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+`app-media-image-capture` implements a helpful wrapper element for the emerging
+[Image Capture API](https://www.w3.org/TR/image-capture/). This element enables
+straight-forward photographic image control and capture that cooperates nicely
+with other app-media elements.
+
+If you wish to support browsers that do not implement the Image Capture API,
+please consider including a polyfill such as
+[this one](https://github.com/GoogleChrome/imagecapture-polyfill) in your app.
+Note that most polyfills will not enable full functionality, but they should give
+your app a reasonable fallback in browsers that do not natively support the API.
+
+NOTE: As of today (April 7th, 2017), Image Capture API requires a polyfill or an
+[Origin Trial](https://github.com/jpchase/OriginTrials/blob/gh-pages/developer-guide.md).
+This element will politely neglect to register itself in browsers that do not feature
+the appropriate ImageRecorder global constructor.
+
+@group App Elements
+@demo demo/index.html
+-->
+
+<dom-module id="app-media-image-capture">
+  <script>
+    (function() {
+      if (window.ImageCapture == null) {
+        Polymer.Base._warn('Image Capture API is not supported in this browser!');
+        return;
+      }
+
+      Polymer.AppMedia = Polymer.AppMedia || {};
+
+      /** @see https://www.w3.org/TR/image-capture/#MeteringMode */
+      Polymer.AppMedia.MeteringMode = {
+        SINGLE_SHOT: 'single-shot',
+        CONTINUOUS: 'continuous',
+        MANUAL: 'manual',
+        NONE: 'none'
+      };
+
+      /** @see https://www.w3.org/TR/image-capture/#FillLightMode */
+      Polymer.AppMedia.FillLightMode = {
+        UNAVAILABLE: 'unavailable',
+        AUTO: 'auto',
+        OFF: 'off',
+        FLASH: 'flash',
+        TORCH: 'torch'
+      };
+
+      var PHOTO_SETTING_NAMES = [
+        'whiteBalanceMode',
+        'colorTemperature',
+        'exposureMode',
+        'exposureCompensation',
+        'iso',
+        'redEyeReduction',
+        'focusMode',
+        'pointsOfInterest',
+        'brightness',
+        'contrast',
+        'saturation',
+        'sharpness',
+        'zoom',
+        'imageHeight',
+        'imageWidth',
+        'fillLightMode'
+      ];
+
+      Polymer({
+        is: 'app-media-image-capture',
+
+        properties: {
+          /**
+           * The input media stream to capture images from. Note that the
+           * stream must have at least one video track in order to be a suitable
+           * source for image capture.
+           */
+          stream: {
+            type: MediaStream
+          },
+
+          /**
+           * MediaStreams can have multiple video tracks. This property enables
+           * you to configure the index of the video track to use.
+           */
+          trackIndex: {
+            type: Number,
+            value: 0
+          },
+
+          /**
+           * The video track selected from the input MediaStream. This track will
+           * be the source for any images captured.
+           */
+          videoTrack: {
+            type: MediaStreamTrack,
+            notify: true,
+            computed: '__computeVideoTrack(stream, trackIndex)'
+          },
+
+          /**
+           * An ImageCapture instance associated with the selected video track.
+           */
+          imageCapture: {
+            type: ImageCapture,
+            notify: true,
+            computed: '__computeImageCapture(videoTrack)'
+          },
+
+          /**
+           * The last photo captured by the image capture instance.
+           */
+          lastPhoto: {
+            type: Blob,
+            notify: true,
+            readOnly: true
+          },
+
+          /**
+           * The last frame grabbed by the image capture instance.
+           */
+          lastFrame: {
+            type: ImageBitmap,
+            notify: true,
+            readOnly: true
+          },
+
+          /**
+           * The PhotoCapabilities for the device providing the image data
+           * associated with the chosen video track. This object contains
+           * information about the minimum, maximum, current and incremental
+           * values for various camera settings.
+           *
+           * @see https://www.w3.org/TR/image-capture/#PhotoCapabilities
+           */
+          photoCapabilities: {
+            type: Object,
+            readOnly: true,
+            notify: true
+          },
+
+          /**
+           * The PhotoSettings that will be used to configure the ImageCapture
+           * instance used by this element. This configuration is generated
+           * based on the individually configured properties on this element.
+           * A full list of configurable properties can be found
+           * [here](https://www.w3.org/TR/image-capture/#PhotoSettings).
+           *
+           * Note that if a given setting is not supported by the current input
+           * device, configuration will result in an exception. In order to
+           * ensure that only supported settings are set, wait for the
+           * photoCapabilities property to be updated and only set capabilities
+           * that are listed as keys in that object.
+           */
+          photoSettings: {
+            type: Object,
+            readOnly: true,
+            notify: true
+          },
+
+          /** @see https://www.w3.org/TR/image-capture/#PhotoSettings */
+          whiteBalanceMode: {
+            type: Polymer.AppMedia.MeteringMode,
+            value: null
+          },
+
+          /** @see https://www.w3.org/TR/image-capture/#PhotoSettings */
+          colorTemperature: {
+            type: Number,
+            value: null
+          },
+
+          /** @see https://www.w3.org/TR/image-capture/#PhotoSettings */
+          exposureMode: {
+            type: Polymer.AppMedia.MeteringMode,
+            value: null
+          },
+
+          /** @see https://www.w3.org/TR/image-capture/#PhotoSettings */
+          exposureCompensation: {
+            type: Number,
+            value: null
+          },
+
+          /** @see https://www.w3.org/TR/image-capture/#PhotoSettings */
+          iso: {
+            type: Number,
+            value: null
+          },
+
+          /** @see https://www.w3.org/TR/image-capture/#PhotoSettings */
+          redEyeReduction: {
+            type: Boolean,
+            value: null
+          },
+
+          /** @see https://www.w3.org/TR/image-capture/#PhotoSettings */
+          focusMode: {
+            type: Polymer.AppMedia.MeteringMode,
+            value: null
+          },
+
+          /** @see https://www.w3.org/TR/image-capture/#PhotoSettings */
+          pointsOfInterest: {
+            type: Array,
+            value: null
+          },
+
+          /** @see https://www.w3.org/TR/image-capture/#PhotoSettings */
+          brightness: {
+            type: Number,
+            value: null
+          },
+
+          /** @see https://www.w3.org/TR/image-capture/#PhotoSettings */
+          contrast: {
+            type: Number,
+            value: null
+          },
+
+          /** @see https://www.w3.org/TR/image-capture/#PhotoSettings */
+          saturation: {
+            type: Number,
+            value: null
+          },
+
+          /** @see https://www.w3.org/TR/image-capture/#PhotoSettings */
+          sharpness: {
+            type: Number,
+            value: null
+          },
+
+          /** @see https://www.w3.org/TR/image-capture/#PhotoSettings */
+          zoom: {
+            type: Number,
+            value: null
+          },
+
+          /** @see https://www.w3.org/TR/image-capture/#PhotoSettings */
+          imageHeight: {
+            type: Number,
+            value: null
+          },
+
+          /** @see https://www.w3.org/TR/image-capture/#PhotoSettings */
+          imageWidth: {
+            type: Number,
+            value: null
+          },
+
+          /** @see https://www.w3.org/TR/image-capture/#PhotoSettings */
+          fillLightMode: {
+            type: Polymer.AppMedia.FillLightMode,
+            value: null
+          }
+        },
+
+        observers: [
+          '__updateImageCaptureOptions(imageCapture, photoSettings)',
+          '__updatePhotoCapabilities(imageCapture, videoTrack)',
+          '__updatePhotoSettings(imageCapture, photoCapabilities, whiteBalanceMode, colorTemperature, exposureMode, exposureCompensation, iso, redEyeReduction, focusMode, pointsOfInterest, brightness, contrast, saturation, sharpness, zoom, imageHeight, imageWidth, fillLightMode)'
+        ],
+
+        /**
+         * Take a photo. Returns a promise that resolves a photographic Blob.
+         *
+         * @see https://www.w3.org/TR/image-capture/#dom-imagecapture-takephoto
+         */
+        takePhoto: function() {
+          if (this.imageCapture == null) {
+            return Promise.reject(new Error('ImageCapture instance not ready.'));
+          }
+
+          return this.imageCapture.takePhoto().then(function(photo) {
+            this._setLastPhoto(photo);
+            return photo;
+          }.bind(this));
+        },
+
+        /**
+         * Grab a frame from the camera. Returns a promise that resolves an
+         * ImageBitmap suitable for drawing to a canvas or used in conjunction
+         * with object detection.
+         *
+         * @see https://www.w3.org/TR/image-capture/#dom-imagecapture-grabframe
+         */
+        grabFrame: function() {
+          if (this.imageCapture == null) {
+            return Promise.reject(new Error('ImageCapture instance not ready.'));
+          }
+
+          return this.imageCapture.grabFrame().then(function(frame) {
+            this._setLastFrame(frame);
+            return frame;
+          }.bind(this));
+        },
+
+        __computeVideoTrack: function(stream, trackIndex) {
+          if (stream == null || trackIndex == null) {
+            return;
+          }
+
+          return stream.getVideoTracks()[trackIndex];
+        },
+
+        __computeImageCapture: function(videoTrack) {
+          return new ImageCapture(videoTrack);
+        },
+
+        __updatePhotoSettings: function() {
+          this.debounce('updatePhotoSettings', function() {
+            var photoSettings = null;
+
+            for (var i = 0; i < PHOTO_SETTING_NAMES.length; ++i) {
+              var name = PHOTO_SETTING_NAMES[i];
+              var value = this[name];
+
+              // Don't set photo options if a value is provided, and skip
+              // if the name is not present in the PhotoCapabilities object
+              // (setting such properties will probably result in an error).
+              if (value == null || !(name in this.photoCapabilities)) {
+                continue;
+              }
+
+              if (!photoSettings) {
+                photoSettings = {};
+              }
+
+              photoSettings[name] = value;
+            }
+
+            this._setPhotoSettings(photoSettings);
+          });
+        },
+
+        __updatePhotoCapabilities: function() {
+          this.debounce('updatePhotoSettings', function() {
+            this.imageCapture.getPhotoCapabilities()
+                .then(function(photoCapabilities) {
+                  this._setPhotoCapabilities(photoCapabilities);
+                }.bind(this))
+                .catch(function(e) {
+                  this.fire('image-capture-capabilities-error', e);
+                }.bind(this));
+          });
+        },
+
+        __updateImageCaptureOptions: function() {
+          this.debounce('updateImageCaptureOptions', function() {
+            if (this.imageCapture == null || this.photoSettings == null) {
+              return;
+            }
+
+            this.imageCapture.setOptions(this.photoSettings)
+                .then(function() {
+                  this.fire('image-capture-options-updated', this);
+                }.bind(this))
+                .catch(function(e) {
+                  this.fire('image-capture-options-error', e);
+                }.bind(this));
+          });
+        }
+      });
+    })();
+
+  </script>
+</dom-module>
