@@ -191,12 +191,54 @@ Polymer({
 ```
 
 The `<app-media-recorder>` will start recording from the configured stream and
-automatically stop after the configured duration. Once the recording is
-is available, it will assign it to the `data` property (this will also update
-the bound `recordedVideo` property in the example above).
+automatically stop after the configured duration. While the recording is taking
+place, the element will dispatch `app-media-recorder-chunk` events that contain
+individual data chunks as provided by `MediaRecorder` it the `dataavailable`
+event. Once the recording is available, it will assign it to the `data` property
+(this will also update the bound `recordedVideo` property in the example above).
 
 If you don't configure a `duration`, then the recording will continue until you
 call the `stop` method on the recorder instance.
+
+### `<app-media-image-capture>`
+
+An emerging standard defines the
+[Image Capture API](https://www.w3.org/TR/image-capture/), which allows for
+more fine-grained control of camera settings such as color temperature, white
+balance, focus and flash. It also allows for direct JPEG capture of the image
+that appears in a given media device.
+
+The `<app-media-image-capture>` element offers a declarative strategy for
+configuring an `ImageCapture` instance and accessing the photos it takes:
+
+```html
+<app-media-image-capture
+    id="imageCapture"
+    stream="[[videoStream]]"
+    focus-mode="single-shot"
+    red-eye-reduction
+    last-photo="{{photo}}">
+</app-media-image-capture>
+```
+
+When you are ready to capture a photo, call the `takePhoto` method:
+
+```html
+<script>
+Polymer({
+  is: 'x-camera',
+
+  // ...
+
+  takePhoto: function() {
+    // NOTE: This method also returns a promise that resolves the photo.
+    this.$.imageCapture.takePhoto();
+  }
+
+  // ....
+});
+</script>
+```
 
 ### `<app-media-audio>`
 
