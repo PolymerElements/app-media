@@ -27,17 +27,21 @@ audio device into a media stream.
         properties: {
           /**
            * The audio device to use when creating the media stream.
+           *
+           * @type MediaDeviceInfo
            */
           audioDevice: {
-            type: MediaDeviceInfo,
+            type: Object,
             value: null
           },
 
           /**
            * The video device to use when creating the media stream.
+           *
+           * @type MediaDeviceInfo
            */
           videoDevice: {
-            type: MediaDeviceInfo,
+            type: Object,
             value: null
           },
 
@@ -60,9 +64,11 @@ audio device into a media stream.
           /**
            * A media stream that is created using the configured audio and/or
            * video device(s).
+           *
+           * @type MediaStream
            */
           stream: {
-            type: MediaStream,
+            type: Object,
             notify: true,
             readOnly: true,
             observer: '_streamChanged'
