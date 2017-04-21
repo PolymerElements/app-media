@@ -1,6 +1,6 @@
 {
   "name": "app-media",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Elements for accessing data from media input devices",
   "authors": [
     "The Polymer Authors"
