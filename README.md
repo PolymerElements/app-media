@@ -109,6 +109,36 @@ something like this:
 </app-media-stream>
 ```
 
+You can use `app-media-stream` to record device screen.
+
+To capture screen in Chrome use `{"mandatory": {"chromeMediaSource": "screen"}}`
+video constraint:
+
+```html
+<app-media-stream
+    video-constraints='{"mandatory": {"chromeMediaSource": "screen"}}'
+    stream="{{stream}}"
+    active>
+</app-media-stream>
+```
+
+NOTE: As of today (April 23th, 2017), screen capturing in Chrome is available only on
+Android and requires enabling `chrome://flags#enable-usermedia-screen-capturing` flag.
+
+To capture screen in Firefox use `{"mediaSource": "screen"}` video constraint:
+
+```html
+<app-media-stream
+    video-constraints='{"mediaSource": "screen"}'
+    stream="{{stream}}"
+    active>
+</app-media-stream>
+```
+
+You can also use `{"mediaSource": "window"}` to capture only application window
+and `{"mediaSource": "application"}` to capture all application windows,
+not the whole screen.
+
 It's easy to create a stream that contains both audio and video tracks as well.
 Any combination of devices and constraints can be used when configuring:
 
@@ -119,6 +149,8 @@ Any combination of devices and constraints can be used when configuring:
     stream="{{cameraAndMicrophoneStream}}">
 </app-media-stream>
 ```
+
+NOTE: Combining screen capture video tracks with audio tracks is not supported.
 
 ### `<app-media-video>`
 
