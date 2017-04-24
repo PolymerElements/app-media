@@ -109,9 +109,9 @@ something like this:
 </app-media-stream>
 ```
 
-You can use `app-media-stream` to record device screen.
+You can use `app-media-stream` to record a device screen.
 
-To capture screen in Chrome use `{"mandatory": {"chromeMediaSource": "screen"}}`
+To capture the screen in Chrome use `{"mandatory": {"chromeMediaSource": "screen"}}`
 video constraint:
 
 ```html
@@ -125,7 +125,7 @@ video constraint:
 NOTE: As of today (April 23th, 2017), screen capturing in Chrome is available only on
 Android and requires enabling `chrome://flags#enable-usermedia-screen-capturing` flag.
 
-To capture screen in Firefox use `{"mediaSource": "screen"}` video constraint:
+To capture the screen in Firefox use `{"mediaSource": "screen"}` video constraint:
 
 ```html
 <app-media-stream
