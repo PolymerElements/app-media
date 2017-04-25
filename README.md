@@ -139,6 +139,10 @@ You can also use `{"mediaSource": "window"}` to capture only application window
 and `{"mediaSource": "application"}` to capture all application windows,
 not the whole screen.
 
+NOTE: Firefox (before version 52) requires to set `media.getusermedia.screensharing.enabled`
+to `true` and add the web app domain to `media.getusermedia.screensharing.allowed_domains`
+in `about:config`.
+
 It's easy to create a stream that contains both audio and video tracks as well.
 Any combination of devices and constraints can be used when configuring:
 
