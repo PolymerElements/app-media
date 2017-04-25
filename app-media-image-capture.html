@@ -16,16 +16,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 straight-forward photographic image control and capture that cooperates nicely
 with other app-media elements.
 
+NOTE: Image Capture API is still under development. As of today (April 7th, 2017),
+the API requires a polyfill or an
+[Origin Trial](https://github.com/jpchase/OriginTrials/blob/gh-pages/developer-guide.md).
+This element will politely neglect to register itself in browsers that do not feature
+the appropriate ImageRecorder global constructor.
+
+Chrome and Firefox have partial support for the API behind flags. See the
+[ImageCapture API browser support](https://github.com/w3c/mediacapture-image/blob/gh-pages/implementation-status.md)
+page for details.
+
 If you wish to support browsers that do not implement the Image Capture API,
 please consider including a polyfill such as
 [this one](https://github.com/GoogleChrome/imagecapture-polyfill) in your app.
 Note that most polyfills will not enable full functionality, but they should give
 your app a reasonable fallback in browsers that do not natively support the API.
-
-NOTE: As of today (April 7th, 2017), Image Capture API requires a polyfill or an
-[Origin Trial](https://github.com/jpchase/OriginTrials/blob/gh-pages/developer-guide.md).
-This element will politely neglect to register itself in browsers that do not feature
-the appropriate ImageRecorder global constructor.
 
 @group App Elements
 @demo demo/index.html
