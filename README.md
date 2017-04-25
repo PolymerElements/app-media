@@ -109,6 +109,44 @@ something like this:
 </app-media-stream>
 ```
 
+You can use `app-media-stream` to record a device screen.
+
+Screen sharing in Chrome and Firefox has some differences. See
+[this](https://www.webrtc-experiment.com/Pluginfree-Screen-Sharing/#why-screen-fails)
+page for more info.
+
+To capture the screen in Chrome use `{"mandatory": {"chromeMediaSource": "screen"}}`
+video constraint:
+
+```html
+<app-media-stream
+    video-constraints='{"mandatory": {"chromeMediaSource": "screen"}}'
+    stream="{{stream}}"
+    active>
+</app-media-stream>
+```
+
+NOTE: As of today (April 23th, 2017), screen capturing in Chrome is available only on
+Android and requires enabling `chrome://flags#enable-usermedia-screen-capturing` flag.
+
+To capture the screen in Firefox use `{"mediaSource": "screen"}` video constraint:
+
+```html
+<app-media-stream
+    video-constraints='{"mediaSource": "screen"}'
+    stream="{{stream}}"
+    active>
+</app-media-stream>
+```
+
+You can also use `{"mediaSource": "window"}` to capture only application window
+and `{"mediaSource": "application"}` to capture all application windows,
+not the whole screen.
+
+NOTE: Firefox (before version 52) requires to set `media.getusermedia.screensharing.enabled`
+to `true` and add the web app domain to `media.getusermedia.screensharing.allowed_domains`
+in `about:config`.
+
 It's easy to create a stream that contains both audio and video tracks as well.
 Any combination of devices and constraints can be used when configuring:
 
@@ -119,6 +157,8 @@ Any combination of devices and constraints can be used when configuring:
     stream="{{cameraAndMicrophoneStream}}">
 </app-media-stream>
 ```
+
+NOTE: Chrome doesn't support combining screen capture video tracks with audio tracks.
 
 ### `<app-media-video>`
 
