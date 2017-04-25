@@ -154,7 +154,7 @@ Any combination of devices and constraints can be used when configuring:
 </app-media-stream>
 ```
 
-NOTE: Combining screen capture video tracks with audio tracks is not supported.
+NOTE: Chrome doesn't support combining screen capture video tracks with audio tracks.
 
 ### `<app-media-video>`
 
