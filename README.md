@@ -111,6 +111,10 @@ something like this:
 
 You can use `app-media-stream` to record a device screen.
 
+Screen sharing in Chrome and Firefox has some differences. See
+[this](https://www.webrtc-experiment.com/Pluginfree-Screen-Sharing/#why-screen-fails)
+page for more info.
+
 To capture the screen in Chrome use `{"mandatory": {"chromeMediaSource": "screen"}}`
 video constraint:
 
