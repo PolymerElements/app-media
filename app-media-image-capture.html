@@ -38,36 +38,36 @@ your app a reasonable fallback in browsers that do not natively support the API.
 
 <dom-module id="app-media-image-capture">
   <script>
+    Polymer.AppMedia = Polymer.AppMedia || {};
+
+    /**
+     * @enum {string}
+     * @see https://www.w3.org/TR/image-capture/#MeteringMode
+     */
+    Polymer.AppMedia.MeteringMode = {
+      SINGLE_SHOT: 'single-shot',
+      CONTINUOUS: 'continuous',
+      MANUAL: 'manual',
+      NONE: 'none'
+    };
+
+    /**
+     * @enum {string}
+     * @see https://www.w3.org/TR/image-capture/#FillLightMode
+     */
+    Polymer.AppMedia.FillLightMode = {
+      UNAVAILABLE: 'unavailable',
+      AUTO: 'auto',
+      OFF: 'off',
+      FLASH: 'flash',
+      TORCH: 'torch'
+    };
+
     (function() {
       if (window.ImageCapture == null) {
         Polymer.Base._warn('Image Capture API is not supported in this browser!');
         return;
       }
-
-      Polymer.AppMedia = Polymer.AppMedia || {};
-
-      /**
-       * @enum {string}
-       * @see https://www.w3.org/TR/image-capture/#MeteringMode
-       */
-      Polymer.AppMedia.MeteringMode = {
-        SINGLE_SHOT: 'single-shot',
-        CONTINUOUS: 'continuous',
-        MANUAL: 'manual',
-        NONE: 'none'
-      };
-
-      /**
-       * @enum {string}
-       * @see https://www.w3.org/TR/image-capture/#FillLightMode
-       */
-      Polymer.AppMedia.FillLightMode = {
-        UNAVAILABLE: 'unavailable',
-        AUTO: 'auto',
-        OFF: 'off',
-        FLASH: 'flash',
-        TORCH: 'torch'
-      };
 
       var PHOTO_SETTING_NAMES = [
         'whiteBalanceMode',
