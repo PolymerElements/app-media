@@ -92,7 +92,7 @@ the appropriate ImageRecorder global constructor.
            * stream must have at least one video track in order to be a suitable
            * source for image capture.
            *
-           * @type MediaStream
+           * @type {MediaStream}
            */
           stream: {
             type: Object
@@ -111,7 +111,7 @@ the appropriate ImageRecorder global constructor.
            * The video track selected from the input MediaStream. This track will
            * be the source for any images captured.
            *
-           * @type MediaStreamTrack
+           * @type {MediaStreamTrack}
            */
           videoTrack: {
             type: Object,
@@ -122,7 +122,7 @@ the appropriate ImageRecorder global constructor.
           /**
            * An ImageCapture instance associated with the selected video track.
            *
-           * @type ImageCapture
+           * @type {ImageCapture}
            */
           imageCapture: {
             type: Object,
@@ -133,7 +133,7 @@ the appropriate ImageRecorder global constructor.
           /**
            * The last photo captured by the image capture instance.
            *
-           * @type Blob
+           * @type {Blob}
            */
           lastPhoto: {
             type: Object,
@@ -144,7 +144,7 @@ the appropriate ImageRecorder global constructor.
           /**
            * The last frame grabbed by the image capture instance.
            *
-           * @type ImageBitmap
+           * @type {ImageBitmap}
            */
           lastFrame: {
             type: Object,
@@ -186,7 +186,7 @@ the appropriate ImageRecorder global constructor.
           },
 
           /**
-           * @type Polymer.AppMedia.MeteringMode
+           * @type {Polymer.AppMedia.MeteringMode}
            * @see https://www.w3.org/TR/image-capture/#PhotoSettings
            */
           whiteBalanceMode: {
@@ -201,7 +201,7 @@ the appropriate ImageRecorder global constructor.
           },
 
           /**
-           * @type Polymer.AppMedia.MeteringMode
+           * @type {Polymer.AppMedia.MeteringMode}
            * @see https://www.w3.org/TR/image-capture/#PhotoSettings
            */
           exposureMode: {
@@ -228,7 +228,7 @@ the appropriate ImageRecorder global constructor.
           },
 
           /**
-           * @type Polymer.AppMedia.MeteringMode
+           * @type {Polymer.AppMedia.MeteringMode}
            * @see https://www.w3.org/TR/image-capture/#PhotoSettings
            */
           focusMode: {
@@ -285,7 +285,7 @@ the appropriate ImageRecorder global constructor.
           },
 
           /**
-           * @type Polymer.AppMedia.FillLightMode
+           * @type {Polymer.AppMedia.FillLightMode}
            * @see https://www.w3.org/TR/image-capture/#PhotoSettings
            */
           fillLightMode: {
