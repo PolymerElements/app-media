@@ -27,7 +27,7 @@ The following emerging platform APIs are used by this collection of elements:
  - [Media Capture and Streams](https://www.w3.org/TR/mediacapture-streams/)
  - [MediaStream Recordering](https://www.w3.org/TR/mediastream-recording/)
  - [Web Audio API](https://www.w3.org/TR/webaudio/)
- - [MediaStream Image Capture](https://www.w3.org/TR/image-capture/)
+ - [MediaStream Image Capture](https://w3c.github.io/mediacapture-image/)
 
 Some additional browser support is enabled by the
 [WebRTC polyfill](https://github.com/webrtc/adapter). The following
@@ -243,7 +243,7 @@ call the `stop` method on the recorder instance.
 ### `<app-media-image-capture>`
 
 An emerging standard defines the
-[Image Capture API](https://www.w3.org/TR/image-capture/), which allows for
+[Image Capture API](https://w3c.github.io/mediacapture-image/), which allows for
 more fine-grained control of camera settings such as color temperature, white
 balance, focus and flash. It also allows for direct JPEG capture of the image
 that appears in a given media device.
