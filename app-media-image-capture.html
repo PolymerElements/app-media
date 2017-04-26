@@ -438,7 +438,6 @@ your app a reasonable fallback in browsers that do not natively support the API.
             // @see https://w3c.github.io/mediacapture-image/#redeyereduction-section
             if (this.redEyeReduction != null &&
                 this.photoCapabilities.redEyeReduction === 'controllable') {
-              photoSettings = photoSettings || {};
               photoSettings.redEyeReduction = this.redEyeReduction;
             }
 
@@ -456,43 +455,41 @@ your app a reasonable fallback in browsers that do not natively support the API.
          * supported values are ignored.
          */
         __generateConfigurationObject: function(reportedCapabilities, allowedNames) {
-          var configurationObject = null;
+          var configurationObject = {};
 
-          for (var i = 0; i < allowedNames.length; ++i) {
-            var name = allowedNames[i];
-            var value = this[name];
-            var capability = reportedCapabilities[name];
-            var capabilityIsArray = Array.isArray(capability);
+          if (reportedCapabilities != null) {
+            for (var i = 0; i < allowedNames.length; ++i) {
+              var name = allowedNames[i];
+              var value = this[name];
+              var capability = reportedCapabilities[name];
+              var capabilityIsArray = Array.isArray(capability);
 
-            // Don't set photo options if a value is provided, and skip
-            // if the name is not present in the PhotoCapabilities object
-            // (setting such properties will probably result in an error).
-            if (value == null ||
-                capability == null ||
-                capability === false ||
-                (capabilityIsArray && capability.indexOf(value) === -1)) {
-              continue;
-            }
-
-            if (configurationObject == null) {
-              configurationObject = {};
-            }
-
-            // If the capability is an object, then it is probably a
-            // MediaSettingsRange. This means we need to clamp the value to the
-            // min/max values of the range (otherwise it will likely throw when
-            // we try to apply the configuration).
-            // @see https://w3c.github.io/mediacapture-image/#mediasettingsrange
-            if (!capabilityIsArray &&
-                capability instanceof Object) {
-              if (capability.min >= value) {
-                value = capability.min;
-              } else if (capability.max <= value) {
-                value = capability.max;
+              // Don't set photo options if a value is provided, and skip
+              // if the name is not present in the PhotoCapabilities object
+              // (setting such properties will probably result in an error).
+              if (value == null ||
+                  capability == null ||
+                  capability === false ||
+                  (capabilityIsArray && capability.indexOf(value) === -1)) {
+                continue;
               }
-            }
 
-            configurationObject[name] = value;
+              // If the capability is an object, then it is probably a
+              // MediaSettingsRange. This means we need to clamp the value to the
+              // min/max values of the range (otherwise it will likely throw when
+              // we try to apply the configuration).
+              // @see https://w3c.github.io/mediacapture-image/#mediasettingsrange
+              if (!capabilityIsArray &&
+                  capability instanceof Object) {
+                if (capability.min >= value) {
+                  value = capability.min;
+                } else if (capability.max <= value) {
+                  value = capability.max;
+                }
+              }
+
+              configurationObject[name] = value;
+            }
           }
 
           return configurationObject;
