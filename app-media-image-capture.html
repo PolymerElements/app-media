@@ -200,7 +200,7 @@ rely on Polymer >=2.x observer semantics.
            * A full list of configurable properties can be found
            * [here](https://w3c.github.io/mediacapture-image/##photosettings-section).
            *
-           * @type {PhotoSettings}
+           * @type {!PhotoSettings}
            */
           photoSettings: {
             type: Object,
@@ -251,6 +251,8 @@ rely on Polymer >=2.x observer semantics.
            * Note that if a given setting is not supported by the current track, it
            * will be ignored. Also, any constraints that are suported will be clamped
            * to the bounds that are reported by the track PhotoCapabilities instance.
+           *
+           * @type {!MediaTrackConstraints}
            */
           trackConstraints: {
             type: Object,
