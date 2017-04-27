@@ -206,9 +206,7 @@ scaled video that is displayed to the viewer of the page.
               this.$.videoElement.srcObject = this.source;
             } catch (e) {
               if (this.source instanceof Blob) {
-                this.$.videoElement.src = URL.createObjectURL(this.source, {
-                  type: this.source.type
-                });
+                this.$.videoElement.src = URL.createObjectURL(this.source);
               } else {
                 this._error(this._logf(e));
               }
