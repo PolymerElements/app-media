@@ -35,7 +35,7 @@
     "webcomponentsjs": "webcomponents/webcomponentsjs#0.7.0 - 1",
     "test-fixture": "PolymerElements/test-fixture#1.0.0 - 3",
     "imagecapture-polyfill": "https://unpkg.com/image-capture@0.3.2/lib/imagecapture.js",
-    "webrtc-adapter": "webrtc/adapter"
+    "webrtc-adapter": "webrtc/adapter#^3.0.0"
   },
   "ignore": []
 }
