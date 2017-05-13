@@ -92,6 +92,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               expect(element.selectedDevice).to.be.eql(element.devices[element.devices.length - 1]);
             });
           });
+
+          test('can select a specific known device', function() {
+            var device = fakeDevices[2];
+            element.selectDevice(device);
+            return awaitEvent(element, 'selected-device-changed').then(function() {
+              expect(element.selectedDevice).to.be.eql(device);
+            });
+          });
+
+          test('can\'t select an unknown device', function() {
+            var device = createDevice('videoinput');
+            assert.throws(function() {
+              element.selectDevice(device);
+            });
+          });
         });
 
         suite('when filtering devices by kind', function() {
