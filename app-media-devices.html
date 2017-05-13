@@ -115,6 +115,18 @@ devices one at a time.
           }
         },
 
+        /**
+         * Select a specific device from the list of devices.
+         */
+        selectDevice: function(device) {
+          var index = this.devices.indexOf(device);
+          if (index === -1) {
+            throw new Error("app-media-devices: "
+              + "The given object is not a known device.");
+          }
+          this._setSelectedDeviceIndex(index);
+        },
+
         _updateSelectedDevice: function(devices, selectedDeviceIndex) {
           this.debounce('_updateSelectedDevice', function() {
             if (this.devices != null &&
