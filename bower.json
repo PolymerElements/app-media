@@ -17,7 +17,7 @@
     "audio",
     "video"
   ],
-  "main": "app-media-stream.html",
+  "main": "app-media.html",
   "private": true,
   "repository": {
     "type": "git",
