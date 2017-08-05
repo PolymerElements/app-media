@@ -25,7 +25,7 @@ performant browser APIs.
 The following emerging platform APIs are used by this collection of elements:
 
  - [Media Capture and Streams](https://www.w3.org/TR/mediacapture-streams/)
- - [MediaStream Recordering](https://www.w3.org/TR/mediastream-recording/)
+ - [MediaStream Recording](https://www.w3.org/TR/mediastream-recording/)
  - [Web Audio API](https://www.w3.org/TR/webaudio/)
  - [MediaStream Image Capture](https://w3c.github.io/mediacapture-image/)
 
