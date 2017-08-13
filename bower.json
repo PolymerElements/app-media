@@ -1,6 +1,5 @@
 {
   "name": "app-media",
-  "version": "0.7.2",
   "description": "Elements for accessing data from media input devices",
   "authors": [
     "The Polymer Authors"
@@ -8,7 +7,10 @@
   "keywords": [
     "web-components",
     "web-component",
+    "polymer-element",
     "polymer",
+    "polymer-2",
+    "polymer-2-hybrid",
     "app",
     "user",
     "media",
