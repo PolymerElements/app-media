@@ -18,9 +18,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../webrtc-adapter/release/adapter.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
-    <script src="helpers.js"></script>
+    <script src="./helpers.js"></script>
 
-    <link rel="import" href="../app-media-audio.html">
+    <script type="module" src="../app-media-audio.js"></script>
   </head>
   <body>
     <test-fixture id="basic">
@@ -29,35 +29,36 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </template>
     </test-fixture>
 
-    <script>
-      suite('app-media-audio', function() {
-        var awaitEvent = AppMediaTestHelpers.awaitEvent;
-        var createAudioMediaStream = AppMediaTestHelpers.createAudioMediaStream;
-        var stream;
+    <script type="module">
+import '../app-media-audio.js';
+suite('app-media-audio', function() {
+  var awaitEvent = AppMediaTestHelpers.awaitEvent;
+  var createAudioMediaStream = AppMediaTestHelpers.createAudioMediaStream;
+  var stream;
 
-        setup(function() {
-          stream = createAudioMediaStream();
-        });
+  setup(function() {
+    stream = createAudioMediaStream();
+  });
 
-        suite('with basic configuration', function() {
-          var element;
+  suite('with basic configuration', function() {
+    var element;
 
-          setup(function() {
-            element = fixture('basic');
-          });
+    setup(function() {
+      element = fixture('basic');
+    });
 
-          test('produces a source node connected to the audio context', function() {
-            var result = awaitEvent(element, 'source-node-changed').then(function() {
-              expect(element.sourceNode).to.be.instanceof(AudioNode);
-              expect(element.sourceNode.context).to.be.equal(element.context);
-            });
-
-            element.source = stream;
-
-            return result;
-          });
-        });
+    test('produces a source node connected to the audio context', function() {
+      var result = awaitEvent(element, 'source-node-changed').then(function() {
+        expect(element.sourceNode).to.be.instanceof(AudioNode);
+        expect(element.sourceNode.context).to.be.equal(element.context);
       });
-    </script>
+
+      element.source = stream;
+
+      return result;
+    });
+  });
+});
+</script>
   </body>
 </html>

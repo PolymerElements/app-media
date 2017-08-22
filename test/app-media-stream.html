@@ -18,9 +18,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../webrtc-adapter/release/adapter.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
-    <script src="helpers.js"></script>
+    <script src="./helpers.js"></script>
 
-    <link rel="import" href="../app-media-stream.html">
+    <script type="module" src="../app-media-stream.js"></script>
   </head>
   <body>
     <test-fixture id="basic">
@@ -29,27 +29,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </template>
     </test-fixture>
 
-    <script>
-      suite('app-media-stream', function() {
-        var awaitEvent = AppMediaTestHelpers.awaitEvent;
-        var createDevice = AppMediaTestHelpers.createDevice;
+    <script type="module">
+import '../app-media-stream.js';
+suite('app-media-stream', function() {
+  var awaitEvent = AppMediaTestHelpers.awaitEvent;
+  var createDevice = AppMediaTestHelpers.createDevice;
 
-        suite('with basic configuration', function() {
-          var element;
+  suite('with basic configuration', function() {
+    var element;
 
-          setup(function() {
-            element = fixture('basic');
-            element.videoDevice = createDevice('videoinput');
-            element.active = true;
+    setup(function() {
+      element = fixture('basic');
+      element.videoDevice = createDevice('videoinput');
+      element.active = true;
 
-            return awaitEvent(element, 'stream-changed');
-          });
+      return awaitEvent(element, 'stream-changed');
+    });
 
-          test('yields a media stream', function() {
-            expect(element.stream).to.be.okay;
-          });
-        });
-      });
-    </script>
+    test('yields a media stream', function() {
+      expect(element.stream).to.be.okay;
+    });
+  });
+});
+</script>
   </body>
 </html>

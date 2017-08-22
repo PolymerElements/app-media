@@ -1,0 +1,33 @@
+{
+  "name": "app-media",
+  "flat": true,
+  "version": "1.0.0-pre.1",
+  "description": "Elements for accessing data from media input devices",
+  "contributors": [
+    "The Polymer Authors"
+  ],
+  "keywords": [
+    "web-components",
+    "web-component",
+    "polymer",
+    "app",
+    "user",
+    "media",
+    "stream",
+    "camera",
+    "audio",
+    "video"
+  ],
+  "main": "app-media.html",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/PolymerElements/app-media.git"
+  },
+  "license": "http://polymer.github.io/LICENSE.txt",
+  "homepage": "https://github.com/PolymerElements/app-media",
+  "dependencies": {
+    "@polymer/polymer": "^3.0.0-pre.1",
+    "@polymer/iron-resizable-behavior": "^3.0.0-pre.1"
+  },
+  "devDependencies": {}
+}

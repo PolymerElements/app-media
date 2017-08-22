@@ -18,11 +18,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../webrtc-adapter/release/adapter.js"></script>
     <script src="../../imagecapture-polyfill/index.js"></script>
-    <script>window.ImageCapture = window.ImageCapture || imagecapture.ImageCapture</script>
+    <script type="module">
+import '../app-media-image-capture.js';
+window.ImageCapture = window.ImageCapture || imagecapture.ImageCapture
+</script>
     <script src="../../web-component-tester/browser.js"></script>
-    <script src="helpers.js"></script>
+    <script src="./helpers.js"></script>
 
-    <link rel="import" href="../app-media-image-capture.html">
+    <script type="module" src="../app-media-image-capture.js"></script>
   </head>
   <body>
 
@@ -54,99 +57,100 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </test-fixture>
 
 
-    <script>
-      suite('app-media-image-capture', function() {
-        var awaitEvent = AppMediaTestHelpers.awaitEvent;
-        var fakeImageCapture = AppMediaTestHelpers.fakeImageCapture;
-        var restoreImageCapture = AppMediaTestHelpers.restoreImageCapture;
-        var createFakeMediaStream = AppMediaTestHelpers.createFakeMediaStream;
-        var element;
-        var stream;
+    <script type="module">
+import { AppMedia } from '../app-media-image-capture.js';
+suite('app-media-image-capture', function() {
+  var awaitEvent = AppMediaTestHelpers.awaitEvent;
+  var fakeImageCapture = AppMediaTestHelpers.fakeImageCapture;
+  var restoreImageCapture = AppMediaTestHelpers.restoreImageCapture;
+  var createFakeMediaStream = AppMediaTestHelpers.createFakeMediaStream;
+  var element;
+  var stream;
 
-        setup(function() {
-          fakeImageCapture({
-            capabilities: {
-              redEyeReduction: 'controllable',
-              fillLightMode: ['auto', 'off'],
-            }
-          });
-          stream = createFakeMediaStream({
-            videoTracks: 1,
-            videoTrackCapabilities: {
-              brightness: {
-                min: 0,
-                max: 10,
-                step: 1
-              },
+  setup(function() {
+    fakeImageCapture({
+      capabilities: {
+        redEyeReduction: 'controllable',
+        fillLightMode: ['auto', 'off'],
+      }
+    });
+    stream = createFakeMediaStream({
+      videoTracks: 1,
+      videoTrackCapabilities: {
+        brightness: {
+          min: 0,
+          max: 10,
+          step: 1
+        },
 
-              torch: true,
+        torch: true,
 
-              focusMode: [Polymer.AppMedia.MeteringMode.SINGLE_SHOT]
-            }
-          });
-        });
+        focusMode: [AppMedia.MeteringMode.SINGLE_SHOT]
+      }
+    });
+  });
 
-        teardown(function() {
-          restoreImageCapture();
-        });
+  teardown(function() {
+    restoreImageCapture();
+  });
 
-        suite('when furnished with a MediaStream', function() {
-          setup(function() {
-            element = fixture('basic');
-          });
+  suite('when furnished with a MediaStream', function() {
+    setup(function() {
+      element = fixture('basic');
+    });
 
-          test('creates an ImageCapture instance', function() {
-            var result = awaitEvent(element, 'image-capture-changed').then(function() {
-              expect(element.imageCapture).to.be.ok;
-            });
-            element.stream = stream;
-            return result;
-          });
-        });
-
-        suite('when photo settings are configured', function() {
-          setup(function() {
-            element = fixture('configure-photo-settings');
-            element.stream = stream;
-            return awaitEvent(element, 'photo-settings-changed')
-          });
-
-          test('compiles settings into a photoSettings object', function() {
-            expect(element.photoSettings).to.be.ok;
-            expect(element.photoSettings.redEyeReduction).to.be.equal(true);
-            expect(element.photoSettings.fillLightMode).to.be.equal(Polymer.AppMedia.FillLightMode.AUTO);
-          });
-
-          test('ignores settings that are not supported', function() {
-            expect(element.photoSettings).to.be.ok;
-            expect(element.photoSettings.imageWidth).to.be.equal(undefined);
-          });
-        });
-
-        suite('when track constraints are configured', function() {
-          setup(function() {
-            element = fixture('configure-track-constraints');
-            element.stream = stream;
-            return awaitEvent(element, 'track-constraints-changed');
-          });
-
-          test('compiles constraints into a trackConstraints object', function() {
-            expect(element.trackConstraints).to.be.ok;
-            expect(element.trackConstraints.torch).to.be.equal(true);
-          });
-
-          test('clamps out of bounds values to allowed ranges', function() {
-            expect(element.trackConstraints).to.be.ok;
-            expect(element.trackConstraints.brightness).to.be.equal(10);
-          });
-
-          test('ignores constraints that are not supported', function() {
-            expect(element.trackConstraints).to.be.ok;
-            expect(element.trackConstraints.iso).to.be.equal(undefined);
-            expect(element.trackConstraints.focus).to.be.equal(undefined);
-          });
-        });
+    test('creates an ImageCapture instance', function() {
+      var result = awaitEvent(element, 'image-capture-changed').then(function() {
+        expect(element.imageCapture).to.be.ok;
       });
-    </script>
+      element.stream = stream;
+      return result;
+    });
+  });
+
+  suite('when photo settings are configured', function() {
+    setup(function() {
+      element = fixture('configure-photo-settings');
+      element.stream = stream;
+      return awaitEvent(element, 'photo-settings-changed')
+    });
+
+    test('compiles settings into a photoSettings object', function() {
+      expect(element.photoSettings).to.be.ok;
+      expect(element.photoSettings.redEyeReduction).to.be.equal(true);
+      expect(element.photoSettings.fillLightMode).to.be.equal(AppMedia.FillLightMode.AUTO);
+    });
+
+    test('ignores settings that are not supported', function() {
+      expect(element.photoSettings).to.be.ok;
+      expect(element.photoSettings.imageWidth).to.be.equal(undefined);
+    });
+  });
+
+  suite('when track constraints are configured', function() {
+    setup(function() {
+      element = fixture('configure-track-constraints');
+      element.stream = stream;
+      return awaitEvent(element, 'track-constraints-changed');
+    });
+
+    test('compiles constraints into a trackConstraints object', function() {
+      expect(element.trackConstraints).to.be.ok;
+      expect(element.trackConstraints.torch).to.be.equal(true);
+    });
+
+    test('clamps out of bounds values to allowed ranges', function() {
+      expect(element.trackConstraints).to.be.ok;
+      expect(element.trackConstraints.brightness).to.be.equal(10);
+    });
+
+    test('ignores constraints that are not supported', function() {
+      expect(element.trackConstraints).to.be.ok;
+      expect(element.trackConstraints.iso).to.be.equal(undefined);
+      expect(element.trackConstraints.focus).to.be.equal(undefined);
+    });
+  });
+});
+</script>
   </body>
 </html>

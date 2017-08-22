@@ -18,13 +18,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../webrtc-adapter/release/adapter.js"></script>
 
-    <link rel="import" href="../../polymer/polymer.html">
-    <link rel="import" href="../app-media-devices.html">
-    <link rel="import" href="../app-media-stream.html">
-    <link rel="import" href="../app-media-video.html">
-    <link rel="import" href="../app-media-audio.html">
-    <link rel="import" href="../app-media-waveform.html">
-    <link rel="import" href="../app-media-recorder.html">
+    <script type="module" src="../../polymer/polymer.js"></script>
+    <script type="module" src="../app-media-devices.js"></script>
+    <script type="module" src="../app-media-stream.js"></script>
+    <script type="module" src="../app-media-video.js"></script>
+    <script type="module" src="../app-media-audio.js"></script>
+    <script type="module" src="../app-media-waveform.js"></script>
+    <script type="module" src="../app-media-recorder.js"></script>
 
     <style>
       body {
@@ -168,62 +168,68 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </app-media-waveform>
 
       </template>
-      <script>
-        document.addEventListener('WebComponentsReady', function() {
-          Polymer({
-            is: 'x-video-camera',
+      <script type="module">
+import '../../polymer/polymer.js';
+import '../app-media-devices.js';
+import '../app-media-stream.js';
+import '../app-media-video.js';
+import '../app-media-audio.js';
+import '../app-media-waveform.js';
+import '../app-media-recorder.js';
+import { Polymer } from '../../polymer/lib/legacy/polymer-fn.js';
+Polymer({
+  is: 'x-video-camera',
 
-            properties: {
-              recording: {
-                type: Blob,
-                observer: '_recordingChanged'
-              },
+  properties: {
+    recording: {
+      type: Blob,
+      observer: '_recordingChanged'
+    },
 
-              recordings: {
-                type: Array,
-                value: function() {
-                  return [];
-                }
-              },
+    recordings: {
+      type: Array,
+      value: function() {
+        return [];
+      }
+    },
 
-              duration: {
-                type: Number,
-                value: 3000
-              },
+    duration: {
+      type: Number,
+      value: 3000
+    },
 
-              elapsed: {
-                type: Number,
-                observer: '_elapsedChanged'
-              }
-            },
+    elapsed: {
+      type: Number,
+      observer: '_elapsedChanged'
+    }
+  },
 
-            record: function() {
-              this.classList.add('recording');
-              this.$.recorder.start();
-            },
+  record: function() {
+    this.classList.add('recording');
+    this.$.recorder.start();
+  },
 
-            _recordingChanged: function(recording) {
-              if (recording != null) {
-                this.push('recordings', recording);
-              }
+  _recordingChanged: function(recording) {
+    if (recording != null) {
+      this.push('recordings', recording);
+    }
 
-              this.classList.remove('recording');
-              this.async(function() {
-                this.$.progress.style.transform = '';
-              }, 600);
-            },
+    this.classList.remove('recording');
+    this.async(function() {
+      this.$.progress.style.transform = '';
+    }, 600);
+  },
 
-            _elapsedChanged: function(elapsed) {
-              var progress = Math.min(100 * elapsed / this.duration, 100);
-              this.$.progress.style.transform = 'translateX(' + (-100 + progress) + '%)';
-            },
+  _elapsedChanged: function(elapsed) {
+    var progress = Math.min(100 * elapsed / this.duration, 100);
+    this.$.progress.style.transform = 'translateX(' + (-100 + progress) + '%)';
+  },
 
-            _toObjectURL: function(blob) {
-              return URL.createObjectURL(blob);
-            }
-          });
-        });
-      </script>
+  _toObjectURL: function(blob) {
+    return URL.createObjectURL(blob);
+  }
+});
+</script>
     </dom-module>
     <x-video-camera></x-video-camera>
   </body>

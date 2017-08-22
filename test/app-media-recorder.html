@@ -18,11 +18,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../../webrtc-adapter/release/adapter.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
-    <script src="helpers.js"></script>
+    <script src="./helpers.js"></script>
 
-    <link rel="import" href="../app-media-devices.html">
-    <link rel="import" href="../app-media-stream.html">
-    <link rel="import" href="../app-media-recorder.html">
+    <script type="module" src="../app-media-devices.js"></script>
+    <script type="module" src="../app-media-stream.js"></script>
+    <script type="module" src="../app-media-recorder.js"></script>
   </head>
   <body>
 
@@ -39,19 +39,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </app-media-stream>
         <app-media-recorder id="recorder" stream="{{stream}}"></app-media-recorder>
       </template>
-      <script>
-        HTMLImports.whenReady(function() {
-          Polymer({
-            is: 'x-recorder',
+      <script type="module">
+import '../app-media-devices.js';
+import '../app-media-stream.js';
+import '../app-media-recorder.js';
+import { Polymer } from '../../polymer/lib/legacy/polymer-fn.js';
+Polymer({
+  is: 'x-recorder',
 
-            properties: {
-              stream: {
-                notify: true
-              }
-            }
-          });
-        });
-      </script>
+  properties: {
+    stream: {
+      notify: true
+    }
+  }
+});
+</script>
     </dom-module>
 
     <test-fixture id="basic">
@@ -60,58 +62,62 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </template>
     </test-fixture>
 
-    <script>
-      suite('app-media-recorder', function() {
-        var awaitEvent = AppMediaTestHelpers.awaitEvent;
-        var createDevice = AppMediaTestHelpers.createDevice;
+    <script type="module">
+import '../app-media-devices.js';
+import '../app-media-stream.js';
+import '../app-media-recorder.js';
+import { Base } from '../../polymer/polymer.js';
+suite('app-media-recorder', function() {
+  var awaitEvent = AppMediaTestHelpers.awaitEvent;
+  var createDevice = AppMediaTestHelpers.createDevice;
 
-        setup(function() {
-          AppMediaTestHelpers.setRecorderData(new Blob(new Uint8Array(1)));
-        });
+  setup(function() {
+    AppMediaTestHelpers.setRecorderData(new Blob(new Uint8Array(1)));
+  });
 
-        teardown(function() {
-          AppMediaTestHelpers.restoreRecorderData();
-        });
+  teardown(function() {
+    AppMediaTestHelpers.restoreRecorderData();
+  });
 
-        suite('with basic configuration', function() {
-          var element;
+  suite('with basic configuration', function() {
+    var element;
 
-          setup(function() {
-            var recorder = fixture('basic');
-            element = recorder.$.recorder;
+    setup(function() {
+      var recorder = fixture('basic');
+      element = recorder.$.recorder;
 
-            return awaitEvent(element, 'recorder-changed');
-          });
+      return awaitEvent(element, 'recorder-changed');
+    });
 
-          test('can record from the stream', function() {
-            var dataChanges = awaitEvent(element, 'data-changed');
+    test('can record from the stream', function() {
+      var dataChanges = awaitEvent(element, 'data-changed');
 
-            element.start();
+      element.start();
 
-            Polymer.Base.async(function() {
-              element.stop();
-            }, 1);
+      Base.async(function() {
+        element.stop();
+      }, 1);
 
-            return dataChanges.then(function() {
-              expect(element.data).to.be.instanceof(Blob);
-            });
-          });
-
-          test('can record using the recording property', function() {
-            var dataChanges = awaitEvent(element, 'data-changed');
-
-            element.recording = true;
-
-            Polymer.Base.async(function() {
-              element.recording = false;
-            });
-
-            return dataChanges.then(function() {
-              expect(element.data).to.be.instanceof(Blob);
-            });
-          });
-        });
+      return dataChanges.then(function() {
+        expect(element.data).to.be.instanceof(Blob);
       });
-    </script>
+    });
+
+    test('can record using the recording property', function() {
+      var dataChanges = awaitEvent(element, 'data-changed');
+
+      element.recording = true;
+
+      Base.async(function() {
+        element.recording = false;
+      });
+
+      return dataChanges.then(function() {
+        expect(element.data).to.be.instanceof(Blob);
+      });
+    });
+  });
+});
+</script>
   </body>
 </html>
