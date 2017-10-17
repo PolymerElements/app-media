@@ -48,6 +48,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           test('yields a media stream', function() {
             expect(element.stream).to.be.okay;
           });
+
+          suite('when changing the constraints', function() {
+            setup(function() {
+              sinon.spy(navigator.mediaDevices, 'getUserMedia');
+            });
+
+            teardown(function() {
+              navigator.mediaDevices.getUserMedia.restore();
+            });
+
+            test('requests a new stream', function() {
+              element.videoDevice = createDevice('videoinput');
+              return awaitEvent(element, 'stream-changed')
+                  .then(function(event) {
+                    expect(navigator.mediaDevices
+                        .getUserMedia.callCount).to.be.eql(1);
+                  });
+            });
+
+            test('deactivates the old stream before requesting a new one',
+                function() {
+                  var stream = element.stream;
+                  var track = stream.getTracks()[0];
+
+                  sinon.spy(track, 'stop');
+                  element.videoDevice = createDevice('videoinput');
+
+                  return awaitEvent(element, 'stream-changed').then(
+                      function(event) {
+                        expect(track.stop.called).to.be.eql(true);
+                      });
+                });
+          });
         });
       });
     </script>
