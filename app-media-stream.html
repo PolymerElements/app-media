@@ -70,8 +70,7 @@ audio device into a media stream.
           stream: {
             type: Object,
             notify: true,
-            readOnly: true,
-            observer: '_streamChanged'
+            readOnly: true
           },
 
           /**
@@ -140,8 +139,15 @@ audio device into a media stream.
           if (this.active && this.constraints != null) {
             this.debounce('_updateStream', function() {
               var self = this;
+
               try {
-                this.__gettingUserMedia =
+                if (this.stream != null) {
+                  this.stream.getTracks().forEach(function(track) {
+                    track.stop();
+                  });
+                }
+
+                this.__gettingUserMedia = this.__gettingUserMedia ||
                     navigator.mediaDevices.getUserMedia(this.constraints)
                         .then(function(stream) {
                           self.__gettingUserMedia = null;
@@ -158,14 +164,6 @@ audio device into a media stream.
             }, 1);
           } else {
             this._setStream(null);
-          }
-        },
-
-        _streamChanged: function(stream, oldStream) {
-          if (oldStream != null) {
-            oldStream.getTracks().forEach(function(track) {
-              track.stop();
-            });
           }
         }
       })

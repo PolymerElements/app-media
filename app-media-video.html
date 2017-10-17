@@ -45,7 +45,9 @@ scaled video that is displayed to the viewer of the page.
         on-loadedmetadata="_updateMetrics"
         muted="[[muted]]"
         autoplay="[[autoplay]]"
-        loop="[[loop]]">
+        loop="[[loop]]"
+        webkit-playsinline
+        playsinline>
     </video>
   </template>
   <script>
@@ -221,6 +223,10 @@ scaled video that is displayed to the viewer of the page.
           // NOTE(cdata): No need to manually update metrics here, since the
           // new source will cause the video element to fire a loadmetadata
           // event when it is ready.
+
+          if (this.$.videoElement.paused) {
+            this.play();
+          }
         },
 
         _updateMetrics: function() {
