@@ -115,14 +115,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
 
         suite('with special configuration', function() {
-          suite('only chunks', function() {
+          suite('disabled blob cache', function() {
             var element;
 
             setup(function() {
               var recorder = fixture('basic');
 
               element = recorder.$.recorder;
-              element.onlyChunks = true;
+              element.disableBlobCache = true;
 
               return awaitEvent(element, 'recorder-changed');
             });

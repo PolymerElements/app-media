@@ -169,7 +169,7 @@ you consider to be a suitable substitute, load it first and ensure that
            * recorded. A consequence of this is that a final `data` Blob will not be
            * available when the recording has finished.
            */
-          onlyChunks: {
+          disableBlobCache: {
             type: Boolean,
             value: false
           }
@@ -193,7 +193,7 @@ you consider to be a suitable substitute, load it first and ensure that
             if (event.data && event.data.size > 0) {
               this.fire('app-media-recorder-chunk', event.data);
 
-              if (!this.onlyChunks) {
+              if (!this.disableBlobCache) {
                 data.push(event.data);
               }
             }
@@ -213,7 +213,7 @@ you consider to be a suitable substitute, load it first and ensure that
 
             this.fire('app-media-recorder-stopped');
 
-            if (this.onlyChunks) {
+            if (this.disableBlobCache) {
               return;
             }
 
