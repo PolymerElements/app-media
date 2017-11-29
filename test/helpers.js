@@ -109,6 +109,12 @@
     });
   }
 
+  function timePasses(ms) {
+    return new Promise(function(resolve) {
+      Polymer.Base.async(resolve, ms);
+    });
+  }
+
   function createAudioMediaStream() {
     var context = new OfflineAudioContext(2,44100*40,44100);
     return context.createMediaStreamDestination().stream;
@@ -216,6 +222,7 @@
     restoreDevices: restoreDevices,
     createDevice: createDevice,
     awaitEvent: awaitEvent,
+    timePasses: timePasses,
     createAudioMediaStream: createAudioMediaStream,
     createFakeMediaStream: createFakeMediaStream,
     setRecorderData: setRecorderData,
