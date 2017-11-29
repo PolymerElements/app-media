@@ -39,6 +39,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </app-media-stream>
         <app-media-recorder id="recorder" stream="{{stream}}"></app-media-recorder>
       </template>
+
       <script>
         HTMLImports.whenReady(function() {
           Polymer({
@@ -63,6 +64,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script>
       suite('app-media-recorder', function() {
         var awaitEvent = AppMediaTestHelpers.awaitEvent;
+        var timePasses = AppMediaTestHelpers.timePasses;
         var createDevice = AppMediaTestHelpers.createDevice;
 
         setup(function() {
@@ -88,9 +90,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             element.start();
 
-            Polymer.Base.async(function() {
+            timePasses(1).then(function() {
               element.stop();
-            }, 1);
+            });
 
             return dataChanges.then(function() {
               expect(element.data).to.be.instanceof(Blob);
@@ -102,12 +104,52 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             element.recording = true;
 
-            Polymer.Base.async(function() {
+            timePasses().then(function() {
               element.recording = false;
             });
 
             return dataChanges.then(function() {
               expect(element.data).to.be.instanceof(Blob);
+            });
+          });
+        });
+
+        suite('with special configuration', function() {
+          suite('disabled blob cache', function() {
+            var element;
+
+            setup(function() {
+              var recorder = fixture('basic');
+
+              element = recorder.$.recorder;
+              element.disableBlobCache = true;
+
+              return awaitEvent(element, 'recorder-changed');
+            });
+
+            test('never records a data blob', function() {
+              var recorderStops = awaitEvent(element, 'app-media-recorder-stopped')
+                  .then(function() {
+                    // Give the `data-changed` event a chance to fire and
+                    // settle the corresponding check in the test:
+                    return timePasses(1);
+                  });
+              var dataChanges = awaitEvent(element, 'data-changed');
+              var dataChanged = false;
+
+              dataChanges.then(function() {
+                dataChanged = true;
+              });
+
+              element.recording = true;
+
+              timePasses(1).then(function() {
+                element.recording = false;
+              });
+
+              return recorderStops.then(function() {
+                expect(dataChanged).to.be.equal(false);
+              });
             });
           });
         });

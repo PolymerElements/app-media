@@ -161,6 +161,17 @@ you consider to be a suitable substitute, load it first and ensure that
             type: Boolean,
             value: false,
             notify: true
+          },
+
+          /**
+           * When set to true, the recorder will only dispatch `app-media-recorder-chunk`
+           * events, and will not keep a local cache of the data chunks that have been
+           * recorded. A consequence of this is that a final `data` Blob will not be
+           * available when the recording has finished.
+           */
+          disableBlobCache: {
+            type: Boolean,
+            value: false
           }
         },
 
@@ -181,7 +192,10 @@ you consider to be a suitable substitute, load it first and ensure that
 
             if (event.data && event.data.size > 0) {
               this.fire('app-media-recorder-chunk', event.data);
-              data.push(event.data);
+
+              if (!this.disableBlobCache) {
+                data.push(event.data);
+              }
             }
 
             if (this.duration > 0 && this.duration < elapsed && !finished) {
@@ -196,6 +210,12 @@ you consider to be a suitable substitute, load it first and ensure that
           var onStop = function() {
             this.recorder.removeEventListener('dataavailable', onDataAvailable);
             this.recorder.removeEventListener('stop', onStop);
+
+            this.fire('app-media-recorder-stopped');
+
+            if (this.disableBlobCache) {
+              return;
+            }
 
             this._setData(new Blob(data, {
               type: this.mimeType
