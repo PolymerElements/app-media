@@ -77,7 +77,7 @@ you consider to be a suitable substitute, load it first and ensure that
           recorder: {
             type: Object,
             notify: true,
-            computed: '_computeRecorder(stream, mimeType)'
+            computed: '_computeRecorder(stream, mimeType, audioBitsPerSecond, videoBitsPerSecond, bitsPerSecond)'
           },
 
           /**
@@ -172,6 +172,36 @@ you consider to be a suitable substitute, load it first and ensure that
           disableBlobCache: {
             type: Boolean,
             value: false
+          },
+
+          /**
+           * The desired bitrate for the audio tracks of the recorded stream.
+           * Set to null to use the platform default.
+           */
+          audioBitsPerSecond: {
+            type: Number,
+            value: null
+          },
+
+          /**
+           * The desired bitrate for the video tracks of the recorded stream.
+           * Set to null to use the platform default.
+           */
+          videoBitsPerSecond: {
+            type: Number,
+            value: null
+          },
+
+          /**
+           * The default bitrate for both audio and video tracks of the
+           * recorded stream. If this is specified, it will be used in place
+           * of audioBitsPerSecond or videoBitsPerSecond if either or both are
+           * not specified.
+           * Set to null to use the platform default.
+           */
+          bitsPerSecond: {
+            type: Number,
+            value: null
           }
         },
 
@@ -262,14 +292,28 @@ you consider to be a suitable substitute, load it first and ensure that
           }
         },
 
-        _computeRecorder: function(stream, mimeType) {
+        _computeRecorder: function(stream, mimeType, audioBps, videoBps, bps) {
           if (mimeType == null) {
             return;
           }
 
-          return new MediaRecorder(stream, {
+          var options = {
             mimeType: mimeType
-          });
+          };
+
+          if (audioBps != null) {
+            options.audioBitsPerSecond = audioBps;
+          }
+
+          if (videoBps != null) {
+            options.videoBitsPerSecond = videoBps;
+          }
+
+          if (bps != null) {
+            options.bitsPerSecond = bps;
+          }
+
+          return new MediaRecorder(stream, options);
         },
 
         _computeMimeType: function(stream, mpeg, codecs) {

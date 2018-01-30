@@ -115,6 +115,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
 
         suite('with special configuration', function() {
+          suite('bits per second', function() {
+            var element;
+
+            setup(function() {
+              AppMediaTestHelpers.spyMediaRecorder();
+
+              var recorder = fixture('basic');
+              element = recorder.$.recorder;
+
+              return awaitEvent(element, 'recorder-changed');
+            });
+
+            teardown(function() {
+              AppMediaTestHelpers.restoreMediaRecorder();
+            });
+
+            test('only adds user-configured bps settings to options', function() {
+              element.bitsPerSecond = 1024;
+
+              var args = MediaRecorder.args[MediaRecorder.args.length - 1];
+              var config = args && args[1];
+
+              expect(config).to.be.ok;
+              expect(config.bitsPerSecond).to.be.equal(1024);
+              expect(config).to.not.have.property('audioBitsPerSecond');
+              expect(config).to.not.have.property('videoBitsPerSecond');
+            });
+          });
           suite('disabled blob cache', function() {
             var element;
 

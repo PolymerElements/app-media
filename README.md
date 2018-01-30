@@ -38,15 +38,15 @@ WebRTC polyfill in use
  - 🚧 Partial fidelity with polyfill
  - 🚫 Not supported at all
 
-Element                   | Chrome | Safari 10 | Firefox | Edge  | IE 11
+Element                   | Chrome | Safari 11 | Firefox | Edge  | IE 11
 --------------------------|--------|-----------|---------|-------|------
 `app-media-video`         |     ✅ |        ✅ |      ✅ |    ✅ |    ✅
 `app-media-audio`         |     ✅ |        ✅ |      ✅ |    ✅ |    🚫
 `app-media-waveform`      |     ✅ |        ✅ |      ✅ |    ✅ |    🚫
-`app-media-devices`       |     ✅ |        🚫 |      ✅ |    ✅ |    🚫
-`app-media-stream`        |     ✅ |        🚫 |      ✅ |    ✅ |    🚫
+`app-media-devices`       |     ✅ |        ✅ |      ✅ |    ✅ |    🚫
+`app-media-stream`        |     ✅ |        ✅ |      ✅ |    ✅ |    🚫
 `app-media-recorder`      |     ✅ |        🚫 |      ✅ |    🚫 |    🚫
-`app-media-image-capture` |     🚧 |        🚫 |      🚧 |    🚧 |    🚫
+`app-media-image-capture` |     ✅ |        🚫 |      🚧 |    🚧 |    🚫
 
 ### How to use
 
