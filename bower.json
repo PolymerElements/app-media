@@ -45,8 +45,8 @@
     "web-component-tester": "Polymer/web-component-tester#^6.0.0",
     "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0",
     "test-fixture": "PolymerElements/test-fixture#1 - 3",
-    "imagecapture-polyfill": "https://unpkg.com/image-capture@~0.3.4/lib/imagecapture.min.js",
-    "webrtc-adapter": "webrtc/adapter#^4.0.0"
+    "imagecapture-polyfill": "https://unpkg.com/image-capture@~0.4.0/lib/imagecapture.min.js",
+    "webrtc-adapter": "webrtc/adapter#^6.0.0"
   },
   "variants": {
     "1.x": {
@@ -59,8 +59,8 @@
         "web-component-tester": "Polymer/web-component-tester#^4.0.0",
         "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0",
         "test-fixture": "PolymerElements/test-fixture#^1.0.0",
-        "imagecapture-polyfill": "https://unpkg.com/image-capture@~0.3.4/lib/imagecapture.min.js",
-        "webrtc-adapter": "webrtc/adapter#^4.0.0"
+        "imagecapture-polyfill": "https://unpkg.com/image-capture@~0.4.0/lib/imagecapture.min.js",
+        "webrtc-adapter": "webrtc/adapter#^6.0.0"
       }
     }
   },
