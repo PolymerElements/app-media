@@ -45,7 +45,9 @@ scaled video that is displayed to the viewer of the page.
         on-loadedmetadata="_updateMetrics"
         muted="[[muted]]"
         autoplay="[[autoplay]]"
-        loop="[[loop]]">
+        loop="[[loop]]"
+        webkit-playsinline
+        playsinline>
     </video>
   </template>
   <script>
@@ -194,6 +196,7 @@ scaled video that is displayed to the viewer of the page.
 
         _sourceChanged: function() {
           var oldSrc = this.$.videoElement.src;
+          var oldPaused = this.$.videoElement.paused;
 
           if (typeof this.source === 'string') {
             this.$.videoElement.src = this.source;
@@ -217,6 +220,12 @@ scaled video that is displayed to the viewer of the page.
             try {
               URL.revokeObjectURL(oldSrc);
             } catch (e) {}
+          }
+
+          // Ensure that the video keeps playing if it was playing before we
+          // changed the source:
+          if (!oldPaused && this.$.videoElement.paused) {
+            this.play();
           }
           // NOTE(cdata): No need to manually update metrics here, since the
           // new source will cause the video element to fire a loadmetadata

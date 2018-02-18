@@ -77,7 +77,7 @@ you consider to be a suitable substitute, load it first and ensure that
           recorder: {
             type: Object,
             notify: true,
-            computed: '_computeRecorder(stream, mimeType)'
+            computed: '_computeRecorder(stream, mimeType, audioBitsPerSecond, videoBitsPerSecond, bitsPerSecond)'
           },
 
           /**
@@ -161,6 +161,47 @@ you consider to be a suitable substitute, load it first and ensure that
             type: Boolean,
             value: false,
             notify: true
+          },
+
+          /**
+           * When set to true, the recorder will only dispatch `app-media-recorder-chunk`
+           * events, and will not keep a local cache of the data chunks that have been
+           * recorded. A consequence of this is that a final `data` Blob will not be
+           * available when the recording has finished.
+           */
+          disableBlobCache: {
+            type: Boolean,
+            value: false
+          },
+
+          /**
+           * The desired bitrate for the audio tracks of the recorded stream.
+           * Set to null to use the platform default.
+           */
+          audioBitsPerSecond: {
+            type: Number,
+            value: null
+          },
+
+          /**
+           * The desired bitrate for the video tracks of the recorded stream.
+           * Set to null to use the platform default.
+           */
+          videoBitsPerSecond: {
+            type: Number,
+            value: null
+          },
+
+          /**
+           * The default bitrate for both audio and video tracks of the
+           * recorded stream. If this is specified, it will be used in place
+           * of audioBitsPerSecond or videoBitsPerSecond if either or both are
+           * not specified.
+           * Set to null to use the platform default.
+           */
+          bitsPerSecond: {
+            type: Number,
+            value: null
           }
         },
 
@@ -181,7 +222,10 @@ you consider to be a suitable substitute, load it first and ensure that
 
             if (event.data && event.data.size > 0) {
               this.fire('app-media-recorder-chunk', event.data);
-              data.push(event.data);
+
+              if (!this.disableBlobCache) {
+                data.push(event.data);
+              }
             }
 
             if (this.duration > 0 && this.duration < elapsed && !finished) {
@@ -196,6 +240,12 @@ you consider to be a suitable substitute, load it first and ensure that
           var onStop = function() {
             this.recorder.removeEventListener('dataavailable', onDataAvailable);
             this.recorder.removeEventListener('stop', onStop);
+
+            this.fire('app-media-recorder-stopped');
+
+            if (this.disableBlobCache) {
+              return;
+            }
 
             this._setData(new Blob(data, {
               type: this.mimeType
@@ -242,14 +292,28 @@ you consider to be a suitable substitute, load it first and ensure that
           }
         },
 
-        _computeRecorder: function(stream, mimeType) {
+        _computeRecorder: function(stream, mimeType, audioBps, videoBps, bps) {
           if (mimeType == null) {
             return;
           }
 
-          return new MediaRecorder(stream, {
+          var options = {
             mimeType: mimeType
-          });
+          };
+
+          if (audioBps != null) {
+            options.audioBitsPerSecond = audioBps;
+          }
+
+          if (videoBps != null) {
+            options.videoBitsPerSecond = videoBps;
+          }
+
+          if (bps != null) {
+            options.bitsPerSecond = bps;
+          }
+
+          return new MediaRecorder(stream, options);
         },
 
         _computeMimeType: function(stream, mpeg, codecs) {

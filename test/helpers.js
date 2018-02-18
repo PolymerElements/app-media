@@ -14,9 +14,10 @@
       (mediaDevices.enumerateDevices || function(){}).bind(mediaDevices);
   var getUserMedia =
       (mediaDevices.getUserMedia || function(){}).bind(mediaDevices);
+  var ImageCapture = window.ImageCapture;
+  var MediaRecorder = window.MediaRecorder;
   var mediaRecorderStart = MediaRecorder.prototype.start;
   var mediaRecorderStop = MediaRecorder.prototype.stop;
-  var ImageCapture = window.ImageCapture;
 
   var allowed = true;
   var devices = null;
@@ -49,6 +50,21 @@
         }
       }
     }
+  }
+
+  function spyMediaRecorder() {
+    window.MediaRecorder = function(stream, options) {
+      window.MediaRecorder.args.push([stream, options]);
+      return new MediaRecorder(stream, options);
+    };
+    window.MediaRecorder.args = [];
+    window.MediaRecorder.isTypeSupported = function(mimeType) {
+      return MediaRecorder.isTypeSupported(mimeType);
+    };
+  }
+
+  function restoreMediaRecorder() {
+    window.MediaRecorder = MediaRecorder;
   }
 
   function fakeImageCapture(capabilities) {
@@ -94,18 +110,24 @@
     };
   }
 
-  function awaitEvent(element, event, timeout) {
+  function awaitEvent(element, eventName, timeout) {
     timeout = timeout || 1000;
 
     return new Promise(function(resolve, reject) {
-      element.addEventListener(event, function listener() {
-        element.removeEventListener(event, listener);
-        resolve();
+      element.addEventListener(eventName, function listener(event) {
+        element.removeEventListener(eventName, listener);
+        resolve(event);
       });
 
       setTimeout(function() {
         reject(new Error((element.is || element.tagName) + ' never fired ' + event + '!'));
       }, timeout);
+    });
+  }
+
+  function timePasses(ms) {
+    return new Promise(function(resolve) {
+      Polymer.Base.async(resolve, ms);
     });
   }
 
@@ -216,11 +238,14 @@
     restoreDevices: restoreDevices,
     createDevice: createDevice,
     awaitEvent: awaitEvent,
+    timePasses: timePasses,
     createAudioMediaStream: createAudioMediaStream,
     createFakeMediaStream: createFakeMediaStream,
     setRecorderData: setRecorderData,
     restoreRecorderData: restoreRecorderData,
     fakeImageCapture: fakeImageCapture,
-    restoreImageCapture: restoreImageCapture
+    restoreImageCapture: restoreImageCapture,
+    spyMediaRecorder: spyMediaRecorder,
+    restoreMediaRecorder: restoreMediaRecorder
   };
 })();

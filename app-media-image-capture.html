@@ -446,6 +446,11 @@ rely on Polymer >=2.x observer semantics.
 
         __updatePhotoSettings: function() {
           this.debounce('updatePhotoSettings', function() {
+            // Don't update anything until we know the available capabilities:
+            if (this.photoCapabilities == null) {
+              return;
+            }
+
             var photoSettings = this.__generateConfigurationObject(
                 this.photoCapabilities, PHOTO_SETTING_NAMES);
 

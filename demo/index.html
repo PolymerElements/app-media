@@ -16,7 +16,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <title>app-media demo</title>
 
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="../../webrtc-adapter/release/adapter.js"></script>
+    <script>
+      (function() {
+        window.ensureMediaDevices = new Promise(function(resolve) {
+          if (navigator.mediaDevices == null) {
+            var script = document.createElement('script');
+            script.src = '../../webrtc-adapter/release/adapter.js';
+            script.onload = resolve;
+            document.body.appendChild(script);
+          } else {
+            resolve();
+          }
+        });
+      })();
+    </script>
 
     <link rel="import" href="../../polymer/polymer.html">
     <link rel="import" href="../app-media-devices.html">
@@ -153,7 +166,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   loop
                   autoplay
                   muted>
-              <app-media-video>
+              </app-media-video>
             </a>
           </template>
         </section>
@@ -169,7 +182,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       </template>
       <script>
-        document.addEventListener('WebComponentsReady', function() {
+        var readyToDefine = Promise.all([
+          ensureMediaDevices,
+          new Promise(function(resolve) {
+            document.addEventListener('WebComponentsReady', resolve);
+          })
+        ]);
+
+        readyToDefine.then(function() {
           Polymer({
             is: 'x-video-camera',
 
