@@ -33,6 +33,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             selected-device="{{device}}">
         </app-media-devices>
         <app-media-stream
+            id="stream"
             video-device="[[device]]"
             stream="{{stream}}"
             active>
@@ -77,10 +78,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         suite('with basic configuration', function() {
           var element;
+          var stream;
 
           setup(function() {
             var recorder = fixture('basic');
             element = recorder.$.recorder;
+            stream = recorder.$.stream;
 
             return awaitEvent(element, 'recorder-changed');
           });
@@ -110,6 +113,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             return dataChanges.then(function() {
               expect(element.data).to.be.instanceof(Blob);
+            });
+          });
+
+          test('does not throw error if stream gets deactivated', function() {
+            var dataChanges = awaitEvent(element, 'data-changed');
+
+            element.start();
+
+            timePasses(1).then(function() {
+              element.stop();
+              stream.active = false;
+            });
+
+            return dataChanges.then(function() {
+              expect(element.data).to.be.instanceof(Blob);
+              aassert(element.recorder);
             });
           });
         });
