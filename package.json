@@ -1,0 +1,10 @@
+{
+  "name": "@polymer/app-media",
+  "private": true,
+  "description": "Elements for accessing data from media input devices",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/PolymerElements/app-media.git"
+  },
+  "license": "BSD-3-Clause"
+}
