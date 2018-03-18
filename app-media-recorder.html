@@ -293,8 +293,8 @@ you consider to be a suitable substitute, load it first and ensure that
         },
 
         _computeRecorder: function(stream, mimeType, audioBps, videoBps, bps) {
-          if (mimeType == null) {
-            return;
+          if (mimeType == null || stream == null) {
+            return this.recorder;
           }
 
           var options = {
