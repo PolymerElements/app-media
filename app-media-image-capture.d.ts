@@ -10,6 +10,12 @@
 
 /// <reference path="../polymer/types/polymer.d.ts" />
 
+declare namespace Polymer {
+
+  namespace AppMedia {
+  }
+}
+
 /**
  * `app-media-image-capture` implements a helpful wrapper element for the emerging
  * [Image Capture API](https://www.w3.org/TR/image-capture/). This element enables
@@ -138,19 +144,15 @@ interface AppMediaImageCaptureElement extends Polymer.Element {
 
   /**
    * Take a photo. Returns a promise that resolves a photographic Blob.
-   *
-   * @returns Promise<Blob>
    */
-  takePhoto(): any;
+  takePhoto(): Promise<Blob>;
 
   /**
    * Grab a frame from the camera. Returns a promise that resolves an
    * ImageBitmap suitable for drawing to a canvas or used in conjunction
    * with object detection.
-   *
-   * @returns Promise<ImageBitmap>
    */
-  grabFrame(): any;
+  grabFrame(): Promise<ImageBitmap>;
 }
 
 interface HTMLElementTagNameMap {
