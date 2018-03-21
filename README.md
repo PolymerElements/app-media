@@ -29,10 +29,11 @@ The following emerging platform APIs are used by this collection of elements:
  - [Web Audio API](https://www.w3.org/TR/webaudio/)
  - [MediaStream Image Capture](https://w3c.github.io/mediacapture-image/)
 
-Some additional browser support is enabled by the
-[WebRTC polyfill](https://github.com/webrtc/adapter). The following
-table documents browser support for the elements in this collection with the
-WebRTC polyfill in use
+Some additional browser support is enabled by
+[WebRTC polyfill](https://github.com/webrtc/adapter) and
+[MediaStream ImageCapture API polyfill](https://github.com/GoogleChromeLabs/imagecapture-polyfill).
+The following table documents browser support for the elements in this collection with
+these polyfills in use
 
  - ✅ Stable native implementation
  - 🚧 Partial fidelity with polyfill
@@ -46,7 +47,7 @@ Element                   | Chrome | Safari 11 | Firefox | Edge  | IE 11
 `app-media-devices`       |     ✅ |        ✅ |      ✅ |    ✅ |    🚫
 `app-media-stream`        |     ✅ |        ✅ |      ✅ |    ✅ |    🚫
 `app-media-recorder`      |     ✅ |        🚫 |      ✅ |    🚫 |    🚫
-`app-media-image-capture` |     ✅ |        🚫 |      🚧 |    🚧 |    🚫
+`app-media-image-capture` |     ✅ |        🚧 |      🚧 |    🚧 |    🚫
 
 ### How to use
 
