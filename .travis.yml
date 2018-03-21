@@ -1,0 +1,26 @@
+install:
+  - npm install -g polymer-cli
+  - polymer install --variants
+before_script:
+  - polymer lint
+  - >-
+    npm run update-types && git diff --exit-code || (echo -e
+    '\n\033[31mERROR:\033[0m Typings are stale. Please run "npm run
+    update-types".' && false)
+dist: trusty
+sudo: 'false'
+node_js: stable
+script:
+  - polymer test
+  - |-
+    >-
+    if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then polymer test -s 'default';
+    fi
+addons:
+  chrome: stable
+  firefox: latest
+cache:
+  directories:
+    - node_modules
+env:
+  global: []

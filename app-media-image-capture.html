@@ -45,9 +45,14 @@ rely on Polymer >=2.x observer semantics.
 
 <dom-module id="app-media-image-capture">
   <script>
+    /**
+     * @namespace
+     * @memberof Polymer
+     */
     Polymer.AppMedia = Polymer.AppMedia || {};
 
     /**
+     * @memberof Polymer.AppMedia
      * @enum {string}
      * @see https://www.w3.org/TR/image-capture/#MeteringMode
      */
@@ -59,6 +64,7 @@ rely on Polymer >=2.x observer semantics.
     };
 
     /**
+     * @memberof Polymer.AppMedia
      * @enum {string}
      * @see https://www.w3.org/TR/image-capture/#FillLightMode
      */
@@ -354,7 +360,7 @@ rely on Polymer >=2.x observer semantics.
         /**
          * Take a photo. Returns a promise that resolves a photographic Blob.
          *
-         * @return Promise<Blob>
+         * @return {!Promise<!Blob>}
          * @see https://www.w3.org/TR/image-capture/#dom-imagecapture-takephoto
          */
         takePhoto: function() {
@@ -374,7 +380,7 @@ rely on Polymer >=2.x observer semantics.
          * ImageBitmap suitable for drawing to a canvas or used in conjunction
          * with object detection.
          *
-         * @return Promise<ImageBitmap>
+         * @return {!Promise<!ImageBitmap>}
          * @see https://www.w3.org/TR/image-capture/#dom-imagecapture-grabframe
          */
         grabFrame: function() {
