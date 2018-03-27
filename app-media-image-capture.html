@@ -342,6 +342,16 @@ rely on Polymer >=2.x observer semantics.
           torch: {
             type: Boolean,
             value: null
+          },
+
+          /**
+           * Indicates whether `MediaStream Image Capture API` is supported or not.
+           */
+          apiSupported: {
+            type: Boolean,
+            readOnly: true,
+            notify: true,
+            value: 'ImageCapture' in window
           }
         },
 
