@@ -69,6 +69,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var createDevice = AppMediaTestHelpers.createDevice;
 
         setup(function() {
+          if (!window.MediaRecorder) {
+            this.skip();
+          }
           AppMediaTestHelpers.setRecorderData(new Blob(new Uint8Array(1)));
         });
 
@@ -81,6 +84,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var stream;
 
           setup(function() {
+            if (!window.MediaRecorder) {
+              this.skip();
+            }
             var recorder = fixture('basic');
             element = recorder.$.recorder;
             stream = recorder.$.stream;
@@ -128,7 +134,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             return dataChanges.then(function() {
               expect(element.data).to.be.instanceof(Blob);
-              aassert(element.recorder);
+              assert(element.recorder);
             });
           });
         });
@@ -138,6 +144,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             var element;
 
             setup(function() {
+              if (!window.MediaRecorder) {
+              this.skip();
+            }
               AppMediaTestHelpers.spyMediaRecorder();
 
               var recorder = fixture('basic');
@@ -166,6 +175,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             var element;
 
             setup(function() {
+              if (!window.MediaRecorder) {
+                this.skip();
+              }
               var recorder = fixture('basic');
 
               element = recorder.$.recorder;
