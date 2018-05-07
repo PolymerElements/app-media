@@ -16,8 +16,13 @@
       (mediaDevices.getUserMedia || function(){}).bind(mediaDevices);
   var ImageCapture = window.ImageCapture;
   var MediaRecorder = window.MediaRecorder;
-  var mediaRecorderStart = MediaRecorder.prototype.start;
-  var mediaRecorderStop = MediaRecorder.prototype.stop;
+  var mediaRecorderStart;
+  var mediaRecorderStop;
+// skip for browsers that do not support MediaRecorder
+  if (MediaRecorder) {
+    mediaRecorderStart = MediaRecorder.prototype.start;
+    mediaRecorderStop = MediaRecorder.prototype.stop;
+  }
 
   var allowed = true;
   var devices = null;
@@ -131,8 +136,17 @@
     });
   }
 
-  function createAudioMediaStream() {
-    var context = new OfflineAudioContext(2,44100*40,44100);
+  function createAudioMediaStream(skipTests) {
+    // prefix for safari
+    var ContextClass = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+
+    var context = new ContextClass(2,44100*40,44100);
+
+    // FF doesn't support this function on Offline audio contexts
+    if (!context.createMediaStreamDestination && skipTests) {
+      skipTests();
+    }
+
     return context.createMediaStreamDestination().stream;
   }
 
@@ -202,34 +216,37 @@
     }));
   };
 
-  MediaRecorder.prototype.start = function() {
-    if (recorderData == null) {
-      return mediaRecorderStart.apply(this, arguments);
-    }
+  // skip for browsers that do not support MediaRecorder
+  if (MediaRecorder) {
+    MediaRecorder.prototype.start = function() {
+      if (recorderData == null) {
+        return mediaRecorderStart.apply(this, arguments);
+      }
 
-    recorderState = 'recording';
-    Object.defineProperty(this, 'state', {
-      get: function() {
-        return recorderState;
-      },
-      configurable: true
-    });
-  };
+      recorderState = 'recording';
+      Object.defineProperty(this, 'state', {
+        get: function() {
+          return recorderState;
+        },
+        configurable: true
+      });
+    };
 
-  MediaRecorder.prototype.stop = function() {
-    if (recorderData == null) {
-      return mediaRecorderStop.apply(this, arguments);
-    }
+    MediaRecorder.prototype.stop = function() {
+      if (recorderData == null) {
+        return mediaRecorderStop.apply(this, arguments);
+      }
 
-    delete this.state;
+      delete this.state;
 
-    var event = new CustomEvent('dataavailable');
-    event.data = recorderData;
-    this.dispatchEvent(event);
-    setTimeout(function() {
-      this.dispatchEvent(new CustomEvent('stop'));
-    }.bind(this), 0);
-  };
+      var event = new CustomEvent('dataavailable');
+      event.data = recorderData;
+      this.dispatchEvent(event);
+      setTimeout(function() {
+        this.dispatchEvent(new CustomEvent('stop'));
+      }.bind(this), 0);
+    };
+  }
 
   window.AppMediaTestHelpers = {
     allowApiAccess: allowApiAccess,
