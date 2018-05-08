@@ -45,9 +45,9 @@ rely on Polymer >=2.x observer semantics.
 
 <dom-module id="app-media-image-capture">
   <script>
-    if (!Polymer.AppMedia) {
-      Polymer.AppMedia = {};
-    }
+    Polymer.AppMedia = window.Polymer.AppMedia;
+    var AppMedia = Polymer.AppMedia;
+    Polymer.AppMedia = AppMedia || {};
 
     /**
      * @enum {string}
