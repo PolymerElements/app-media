@@ -48,7 +48,9 @@ you consider to be a suitable substitute, load it first and ensure that
         supported = false;
       }
 
-      Polymer.AppMedia = Polymer.AppMedia || {};
+      if (!Polymer.AppMedia) {
+        Polymer.AppMedia = {};
+      }
 
       /** @see https://www.w3.org/TR/mediastream-recording/#enumdef-recordingstate */
       Polymer.AppMedia.RecordingState = {
