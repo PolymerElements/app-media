@@ -19,9 +19,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script src="../../webrtc-adapter/release/adapter.js"></script>
     <!-- npm version has different dir structure compared to bower -->
     <script src="../../../webrtc-adapter/out/adapter.js"></script>
-    <script src="../../image-capture/index.js"></script>
-    <!-- npm version has different dir structure compared to bower -->
-    <script src="../../imagecapture-polyfill/lib/imagecapture.js"></script>
+    <!-- TODO(emarquez): fix this to point to a file installed locally once we launch 3.0
+    required since modulizer points to imagecapture-polyfill which does not exist in node_modules -->
+    <script src="https://unpkg.com/image-capture@~0.3.2/lib/imagecapture.js"></script>
     <script>
       window.ImageCapture = window.ImageCapture || imagecapture.ImageCapture;
     </script>
