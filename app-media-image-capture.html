@@ -69,11 +69,11 @@ rely on Polymer >=2.x observer semantics.
     };
 
     (function() {
-      var supported = true;
+      var imageCaptureSupported = true;
 
       if (window.ImageCapture == null) {
         Polymer.Base._warn('Image Capture API is not supported in this browser!');
-        supported = false;
+        imageCaptureSupported = false;
       }
 
       var TRACK_CONSTRAINT_NAMES = [
@@ -360,7 +360,7 @@ rely on Polymer >=2.x observer semantics.
          * @see https://www.w3.org/TR/image-capture/#dom-imagecapture-takephoto
          */
         takePhoto: function() {
-          if (!supported) {
+          if (!imageCaptureSupported) {
             return;
           }
 
@@ -384,7 +384,7 @@ rely on Polymer >=2.x observer semantics.
          * @see https://www.w3.org/TR/image-capture/#dom-imagecapture-grabframe
          */
         grabFrame: function() {
-          if (!supported) {
+          if (!imageCaptureSupported) {
             return;
           }
 
@@ -407,7 +407,7 @@ rely on Polymer >=2.x observer semantics.
         },
 
         __computeImageCapture: function(videoTrack) {
-          if (!supported) {
+          if (!imageCaptureSupported) {
             return;
           }
 
@@ -423,7 +423,7 @@ rely on Polymer >=2.x observer semantics.
         },
 
         __updatePhotoCapabilities: function() {
-          if (!supported) {
+          if (!imageCaptureSupported) {
             return;
           }
 
