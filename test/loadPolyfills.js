@@ -33,4 +33,6 @@ window.ensureImageCapturePolyfill = new Promise(function(resolve, reject) {
 window.ensurePolyfills = Promise.all([
   ensureWebRtcPolyfill,
   ensureImageCapturePolyfill,
-]);
+]).catch(function(e) {
+  console.error('Polyfill loading error:\n' + e);
+});
