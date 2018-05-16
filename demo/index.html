@@ -25,7 +25,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             npmScript.src = '../../webrtc-adapter/out/adapter.js';
             npmScript.onload = resolve;
             npmScript.onerror = function() {
-              // on error try loading it from the bwoer directory
+              // on error try loading it from the bower directory
               var bowerScript = document.createElement('script');
               bowerScript.src = '../../webrtc-adapter/release/adapter.js';
               bowerScript.onload = resolve;
