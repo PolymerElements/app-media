@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#1.0.0 - 2",
-    "web-component-tester": "^4.0.0",
+    "web-component-tester": "^6.0.0",
     "webcomponentsjs": "webcomponents/webcomponentsjs#0.7.0 - 1",
     "test-fixture": "PolymerElements/test-fixture#1.0.0 - 3",
     "imagecapture-polyfill": "https://unpkg.com/image-capture@~0.3.2/lib/imagecapture.js",

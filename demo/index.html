@@ -20,10 +20,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       (function() {
         window.ensureMediaDevices = new Promise(function(resolve) {
           if (navigator.mediaDevices == null) {
-            var script = document.createElement('script');
-            script.src = '../../webrtc-adapter/release/adapter.js';
-            script.onload = resolve;
-            document.body.appendChild(script);
+            // try to load the polyfill from the NPM directory first
+            var npmScript = document.createElement('script');
+            npmScript.src = '../../webrtc-adapter/out/adapter.js';
+            npmScript.onload = resolve;
+            npmScript.onerror = function() {
+              // on error try loading it from the bower directory
+              var bowerScript = document.createElement('script');
+              bowerScript.src = '../../webrtc-adapter/release/adapter.js';
+              bowerScript.onload = resolve;
+              document.body.appendChild(bowerScript);
+            }
+            document.body.appendChild(npmScript);
           } else {
             resolve();
           }

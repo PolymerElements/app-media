@@ -42,12 +42,13 @@ you consider to be a suitable substitute, load it first and ensure that
 <dom-module id="app-media-recorder">
   <script>
     (function() {
+      var mediaRecorderSupported = true;
       if (window.MediaRecorder == null) {
         Polymer.Base._warn('Media Recorder API is not supported in this browser!');
-        return;
+        mediaRecorderSupported = false;
       }
 
-      Polymer.AppMedia = Polymer.AppMedia || {};
+      Polymer.AppMedia = window.Polymer.AppMedia || {};
 
       /** @see https://www.w3.org/TR/mediastream-recording/#enumdef-recordingstate */
       Polymer.AppMedia.RecordingState = {
@@ -213,6 +214,10 @@ you consider to be a suitable substitute, load it first and ensure that
          * Start recording from the source media stream.
          */
         start: function() {
+          if (!mediaRecorderSupported) {
+            return;
+          }
+
           var data = [];
           var start = performance.now();
           var finished = false;
@@ -267,6 +272,10 @@ you consider to be a suitable substitute, load it first and ensure that
          * property.
          */
         stop: function() {
+          if (!mediaRecorderSupported) {
+            return;
+          }
+
           this._setElapsed(0);
           if (this.recorder.state !==
               Polymer.AppMedia.RecordingState.INACTIVE) {
@@ -279,6 +288,7 @@ you consider to be a suitable substitute, load it first and ensure that
          * Pause recording.
          */
         pause: function() {
+          if (!mediaRecorderSupported)
           this.recorder.pause();
         },
 
@@ -286,6 +296,10 @@ you consider to be a suitable substitute, load it first and ensure that
          * Resume recording if paused.
          */
         resume: function() {
+          if (!mediaRecorderSupported) {
+            return;
+          }
+
           if (this.recorder.state ===
               Polymer.AppMedia.RecordingState.PAUSED) {
             this.recorder.resume();
@@ -293,6 +307,10 @@ you consider to be a suitable substitute, load it first and ensure that
         },
 
         _computeRecorder: function(stream, mimeType, audioBps, videoBps, bps) {
+          if (!mediaRecorderSupported) {
+            return;
+          }
+
           if (mimeType == null || stream == null) {
             return this.recorder;
           }
@@ -317,7 +335,7 @@ you consider to be a suitable substitute, load it first and ensure that
         },
 
         _computeMimeType: function(stream, mpeg, codecs) {
-          if (stream == null) {
+          if (stream == null || !mediaRecorderSupported) {
             return;
           }
 
@@ -345,7 +363,7 @@ you consider to be a suitable substitute, load it first and ensure that
         },
 
         _recordingChanged: function(recording, recorder) {
-          if (recorder == null) {
+          if (recorder == null || !mediaRecorderSupported) {
             return;
           }
 
@@ -359,7 +377,7 @@ you consider to be a suitable substitute, load it first and ensure that
         },
 
         _mimeTypeChanged: function(mimeType) {
-          if (!mimeType) {
+          if (!mimeType || !mediaRecorderSupported) {
             return;
           }
 

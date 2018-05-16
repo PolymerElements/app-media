@@ -16,10 +16,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <title>app-media-recorder test</title>
 
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="../../webrtc-adapter/release/adapter.js"></script>
+    <script src="./loadPolyfills.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
-    <script src="helpers.js"></script>
 
+    <link rel="import" href="./helpers-import.html">
     <link rel="import" href="../app-media-devices.html">
     <link rel="import" href="../app-media-stream.html">
     <link rel="import" href="../app-media-recorder.html">
@@ -42,7 +42,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </template>
 
       <script>
-        HTMLImports.whenReady(function() {
+        window.addEventListener('WebComponentsReady', function() {
           Polymer({
             is: 'x-recorder',
 
@@ -63,144 +63,162 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </test-fixture>
 
     <script>
-      suite('app-media-recorder', function() {
-        var awaitEvent = AppMediaTestHelpers.awaitEvent;
-        var timePasses = AppMediaTestHelpers.timePasses;
-        var createDevice = AppMediaTestHelpers.createDevice;
+      window.addEventListener('WebComponentsReady', function() {
+        suite('app-media-recorder', function() {
+          var awaitEvent = AppMediaTestHelpers.awaitEvent;
+          var timePasses = AppMediaTestHelpers.timePasses;
+          var createDevice = AppMediaTestHelpers.createDevice;
 
-        setup(function() {
-          AppMediaTestHelpers.setRecorderData(new Blob(new Uint8Array(1)));
-        });
-
-        teardown(function() {
-          AppMediaTestHelpers.restoreRecorderData();
-        });
-
-        suite('with basic configuration', function() {
-          var element;
-          var stream;
+          suiteSetup(function() {
+            return window.ensureWebRtcPolyfill;
+          });
 
           setup(function() {
-            var recorder = fixture('basic');
-            element = recorder.$.recorder;
-            stream = recorder.$.stream;
-
-            return awaitEvent(element, 'recorder-changed');
+            if (!window.MediaRecorder) {
+              this.skip();
+            }
+            AppMediaTestHelpers.setRecorderData(new Blob(new Uint8Array(1)));
           });
 
-          test('can record from the stream', function() {
-            var dataChanges = awaitEvent(element, 'data-changed');
-
-            element.start();
-
-            timePasses(1).then(function() {
-              element.stop();
-            });
-
-            return dataChanges.then(function() {
-              expect(element.data).to.be.instanceof(Blob);
-            });
+          teardown(function() {
+            AppMediaTestHelpers.restoreRecorderData();
           });
 
-          test('can record using the recording property', function() {
-            var dataChanges = awaitEvent(element, 'data-changed');
-
-            element.recording = true;
-
-            timePasses().then(function() {
-              element.recording = false;
-            });
-
-            return dataChanges.then(function() {
-              expect(element.data).to.be.instanceof(Blob);
-            });
-          });
-
-          test('does not throw error if stream gets deactivated', function() {
-            var dataChanges = awaitEvent(element, 'data-changed');
-
-            element.start();
-
-            timePasses(1).then(function() {
-              element.stop();
-              stream.active = false;
-            });
-
-            return dataChanges.then(function() {
-              expect(element.data).to.be.instanceof(Blob);
-              aassert(element.recorder);
-            });
-          });
-        });
-
-        suite('with special configuration', function() {
-          suite('bits per second', function() {
+          suite('with basic configuration', function() {
             var element;
+            var stream;
 
             setup(function() {
-              AppMediaTestHelpers.spyMediaRecorder();
-
+              if (!window.MediaRecorder) {
+                this.skip();
+              }
               var recorder = fixture('basic');
               element = recorder.$.recorder;
+              stream = recorder.$.stream;
 
               return awaitEvent(element, 'recorder-changed');
             });
 
-            teardown(function() {
-              AppMediaTestHelpers.restoreMediaRecorder();
-            });
-
-            test('only adds user-configured bps settings to options', function() {
-              element.bitsPerSecond = 1024;
-
-              var args = MediaRecorder.args[MediaRecorder.args.length - 1];
-              var config = args && args[1];
-
-              expect(config).to.be.ok;
-              expect(config.bitsPerSecond).to.be.equal(1024);
-              expect(config).to.not.have.property('audioBitsPerSecond');
-              expect(config).to.not.have.property('videoBitsPerSecond');
-            });
-          });
-          suite('disabled blob cache', function() {
-            var element;
-
-            setup(function() {
-              var recorder = fixture('basic');
-
-              element = recorder.$.recorder;
-              element.disableBlobCache = true;
-
-              return awaitEvent(element, 'recorder-changed');
-            });
-
-            test('never records a data blob', function() {
-              var recorderStops = awaitEvent(element, 'app-media-recorder-stopped')
-                  .then(function() {
-                    // Give the `data-changed` event a chance to fire and
-                    // settle the corresponding check in the test:
-                    return timePasses(1);
-                  });
+            test('can record from the stream', function() {
               var dataChanges = awaitEvent(element, 'data-changed');
-              var dataChanged = false;
 
-              dataChanges.then(function() {
-                dataChanged = true;
+              element.start();
+
+              timePasses(1).then(function() {
+                element.stop();
               });
+
+              return dataChanges.then(function() {
+                expect(element.data).to.be.instanceof(Blob);
+              });
+            });
+
+            test('can record using the recording property', function() {
+              var dataChanges = awaitEvent(element, 'data-changed');
 
               element.recording = true;
 
-              timePasses(1).then(function() {
+              timePasses().then(function() {
                 element.recording = false;
               });
 
-              return recorderStops.then(function() {
-                expect(dataChanged).to.be.equal(false);
+              return dataChanges.then(function() {
+                expect(element.data).to.be.instanceof(Blob);
+              });
+            });
+
+            test('does not throw error if stream gets deactivated', function() {
+              var dataChanges = awaitEvent(element, 'data-changed');
+
+              element.start();
+
+              timePasses(1).then(function() {
+                element.stop();
+                stream.active = false;
+              });
+
+              return dataChanges.then(function() {
+                expect(element.data).to.be.instanceof(Blob);
+                assert(element.recorder);
+              });
+            });
+          });
+
+          suite('with special configuration', function() {
+            suite('bits per second', function() {
+              var element;
+
+              setup(function() {
+                if (!window.MediaRecorder) {
+                  this.skip();
+                }
+                AppMediaTestHelpers.spyMediaRecorder();
+
+                var recorder = fixture('basic');
+                element = recorder.$.recorder;
+
+                return awaitEvent(element, 'recorder-changed');
+              });
+
+              teardown(function() {
+                AppMediaTestHelpers.restoreMediaRecorder();
+              });
+
+              test('only adds user-configured bps settings to options', function() {
+                element.bitsPerSecond = 1024;
+
+                var args = MediaRecorder.args[MediaRecorder.args.length - 1];
+                var config = args && args[1];
+
+                expect(config).to.be.ok;
+                expect(config.bitsPerSecond).to.be.equal(1024);
+                expect(config).to.not.have.property('audioBitsPerSecond');
+                expect(config).to.not.have.property('videoBitsPerSecond');
+              });
+            });
+            suite('disabled blob cache', function() {
+              var element;
+
+              setup(function() {
+                if (!window.MediaRecorder) {
+                  this.skip();
+                }
+                var recorder = fixture('basic');
+
+                element = recorder.$.recorder;
+                element.disableBlobCache = true;
+
+                return awaitEvent(element, 'recorder-changed');
+              });
+
+              test('never records a data blob', function() {
+                var recorderStops = awaitEvent(element, 'app-media-recorder-stopped')
+                    .then(function() {
+                      // Give the `data-changed` event a chance to fire and
+                      // settle the corresponding check in the test:
+                      return timePasses(1);
+                    });
+                var dataChanges = awaitEvent(element, 'data-changed');
+                var dataChanged = false;
+
+                dataChanges.then(function() {
+                  dataChanged = true;
+                });
+
+                element.recording = true;
+
+                timePasses(1).then(function() {
+                  element.recording = false;
+                });
+
+                return recorderStops.then(function() {
+                  expect(dataChanged).to.be.equal(false);
+                });
               });
             });
           });
         });
       });
-    </script>
+      </script>
   </body>
 </html>

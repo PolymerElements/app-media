@@ -45,7 +45,13 @@ analyser suitable for generating audio visualizations such as the ones made by
             type: Object,
             readOnly: true,
             value: function() {
-              return new AudioContext();
+              if (window.AudioContext) {
+                // chrome requires class to be constructed directly
+                return new AudioContext();
+              } else if (window.webkitAudioContext) {
+                // prefix for safari
+                return new webkitAudioContext();
+              }
             }
           },
 

@@ -1,0 +1,28 @@
+{
+  "description": "Elements for accessing data from media input devices",
+  "keywords": [
+    "web-components",
+    "web-component",
+    "polymer",
+    "app",
+    "user",
+    "media",
+    "stream",
+    "camera",
+    "audio",
+    "video"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/PolymerElements/app-media.git"
+  },
+  "homepage": "https://github.com/PolymerElements/app-media",
+  "name": "@polymer/app-media",
+  "version": "2.0.0",
+  "main": "app-media.js",
+  "author": "The Polymer Authors",
+  "license": "BSD-3-Clause",
+  "devDependencies": {
+    "image-capture": "^0.3.0"
+  }
+}
