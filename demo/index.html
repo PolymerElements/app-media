@@ -20,16 +20,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       (function() {
         window.ensureMediaDevices = new Promise(function(resolve) {
           if (navigator.mediaDevices == null) {
-            var script = document.createElement('script');
-            script.src = '../../webrtc-adapter/release/adapter.js';
-            script.onload = resolve;
-            document.body.appendChild(script);
-
-            // npm version has different dir structure compared to bower
-            var script2 = document.createElement('script');
-            script2.src = '../../webrtc-adapter/out/adapter.js';
-            script2.onload = resolve;
-            document.body.appendChild(script2);
+            // try to load the polyfill from the NPM directory first
+            var npmScript = document.createElement('script');
+            npmScript.src = '../../webrtc-adapter/out/adapter.js';
+            npmScript.onload = resolve;
+            npmScript.onerror = function() {
+              // on error try loading it from the bwoer directory
+              var bowerScript = document.createElement('script');
+              bowerScript.src = '../../webrtc-adapter/release/adapter.js';
+              bowerScript.onload = resolve;
+              document.body.appendChild(bowerScript);
+            }
+            document.body.appendChild(npmScript);
           } else {
             resolve();
           }

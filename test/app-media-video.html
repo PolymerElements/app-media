@@ -16,9 +16,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <title>app-media-video test</title>
 
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-    <script src="../../webrtc-adapter/release/adapter.js"></script>
-    <!-- npm version has different dir structure compared to bower -->
-    <script src="../../../webrtc-adapter/out/adapter.js"></script>
+    <script src="./loadPolyfills.js"></script>
     <script src="../../web-component-tester/browser.js"></script>
 
     <link rel="import" href="./helpers-import.html">
@@ -41,7 +39,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <app-media-video autoplay id="video" source="{{stream}}"></app-media-video>
       </template>
       <script>
-        HTMLImports.whenReady(function() {
+        window.addEventListener('WebComponentsReady', function() {
           Polymer({
             is: 'x-camera',
 
@@ -62,38 +60,44 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </test-fixture>
 
     <script>
-      suite('app-media-video', function() {
-        var awaitEvent = AppMediaTestHelpers.awaitEvent;
-        var createDevice = AppMediaTestHelpers.createDevice;
+      window.addEventListener('WebComponentsReady', function() {
+        suite('app-media-video', function() {
+          var awaitEvent = AppMediaTestHelpers.awaitEvent;
+          var createDevice = AppMediaTestHelpers.createDevice;
 
-        var fakeDevices = [
-          createDevice('audioinput'),
-          createDevice('audiooutput'),
-          createDevice('videoinput'),
-          createDevice('videooutput')
-        ];
+          var fakeDevices = [
+            createDevice('audioinput'),
+            createDevice('audiooutput'),
+            createDevice('videoinput'),
+            createDevice('videooutput')
+          ];
 
-        setup(function() {
-          AppMediaTestHelpers.setDevices(fakeDevices);
-        });
-
-        teardown(function() {
-          AppMediaTestHelpers.restoreDevices();
-        });
-
-        suite('with basic configuration', function() {
-          var video;
-
-          setup(function() {
-            var camera = fixture('basic');
-            window.camera = camera;
-            video = camera.$.video;
-
-            return awaitEvent(camera, 'stream-changed');
+          suiteSetup(function() {
+            return window.ensureWebRtcPolyfill;
           });
 
-          test('transforms the video element', function() {
-            expect(video.videoElement.style.transform).to.be.okay;
+          setup(function() {
+            AppMediaTestHelpers.setDevices(fakeDevices);
+          });
+
+          teardown(function() {
+            AppMediaTestHelpers.restoreDevices();
+          });
+
+          suite('with basic configuration', function() {
+            var video;
+
+            setup(function() {
+              var camera = fixture('basic');
+              window.camera = camera;
+              video = camera.$.video;
+
+              return awaitEvent(camera, 'stream-changed');
+            });
+
+            test('transforms the video element', function() {
+              expect(video.videoElement.style.transform).to.be.okay;
+            });
           });
         });
       });
