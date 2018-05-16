@@ -16,13 +16,11 @@
       (mediaDevices.getUserMedia || function(){}).bind(mediaDevices);
   var ImageCapture = window.ImageCapture;
   var MediaRecorder = window.MediaRecorder;
-  var mediaRecorderStart;
-  var mediaRecorderStop;
-// skip for browsers that do not support MediaRecorder
-  if (MediaRecorder) {
-    mediaRecorderStart = MediaRecorder.prototype.start;
-    mediaRecorderStop = MediaRecorder.prototype.stop;
-  }
+  // skip for browsers that do not support MediaRecorder
+  var mediaRecorderStart = window.MediaRecorder ?
+      window.MediaRecorder.prototype.start : function() {};
+  var mediaRecorderStop = window.MediaRecorder ?
+      window.MediaRecorder.prototype.stop : function() {};
 
   var allowed = true;
   var devices = null;
