@@ -30,7 +30,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             bowerScript.src = '../../webrtc-adapter/release/adapter.js';
             bowerScript.onload = resolve;
             document.body.appendChild(bowerScript);
-          } document.body.appendChild(npmScript);
+            document.body.appendChild(npmScript);
+          }
         } else {
           resolve();
         }
