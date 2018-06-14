@@ -76,11 +76,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             stream = createFakeMediaStream({
               videoTracks: 1,
               videoTrackCapabilities: {
-                brightness: {
-                  min: 0,
-                  max: 10,
-                  step: 1
-                },
+                brightness: {min: 0, max: 10, step: 1},
 
                 torch: true,
 
@@ -99,9 +95,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             });
 
             test('creates an ImageCapture instance', function() {
-              var result = awaitEvent(element, 'image-capture-changed').then(function() {
-                expect(element.imageCapture).to.be.ok;
-              });
+              var result =
+                  awaitEvent(element, 'image-capture-changed').then(function() {
+                    expect(element.imageCapture).to.be.ok;
+                  });
               element.stream = stream;
               return result;
             });
@@ -117,7 +114,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             test('compiles settings into a photoSettings object', function() {
               expect(element.photoSettings).to.be.ok;
               expect(element.photoSettings.redEyeReduction).to.be.equal(true);
-              expect(element.photoSettings.fillLightMode).to.be.equal(Polymer.AppMedia.FillLightMode.AUTO);
+              expect(element.photoSettings.fillLightMode)
+                  .to.be.equal(Polymer.AppMedia.FillLightMode.AUTO);
             });
 
             test('ignores settings that are not supported', function() {

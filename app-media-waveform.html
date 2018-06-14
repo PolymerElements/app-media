@@ -55,122 +55,118 @@ Custom property | Description | Default
   </template>
   <script>
     (function() {
-      Polymer({
-        is: 'app-media-waveform',
+    Polymer({
+      is: 'app-media-waveform',
 
-        behaviors: [
-          Polymer.IronResizableBehavior
-        ],
+      behaviors: [Polymer.IronResizableBehavior],
 
-        properties: {
-          /**
-           * If true, the analyzer will draw for every animation frame. If
-           * false, the analyzer will not draw.
-           */
-          active: {
-            type: Boolean,
-            value: false,
-            observer: '_activeChanged'
-          },
-
-          /**
-           * An analyser node that should be visualized.
-           *
-           * @type {AnalyserNode}
-           */
-          analyser: {
-            type: Object
-          },
-
-          /**
-           * The computed buffer length of the typed array that will be used to
-           * store waveform values.
-           */
-          bufferLength: {
-            type: Number,
-            computed: '_computeBufferLength(analyser)'
-          },
-
-          /**
-           * The computed typed array that is used to temporarily store waveform
-           * values for converting into a visualization.
-           *
-           * @type {!Uint8Array}
-           */
-          data: {
-            type: Object,
-            computed: '_computeData(bufferLength)'
-          }
-        },
-
-        listeners: {
-          'iron-resize': '_updateMetrics'
-        },
-
-        attached: function() {
-          this._updateMetrics();
+      properties: {
+        /**
+         * If true, the analyzer will draw for every animation frame. If
+         * false, the analyzer will not draw.
+         */
+        active: {
+          type: Boolean,
+          value: false,
+          observer: '_activeChanged',
         },
 
         /**
-         * Begin visualizing the waveform. This method will recursively call
-         * itself (via requestAnimationFrame) until the element's active
-         * property becomes false.
+         * An analyser node that should be visualized.
+         *
+         * @type {AnalyserNode}
          */
-        draw: function() {
-          if (!this.active) {
-            return;
-          }
-
-          if (this._selfRect != null && this.analyser != null) {
-            var width = this._selfRect.width;
-            var height = this._selfRect.height;
-            var midHeight = height / 2;
-
-            this.analyser.getByteTimeDomainData(this.data);
-
-            var path = ['M0,' + midHeight];
-
-            for (var i = 0; i < this.bufferLength; ++i) {
-              var offset = this.data[i] / 128.0;
-              var x = Math.round(i / this.bufferLength * width);
-              var y = Math.round(offset * midHeight);
-
-              path.push('L' + x + ',' + y);
-            }
-
-            this.$.path.setAttribute('d', path.join(' '));
-          }
-
-          var self = this;
-          window.requestAnimationFrame(function() {
-            self.draw();
-          });
+        analyser: {
+          type: Object,
         },
 
-        _activeChanged: function(active) {
-          if (active) {
-            this.draw();
-          }
+        /**
+         * The computed buffer length of the typed array that will be used to
+         * store waveform values.
+         */
+        bufferLength: {
+          type: Number,
+          computed: '_computeBufferLength(analyser)',
         },
 
-        _computeBufferLength: function(analyser) {
-          if (analyser == null) {
-            return 0;
-          }
-
-          return analyser.frequencyBinCount;
-        },
-
-        _computeData: function(bufferLength) {
-          return new Uint8Array(bufferLength);
-        },
-
-        _updateMetrics: function() {
-          this.debounce('_updateMetrics', function() {
-            this._selfRect = this.getBoundingClientRect();
-          });
+        /**
+         * The computed typed array that is used to temporarily store waveform
+         * values for converting into a visualization.
+         *
+         * @type {!Uint8Array}
+         */
+        data: {
+          type: Object,
+          computed: '_computeData(bufferLength)',
         }
-      })
+      },
+
+      listeners: {'iron-resize': '_updateMetrics'},
+
+      attached: function() {
+        this._updateMetrics();
+      },
+
+      /**
+       * Begin visualizing the waveform. This method will recursively call
+       * itself (via requestAnimationFrame) until the element's active
+       * property becomes false.
+       */
+      draw: function() {
+        if (!this.active) {
+          return;
+        }
+
+        if (this._selfRect != null && this.analyser != null) {
+          var width = this._selfRect.width;
+          var height = this._selfRect.height;
+          var midHeight = height / 2;
+
+          this.analyser.getByteTimeDomainData(this.data);
+
+          var path = ['M0,' + midHeight];
+
+          for (var i = 0; i < this.bufferLength; ++i) {
+            var offset = this.data[i] / 128.0;
+            var x = Math.round(i / this.bufferLength * width);
+            var y = Math.round(offset * midHeight);
+
+            path.push('L' + x + ',' + y);
+          }
+
+          this.$.path.setAttribute('d', path.join(' '));
+        }
+
+        var self = this;
+        window.requestAnimationFrame(function() {
+          self.draw();
+        });
+      },
+
+      _activeChanged: function(active) {
+        if (active) {
+          this.draw();
+        }
+      },
+
+      _computeBufferLength: function(analyser) {
+        if (analyser == null) {
+          return 0;
+        }
+
+        return analyser.frequencyBinCount;
+      },
+
+      _computeData: function(bufferLength) {
+        return new Uint8Array(bufferLength);
+      },
+
+      _updateMetrics: function() {
+        this.debounce('_updateMetrics', function() {
+          this._selfRect = this.getBoundingClientRect();
+        });
+      }
+    })
     })();
   </script>
 </dom-module>
