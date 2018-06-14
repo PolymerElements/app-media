@@ -126,7 +126,7 @@ function awaitEvent(element, eventName, timeout) {
 
     setTimeout(function() {
       reject(new Error(
-          (element.is || element.tagName) + ' never fired ' + event + '!'));
+          (element.is || element.tagName) + ' never fired ' + eventName + '!'));
     }, timeout);
   });
 }
