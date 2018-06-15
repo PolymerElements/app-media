@@ -56,6 +56,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </test-fixture>
 
     <script>
+      var supportsSettingStreams = true;
+      (function() {
+        var stream = new MediaStream();
+        var video = document.createElement('video');
+
+        try {
+          video.srcObject = stream;
+        } catch (e) {
+          try {
+            video.src = URL.createObjectURL(stream);
+          } catch (e) {
+            supportsSettingStreams = false;
+          }
+        }
+      })();
+
       window.addEventListener('WebComponentsReady', function() {
         suite('app-media-video', function() {
           var awaitEvent = AppMediaTestHelpers.awaitEvent;
@@ -84,6 +100,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             var video;
 
             setup(function() {
+              if (!supportsSettingStreams) {
+                this.skip();
+              }
+
               var camera = fixture('basic');
               window.camera = camera;
               video = camera.$.video;
