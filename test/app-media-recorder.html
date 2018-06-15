@@ -92,12 +92,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               element = recorder.$.recorder;
               stream = recorder.$.stream;
 
-              return awaitEvent(element, 'recorder-changed', EVENT_WAIT_TIME_MS);
+              return awaitEvent(element, 'recorder-changed');
             });
 
             test('can record from the stream', function() {
               var dataChanges =
-                  awaitEvent(element, 'data-changed', EVENT_WAIT_TIME_MS);
+                  awaitEvent(element, 'data-changed');
 
               element.start();
 
@@ -112,7 +112,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             test('can record using the recording property', function() {
               var dataChanges =
-                  awaitEvent(element, 'data-changed', EVENT_WAIT_TIME_MS);
+                  awaitEvent(element, 'data-changed');
 
               element.recording = true;
 
@@ -127,7 +127,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             test('does not throw error if stream gets deactivated', function() {
               var dataChanges =
-                  awaitEvent(element, 'data-changed', EVENT_WAIT_TIME_MS);
+                  awaitEvent(element, 'data-changed');
 
               element.start();
 
@@ -156,7 +156,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 var recorder = fixture('basic');
                 element = recorder.$.recorder;
 
-                return awaitEvent(element, 'recorder-changed', EVENT_WAIT_TIME_MS);
+                return awaitEvent(element, 'recorder-changed');
               });
 
               teardown(function() {
@@ -187,13 +187,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 element = recorder.$.recorder;
                 element.disableBlobCache = true;
 
-                return awaitEvent(element, 'recorder-changed', EVENT_WAIT_TIME_MS);
+                return awaitEvent(element, 'recorder-changed');
               });
 
               test('never records a data blob', function() {
                 var recorderStops =
                     awaitEvent(
-                        element, 'app-media-recorder-stopped', EVENT_WAIT_TIME_MS)
+                        element, 'app-media-recorder-stopped')
                         .then(function() {
                           // Give the `data-changed` event a chance to
                           // fire and settle the corresponding check
@@ -201,7 +201,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                           return timePasses(1);
                         });
                 var dataChanges =
-                    awaitEvent(element, 'data-changed', EVENT_WAIT_TIME_MS);
+                    awaitEvent(element, 'data-changed');
                 var dataChanged = false;
 
                 dataChanges.then(function() {
