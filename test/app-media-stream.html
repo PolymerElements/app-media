@@ -36,7 +36,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var createDevice = AppMediaTestHelpers.createDevice;
 
           suiteSetup(function() {
-            return window.ensureWebRtcPolyfill;
+            return window.ensureWebRtcPolyfill.then(loadScript('./helpers.js'));
           });
 
           suite('with basic configuration', function() {

@@ -52,7 +52,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           ];
 
           suiteSetup(function() {
-            return window.ensureWebRtcPolyfill;
+            return window.ensureWebRtcPolyfill.then(loadScript('./helpers.js'));
           });
 
           setup(function() {

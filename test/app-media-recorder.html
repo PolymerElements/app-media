@@ -64,9 +64,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var awaitEvent = AppMediaTestHelpers.awaitEvent;
           var timePasses = AppMediaTestHelpers.timePasses;
           var createDevice = AppMediaTestHelpers.createDevice;
+          var setDevices = AppMediaTestHelpers.setDevices;
 
           suiteSetup(function() {
-            return window.ensureWebRtcPolyfill;
+            var fakeDevices = [createDevice('videoinput')];
+            setDevices(fakeDevices);
+            return window.ensureWebRtcPolyfill.then(loadScript('./helpers.js'));
           });
 
           setup(function() {

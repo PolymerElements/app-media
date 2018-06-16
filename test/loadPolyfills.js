@@ -39,3 +39,4 @@ window.ensurePolyfills = Promise
                              .catch(function(e) {
                                console.error('Polyfill loading error:\n' + e);
                              });
+window.loadScript = loadScript;
