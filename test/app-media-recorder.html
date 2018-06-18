@@ -99,8 +99,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             });
 
             test('can record from the stream', function() {
-              var dataChanges =
-                  awaitEvent(element, 'data-changed');
+              var dataChanges = awaitEvent(element, 'data-changed');
 
               element.start();
 
@@ -114,8 +113,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             });
 
             test('can record using the recording property', function() {
-              var dataChanges =
-                  awaitEvent(element, 'data-changed');
+              var dataChanges = awaitEvent(element, 'data-changed');
 
               element.recording = true;
 
@@ -129,8 +127,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             });
 
             test('does not throw error if stream gets deactivated', function() {
-              var dataChanges =
-                  awaitEvent(element, 'data-changed');
+              var dataChanges = awaitEvent(element, 'data-changed');
 
               element.start();
 
@@ -194,17 +191,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               });
 
               test('never records a data blob', function() {
-                var recorderStops =
-                    awaitEvent(
-                        element, 'app-media-recorder-stopped')
-                        .then(function() {
-                          // Give the `data-changed` event a chance to
-                          // fire and settle the corresponding check
-                          // in the test:
-                          return timePasses(1);
-                        });
-                var dataChanges =
-                    awaitEvent(element, 'data-changed');
+                var recorderStops = awaitEvent(element, 'app-media-recorder-stopped')
+                                        .then(function() {
+                                          // Give the `data-changed` event a chance to
+                                          // fire and settle the corresponding check
+                                          // in the test:
+                                          return timePasses(1);
+                                        });
+                var dataChanges = awaitEvent(element, 'data-changed');
                 var dataChanged = false;
 
                 dataChanges.then(function() {
