@@ -23,6 +23,13 @@
   "author": "The Polymer Authors",
   "license": "BSD-3-Clause",
   "devDependencies": {
-    "image-capture": "^0.3.0"
+    "@polymer/gen-typescript-declarations": "^1.2.2",
+    "bower": "^1.8.4",
+    "image-capture": "^0.3.0",
+    "webmat": "^0.2.0"
+  },
+  "scripts": {
+    "update-types": "bower install && gen-typescript-declarations --deleteExisting --outDir .",
+    "format": "webmat && npm run update-types"
   }
 }

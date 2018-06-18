@@ -36,7 +36,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var createDevice = AppMediaTestHelpers.createDevice;
 
           suiteSetup(function() {
-            return window.ensureWebRtcPolyfill;
+            return window.ensureWebRtcPolyfill.then(loadScript('./helpers.js'));
           });
 
           suite('with basic configuration', function() {
@@ -65,14 +65,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
               test('requests a new stream', function() {
                 element.videoDevice = createDevice('videoinput');
-                return awaitEvent(element, 'stream-changed')
-                    .then(function(event) {
-                      expect(navigator.mediaDevices
-                          .getUserMedia.callCount).to.be.eql(1);
-                    });
+                return awaitEvent(element, 'stream-changed').then(function(event) {
+                  expect(navigator.mediaDevices.getUserMedia.callCount).to.be.eql(1);
+                });
               });
 
-              test('deactivates the old stream before requesting a new one',
+              test(
+                  'deactivates the old stream before requesting a new one',
                   function() {
                     var stream = element.stream;
                     var track = stream.getTracks()[0];
@@ -80,8 +79,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     sinon.spy(track, 'stop');
                     element.videoDevice = createDevice('videoinput');
 
-                    return awaitEvent(element, 'stream-changed').then(
-                        function(event) {
+                    return awaitEvent(element, 'stream-changed')
+                        .then(function(event) {
                           expect(track.stop.called).to.be.eql(true);
                         });
                   });

@@ -18,24 +18,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <script>
       (function() {
-        window.ensureMediaDevices = new Promise(function(resolve) {
-          if (navigator.mediaDevices == null) {
-            // try to load the polyfill from the NPM directory first
-            var npmScript = document.createElement('script');
-            npmScript.src = '../../webrtc-adapter/out/adapter.js';
-            npmScript.onload = resolve;
-            npmScript.onerror = function() {
-              // on error try loading it from the bower directory
-              var bowerScript = document.createElement('script');
-              bowerScript.src = '../../webrtc-adapter/release/adapter.js';
-              bowerScript.onload = resolve;
-              document.body.appendChild(bowerScript);
-            }
-            document.body.appendChild(npmScript);
-          } else {
-            resolve();
-          }
-        });
+      window.ensureMediaDevices = new Promise(function(resolve) {
+        if (navigator.mediaDevices == null) {
+          // try to load the polyfill from the NPM directory first
+          var npmScript = document.createElement('script');
+          npmScript.src = '../../webrtc-adapter/out/adapter.js';
+          npmScript.onload = resolve;
+          npmScript.onerror = function() {
+            // on error try loading it from the bower directory
+            var bowerScript = document.createElement('script');
+            bowerScript.src = '../../webrtc-adapter/release/adapter.js';
+            bowerScript.onload = resolve;
+            document.body.appendChild(bowerScript);
+          };
+          document.body.appendChild(npmScript);
+        } else {
+          resolve();
+        }
+      });
       })();
     </script>
 
@@ -202,10 +202,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             is: 'x-video-camera',
 
             properties: {
-              recording: {
-                type: Blob,
-                observer: '_recordingChanged'
-              },
+              recording: {type: Blob, observer: '_recordingChanged'},
 
               recordings: {
                 type: Array,
@@ -214,15 +211,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
               },
 
-              duration: {
-                type: Number,
-                value: 3000
-              },
+              duration: {type: Number, value: 3000},
 
-              elapsed: {
-                type: Number,
-                observer: '_elapsedChanged'
-              }
+              elapsed: {type: Number, observer: '_elapsedChanged'}
             },
 
             record: function() {
@@ -243,7 +234,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             _elapsedChanged: function(elapsed) {
               var progress = Math.min(100 * elapsed / this.duration, 100);
-              this.$.progress.style.transform = 'translateX(' + (-100 + progress) + '%)';
+              this.$.progress.style.transform =
+                  'translateX(' + (-100 + progress) + '%)';
             },
 
             _toObjectURL: function(blob) {

@@ -46,11 +46,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           Polymer({
             is: 'x-recorder',
 
-            properties: {
-              stream: {
-                notify: true
-              }
-            }
+            properties: {stream: {notify: true}}
           });
         });
       </script>
@@ -68,9 +64,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var awaitEvent = AppMediaTestHelpers.awaitEvent;
           var timePasses = AppMediaTestHelpers.timePasses;
           var createDevice = AppMediaTestHelpers.createDevice;
+          var setDevices = AppMediaTestHelpers.setDevices;
 
           suiteSetup(function() {
-            return window.ensureWebRtcPolyfill;
+            var fakeDevices = [createDevice('videoinput')];
+            setDevices(fakeDevices);
+            return window.ensureWebRtcPolyfill.then(loadScript('./helpers.js'));
           });
 
           setup(function() {
@@ -193,11 +192,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
               test('never records a data blob', function() {
                 var recorderStops = awaitEvent(element, 'app-media-recorder-stopped')
-                    .then(function() {
-                      // Give the `data-changed` event a chance to fire and
-                      // settle the corresponding check in the test:
-                      return timePasses(1);
-                    });
+                                        .then(function() {
+                                          // Give the `data-changed` event a chance to
+                                          // fire and settle the corresponding check
+                                          // in the test:
+                                          return timePasses(1);
+                                        });
                 var dataChanges = awaitEvent(element, 'data-changed');
                 var dataChanged = false;
 
@@ -219,6 +219,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           });
         });
       });
-      </script>
+    </script>
   </body>
 </html>

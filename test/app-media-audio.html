@@ -37,7 +37,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var stream;
 
           suiteSetup(function() {
-            return window.ensureWebRtcPolyfill;
+            return window.ensureWebRtcPolyfill.then(loadScript('./helpers.js'))
           });
 
           setup(function() {
@@ -52,10 +52,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             });
 
             test('produces a source node connected to the audio context', function() {
-              var result = awaitEvent(element, 'source-node-changed').then(function() {
-                expect(element.sourceNode).to.be.instanceof(AudioNode);
-                expect(element.sourceNode.context).to.be.equal(element.context);
-              });
+              var result =
+                  awaitEvent(element, 'source-node-changed').then(function() {
+                    expect(element.sourceNode).to.be.instanceof(AudioNode);
+                    expect(element.sourceNode.context).to.be.equal(element.context);
+                  });
 
               element.source = stream;
 
