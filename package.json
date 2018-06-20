@@ -30,6 +30,6 @@
   },
   "scripts": {
     "update-types": "bower install && gen-typescript-declarations --deleteExisting --outDir .",
-    "format": "webmat && npm run update-types"
+    "format": "webmat"
   }
 }
