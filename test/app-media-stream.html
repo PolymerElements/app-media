@@ -15,12 +15,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <title>app-media-stream test</title>
 
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
     <script src="./loadPolyfills.js"></script>
-    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../../../wct-browser-legacy/browser.js"></script>
 
-    <link rel="import" href="./helpers-import.html">
-    <link rel="import" href="../app-media-stream.html">
+    <script type="module" src="./helpers-import.js"></script>
+    <script type="module" src="../app-media-stream.js"></script>
   </head>
   <body>
     <test-fixture id="basic">
@@ -29,65 +29,65 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </template>
     </test-fixture>
 
-    <script>
-      window.addEventListener('WebComponentsReady', function() {
-        suite('app-media-stream', function() {
-          var awaitEvent = AppMediaTestHelpers.awaitEvent;
-          var createDevice = AppMediaTestHelpers.createDevice;
+    <script type="module">
+import './helpers-import.js';
+import '../app-media-stream.js';
+suite('app-media-stream', function() {
+  var awaitEvent = AppMediaTestHelpers.awaitEvent;
+  var createDevice = AppMediaTestHelpers.createDevice;
 
-          suiteSetup(function() {
-            return window.ensureWebRtcPolyfill.then(loadScript('./helpers.js'));
-          });
+  suiteSetup(function() {
+    return window.ensureWebRtcPolyfill.then(loadScript('./helpers.js'));
+  });
 
-          suite('with basic configuration', function() {
-            var element;
+  suite('with basic configuration', function() {
+    var element;
 
-            setup(function() {
-              element = fixture('basic');
-              element.videoDevice = createDevice('videoinput');
-              element.active = true;
+    setup(function() {
+      element = fixture('basic');
+      element.videoDevice = createDevice('videoinput');
+      element.active = true;
 
-              return awaitEvent(element, 'stream-changed');
-            });
+      return awaitEvent(element, 'stream-changed');
+    });
 
-            test('yields a media stream', function() {
-              expect(element.stream).to.be.okay;
-            });
+    test('yields a media stream', function() {
+      expect(element.stream).to.be.okay;
+    });
 
-            suite('when changing the constraints', function() {
-              setup(function() {
-                sinon.spy(navigator.mediaDevices, 'getUserMedia');
-              });
+    suite('when changing the constraints', function() {
+      setup(function() {
+        sinon.spy(navigator.mediaDevices, 'getUserMedia');
+      });
 
-              teardown(function() {
-                navigator.mediaDevices.getUserMedia.restore();
-              });
+      teardown(function() {
+        navigator.mediaDevices.getUserMedia.restore();
+      });
 
-              test('requests a new stream', function() {
-                element.videoDevice = createDevice('videoinput');
-                return awaitEvent(element, 'stream-changed').then(function(event) {
-                  expect(navigator.mediaDevices.getUserMedia.callCount).to.be.eql(1);
-                });
-              });
-
-              test(
-                  'deactivates the old stream before requesting a new one',
-                  function() {
-                    var stream = element.stream;
-                    var track = stream.getTracks()[0];
-
-                    sinon.spy(track, 'stop');
-                    element.videoDevice = createDevice('videoinput');
-
-                    return awaitEvent(element, 'stream-changed')
-                        .then(function(event) {
-                          expect(track.stop.called).to.be.eql(true);
-                        });
-                  });
-            });
-          });
+      test('requests a new stream', function() {
+        element.videoDevice = createDevice('videoinput');
+        return awaitEvent(element, 'stream-changed').then(function(event) {
+          expect(navigator.mediaDevices.getUserMedia.callCount).to.be.eql(1);
         });
       });
-    </script>
+
+      test(
+          'deactivates the old stream before requesting a new one',
+          function() {
+            var stream = element.stream;
+            var track = stream.getTracks()[0];
+
+            sinon.spy(track, 'stop');
+            element.videoDevice = createDevice('videoinput');
+
+            return awaitEvent(element, 'stream-changed')
+                .then(function(event) {
+                  expect(track.stop.called).to.be.eql(true);
+                });
+          });
+    });
+  });
+});
+</script>
   </body>
 </html>

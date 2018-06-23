@@ -1,0 +1,80 @@
+{
+  "files": {
+    "app-media.html": {
+      "convertedUrl": "app-media.js",
+      "exports": {}
+    },
+    "app-media-devices.html": {
+      "convertedUrl": "app-media-devices.js",
+      "exports": {}
+    },
+    "app-media-stream.html": {
+      "convertedUrl": "app-media-stream.js",
+      "exports": {}
+    },
+    "app-media-video.html": {
+      "convertedUrl": "app-media-video.js",
+      "exports": {}
+    },
+    "app-media-audio.html": {
+      "convertedUrl": "app-media-audio.js",
+      "exports": {}
+    },
+    "app-media-waveform.html": {
+      "convertedUrl": "app-media-waveform.js",
+      "exports": {}
+    },
+    "app-media-recorder.html": {
+      "convertedUrl": "app-media-recorder.js",
+      "exports": {
+        "Polymer.AppMedia": "AppMedia"
+      }
+    },
+    "app-media-image-capture.html": {
+      "convertedUrl": "app-media-image-capture.js",
+      "exports": {
+        "Polymer.AppMedia": "AppMedia"
+      }
+    },
+    "index.html": {
+      "convertedUrl": "index.html",
+      "exports": {}
+    },
+    "demo/index.html": {
+      "convertedUrl": "demo/index.html",
+      "exports": {}
+    },
+    "test/app-media-audio.html": {
+      "convertedUrl": "test/app-media-audio.html",
+      "exports": {}
+    },
+    "test/helpers-import.html": {
+      "convertedUrl": "test/helpers-import.js",
+      "exports": {}
+    },
+    "test/app-media-devices.html": {
+      "convertedUrl": "test/app-media-devices.html",
+      "exports": {}
+    },
+    "test/app-media-image-capture.html": {
+      "convertedUrl": "test/app-media-image-capture.html",
+      "exports": {}
+    },
+    "test/app-media-recorder.html": {
+      "convertedUrl": "test/app-media-recorder.html",
+      "exports": {}
+    },
+    "test/app-media-stream.html": {
+      "convertedUrl": "test/app-media-stream.html",
+      "exports": {}
+    },
+    "test/app-media-video.html": {
+      "convertedUrl": "test/app-media-video.html",
+      "exports": {}
+    },
+    "test/index.html": {
+      "convertedUrl": "test/index.html",
+      "exports": {}
+    }
+  }
+}

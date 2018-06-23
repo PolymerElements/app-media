@@ -15,14 +15,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <title>app-media-video test</title>
 
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
     <script src="./loadPolyfills.js"></script>
-    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../../../wct-browser-legacy/browser.js"></script>
 
-    <link rel="import" href="./helpers-import.html">
-    <link rel="import" href="../app-media-devices.html">
-    <link rel="import" href="../app-media-stream.html">
-    <link rel="import" href="../app-media-video.html">
+    <script type="module" src="./helpers-import.js"></script>
+    <script type="module" src="../app-media-devices.js"></script>
+    <script type="module" src="../app-media-stream.js"></script>
+    <script type="module" src="../app-media-video.js"></script>
   </head>
   <body>
     <dom-module id="x-camera">
@@ -38,15 +38,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </app-media-stream>
         <app-media-video autoplay id="video" source="{{stream}}"></app-media-video>
       </template>
-      <script>
-        window.addEventListener('WebComponentsReady', function() {
-          Polymer({
-            is: 'x-camera',
+      <script type="module">
+import './helpers-import.js';
+import '../app-media-devices.js';
+import '../app-media-stream.js';
+import '../app-media-video.js';
+import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+Polymer({
+  is: 'x-camera',
 
-            properties: {stream: {notify: true}}
-          });
-        });
-      </script>
+  properties: {stream: {notify: true}}
+});
+</script>
     </dom-module>
 
     <test-fixture id="basic">
@@ -55,68 +58,67 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </template>
     </test-fixture>
 
-    <script>
-      var supportsSettingStreams = true;
-      (function() {
-      var stream = new MediaStream();
-      var video = document.createElement('video');
+    <script type="module">
+import './helpers-import.js';
+import '../app-media-devices.js';
+import '../app-media-stream.js';
+import '../app-media-video.js';
+var supportsSettingStreams = true;
+var stream = new MediaStream();
+var video = document.createElement('video');
 
-      try {
-        video.srcObject = stream;
-      } catch (e) {
-        try {
-          video.src = URL.createObjectURL(stream);
-        } catch (e) {
-          supportsSettingStreams = false;
-        }
+try {
+  video.srcObject = stream;
+} catch (e) {
+  try {
+    video.src = URL.createObjectURL(stream);
+  } catch (e) {
+    supportsSettingStreams = false;
+  }
+}
+suite('app-media-video', function() {
+  var awaitEvent = AppMediaTestHelpers.awaitEvent;
+  var createDevice = AppMediaTestHelpers.createDevice;
+
+  var fakeDevices = [
+    createDevice('audioinput'),
+    createDevice('audiooutput'),
+    createDevice('videoinput'),
+    createDevice('videooutput')
+  ];
+
+  suiteSetup(function() {
+    return window.ensureWebRtcPolyfill.then(loadScript('./helpers.js'));
+  });
+
+  setup(function() {
+    AppMediaTestHelpers.setDevices(fakeDevices);
+  });
+
+  teardown(function() {
+    AppMediaTestHelpers.restoreDevices();
+  });
+
+  suite('with basic configuration', function() {
+    var video;
+
+    setup(function() {
+      if (!supportsSettingStreams) {
+        this.skip();
       }
-      })();
 
-      window.addEventListener('WebComponentsReady', function() {
-        suite('app-media-video', function() {
-          var awaitEvent = AppMediaTestHelpers.awaitEvent;
-          var createDevice = AppMediaTestHelpers.createDevice;
+      var camera = fixture('basic');
+      window.camera = camera;
+      video = camera.$.video;
 
-          var fakeDevices = [
-            createDevice('audioinput'),
-            createDevice('audiooutput'),
-            createDevice('videoinput'),
-            createDevice('videooutput')
-          ];
+      return awaitEvent(camera, 'stream-changed');
+    });
 
-          suiteSetup(function() {
-            return window.ensureWebRtcPolyfill.then(loadScript('./helpers.js'));
-          });
-
-          setup(function() {
-            AppMediaTestHelpers.setDevices(fakeDevices);
-          });
-
-          teardown(function() {
-            AppMediaTestHelpers.restoreDevices();
-          });
-
-          suite('with basic configuration', function() {
-            var video;
-
-            setup(function() {
-              if (!supportsSettingStreams) {
-                this.skip();
-              }
-
-              var camera = fixture('basic');
-              window.camera = camera;
-              video = camera.$.video;
-
-              return awaitEvent(camera, 'stream-changed');
-            });
-
-            test('transforms the video element', function() {
-              expect(video.videoElement.style.transform).to.be.okay;
-            });
-          });
-        });
-      });
-    </script>
+    test('transforms the video element', function() {
+      expect(video.videoElement.style.transform).to.be.okay;
+    });
+  });
+});
+</script>
   </body>
 </html>

@@ -15,12 +15,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <title>app-media-audio test</title>
 
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
     <script src="./loadPolyfills.js"></script>
-    <script src="../../web-component-tester/browser.js"></script>
+    <script src="../../../wct-browser-legacy/browser.js"></script>
 
-    <link rel="import" href="./helpers-import.html">
-    <link rel="import" href="../app-media-audio.html">
+    <script type="module" src="./helpers-import.js"></script>
+    <script type="module" src="../app-media-audio.js"></script>
   </head>
   <body>
     <test-fixture id="basic">
@@ -29,42 +29,42 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </template>
     </test-fixture>
 
-    <script>
-      window.addEventListener('WebComponentsReady', function() {
-        suite('app-media-audio', function() {
-          var awaitEvent = AppMediaTestHelpers.awaitEvent;
-          var createAudioMediaStream = AppMediaTestHelpers.createAudioMediaStream;
-          var stream;
+    <script type="module">
+import './helpers-import.js';
+import '../app-media-audio.js';
+suite('app-media-audio', function() {
+  var awaitEvent = AppMediaTestHelpers.awaitEvent;
+  var createAudioMediaStream = AppMediaTestHelpers.createAudioMediaStream;
+  var stream;
 
-          suiteSetup(function() {
-            return window.ensureWebRtcPolyfill.then(loadScript('./helpers.js'))
+  suiteSetup(function() {
+    return window.ensureWebRtcPolyfill.then(loadScript('./helpers.js'))
+  });
+
+  setup(function() {
+    stream = createAudioMediaStream(this.skip.bind(this));
+  });
+
+  suite('with basic configuration', function() {
+    var element;
+
+    setup(function() {
+      element = fixture('basic');
+    });
+
+    test('produces a source node connected to the audio context', function() {
+      var result =
+          awaitEvent(element, 'source-node-changed').then(function() {
+            expect(element.sourceNode).to.be.instanceof(AudioNode);
+            expect(element.sourceNode.context).to.be.equal(element.context);
           });
 
-          setup(function() {
-            stream = createAudioMediaStream(this.skip.bind(this));
-          });
+      element.source = stream;
 
-          suite('with basic configuration', function() {
-            var element;
-
-            setup(function() {
-              element = fixture('basic');
-            });
-
-            test('produces a source node connected to the audio context', function() {
-              var result =
-                  awaitEvent(element, 'source-node-changed').then(function() {
-                    expect(element.sourceNode).to.be.instanceof(AudioNode);
-                    expect(element.sourceNode.context).to.be.equal(element.context);
-                  });
-
-              element.source = stream;
-
-              return result;
-            });
-          });
-        });
-      });
-    </script>
+      return result;
+    });
+  });
+});
+</script>
   </body>
 </html>

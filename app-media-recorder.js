@@ -1,0 +1,375 @@
+/**
+@license
+Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+*/
+/**
+`app-media-recorder` is an element that, when configured with a media stream,
+generates recordings based on that stream and produces them as blobs for further
+consumption and processing.
+
+NOTE: As of today (January 6th, 2017), Media Recorder API is only supported in
+Chrome, Firefox and Opera. This element will politely neglect to register itself
+in browsers that do not support the Media Recorder API.
+
+Some polyfill-esque libraries (like
+[this one](https://www.webrtc-experiment.com/msr/)) exist at the time of this
+writing, but do not work as drop-in substitutes. If you have a polyfill that
+you consider to be a suitable substitute, load it first and ensure that
+`window.MediaRecorder` points to the correct constructor. For example:
+
+```
+<script src="/some/path/MediaStreamRecorder.js"></script>
+<script>
+  // Substitute the MediaStreamRecorder constructor for MediaRecorder before
+  // <app-media-recorder> is loaded:
+  window.MediaRecorder = MediaStreamRecorder;
+</script>
+<link rel="import" href="/bower_components/app-media/app-media-recorder.html">
+```
+
+@group App Elements
+@demo demo/index.html
+*/
+/*
+  FIXME(polymer-modulizer): the above comments were extracted
+  from HTML and may be out of place here. Review them and
+  then delete this comment!
+*/
+import { Base } from '@polymer/polymer/polymer-legacy.js';
+
+import { Polymer as Polymer$0 } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+var mediaRecorderSupported = true;
+if (window.MediaRecorder == null) {
+  Base._warn('Media Recorder API is not supported in this browser!');
+  mediaRecorderSupported = false;
+}
+
+export const AppMedia = Polymer$0.AppMedia || {};
+
+/** @see https://www.w3.org/TR/mediastream-recording/#enumdef-recordingstate */
+AppMedia.RecordingState = {
+  INACTIVE: 'inactive',
+  RECORDING: 'recording',
+  PAUSED: 'paused'
+};
+
+Polymer$0({
+  is: 'app-media-recorder',
+
+  properties: {
+    /**
+     * The input media stream to base the recordings off of.
+     * @type {MediaStream}
+     */
+    stream: {type: Object},
+
+    /**
+     * A reference to the media recorder that is used to generate
+     * recordings of the stream.
+     *
+     * @type {MediaRecorder}
+     */
+    recorder: {
+      type: Object,
+      notify: true,
+      computed:
+          '_computeRecorder(stream, mimeType, audioBitsPerSecond, videoBitsPerSecond, bitsPerSecond)'
+    },
+
+    /**
+     * The timeslice to use when recording the stream with the media
+     * recorder.
+     */
+    timeslice: {type: Number, value: 10},
+
+    /**
+     * The duration of the recording, in milliseconds. If set to a value
+     * greater than 0, the recording will automatically end after the
+     * configured amount of time (unless there is some manual
+     * intervention). If set to 0 (the default), recording will continue
+     * until manually stopped (or your device melts).
+     */
+    duration: {type: Number, value: 0},
+
+    /**
+     * The computed mime type for the output recording.
+     */
+    mimeType: {
+      type: String,
+      computed: '_computeMimeType(stream, mpeg, codecs)',
+      observer: '_mimeTypeChanged'
+    },
+
+    /**
+     * If true, the computed mime type will be video/mpeg.
+     */
+    mpeg: {
+      type: Boolean,
+      value: false,
+    },
+
+    /**
+     * If a value is given, the computed mime time will include a suffix
+     * specifying the value as a specific codec e.g., for vp8, the mime
+     * type will be video/webm\;codecs=vp8.
+     */
+    codecs: {
+      type: String,
+      value: null,
+    },
+
+    /**
+     * The time elapsed since the recorder began recording, in
+     * milliseconds.
+     */
+    elapsed: {
+      type: Number,
+      readOnly: true,
+      notify: true,
+      value: 0,
+    },
+
+    /**
+     * A blob for the most recently completed recording.
+     *
+     * @type {Blob}
+     */
+    data: {
+      type: Object,
+      readOnly: true,
+      notify: true,
+    },
+
+    /**
+     * When set to true, the recorder will start recording. When set to false,
+     * the recorder will stop recording and data will be updated as the
+     * recording becomes available. Calling `start` will cause this property
+     * to be set to true. Calling `stop` will cause this property to be set to
+     * false.
+     */
+    recording: {
+      type: Boolean,
+      value: false,
+      notify: true,
+    },
+
+    /**
+     * When set to true, the recorder will only dispatch
+     * `app-media-recorder-chunk` events, and will not keep a local cache of the
+     * data chunks that have been recorded. A consequence of this is that a
+     * final `data` Blob will not be available when the recording has finished.
+     */
+    disableBlobCache: {
+      type: Boolean,
+      value: false,
+    },
+
+    /**
+     * The desired bitrate for the audio tracks of the recorded stream.
+     * Set to null to use the platform default.
+     */
+    audioBitsPerSecond: {
+      type: Number,
+      value: null,
+    },
+
+    /**
+     * The desired bitrate for the video tracks of the recorded stream.
+     * Set to null to use the platform default.
+     */
+    videoBitsPerSecond: {
+      type: Number,
+      value: null,
+    },
+
+    /**
+     * The default bitrate for both audio and video tracks of the
+     * recorded stream. If this is specified, it will be used in place
+     * of audioBitsPerSecond or videoBitsPerSecond if either or both are
+     * not specified.
+     * Set to null to use the platform default.
+     */
+    bitsPerSecond: {
+      type: Number,
+      value: null,
+    }
+  },
+
+  observers: ['_recordingChanged(recording, recorder)'],
+
+  /**
+   * Start recording from the source media stream.
+   */
+  start: function() {
+    if (!mediaRecorderSupported) {
+      return;
+    }
+
+    var data = [];
+    var start = performance.now();
+    var finished = false;
+
+    var onDataAvailable = function(event) {
+      var elapsed = performance.now() - start;
+
+      if (event.data && event.data.size > 0) {
+        this.fire('app-media-recorder-chunk', event.data);
+
+        if (!this.disableBlobCache) {
+          data.push(event.data);
+        }
+      }
+
+      if (this.duration > 0 && this.duration < elapsed && !finished) {
+        elapsed = this.duration;
+        finished = true;
+        this.stop();
+      }
+
+      this._setElapsed(elapsed);
+    }.bind(this);
+
+    var onStop = function() {
+      this.recorder.removeEventListener('dataavailable', onDataAvailable);
+      this.recorder.removeEventListener('stop', onStop);
+
+      this.fire('app-media-recorder-stopped');
+
+      if (this.disableBlobCache) {
+        return;
+      }
+
+      this._setData(new Blob(data, {type: this.mimeType}));
+    }.bind(this);
+
+    this.stop();
+
+    this.recorder.addEventListener('dataavailable', onDataAvailable);
+    this.recorder.addEventListener('stop', onStop);
+
+    this.recorder.start(this.timeslice);
+    this.recording = true;
+  },
+
+  /**
+   * Stop recording from the source media stream. The result of the
+   * recording will be made available as a new value for the data
+   * property.
+   */
+  stop: function() {
+    if (!mediaRecorderSupported) {
+      return;
+    }
+
+    this._setElapsed(0);
+    if (this.recorder.state !== AppMedia.RecordingState.INACTIVE) {
+      this.recorder.stop();
+      this.recording = false;
+    }
+  },
+
+  /**
+   * Pause recording.
+   */
+  pause: function() {
+    if (!mediaRecorderSupported)
+      this.recorder.pause();
+  },
+
+  /**
+   * Resume recording if paused.
+   */
+  resume: function() {
+    if (!mediaRecorderSupported) {
+      return;
+    }
+
+    if (this.recorder.state === AppMedia.RecordingState.PAUSED) {
+      this.recorder.resume();
+    }
+  },
+
+  _computeRecorder: function(stream, mimeType, audioBps, videoBps, bps) {
+    if (!mediaRecorderSupported) {
+      return;
+    }
+
+    if (mimeType == null || stream == null) {
+      return this.recorder;
+    }
+
+    var options = {mimeType: mimeType};
+
+    if (audioBps != null) {
+      options.audioBitsPerSecond = audioBps;
+    }
+
+    if (videoBps != null) {
+      options.videoBitsPerSecond = videoBps;
+    }
+
+    if (bps != null) {
+      options.bitsPerSecond = bps;
+    }
+
+    return new MediaRecorder(stream, options);
+  },
+
+  _computeMimeType: function(stream, mpeg, codecs) {
+    if (stream == null || !mediaRecorderSupported) {
+      return;
+    }
+
+    var candidate;
+
+    if (mpeg) {
+      candidate = 'video/mpeg';
+    } else if (stream.getVideoTracks().length > 0) {
+      candidate = 'video/webm';
+    } else {
+      candidate = 'audio/webm';
+    }
+
+    if (codecs) {
+      // NOTE(cdata): This specifies a codec if one is preferred by the user
+      // configuration of an element.
+      // A reference for the mimetype format can be found here:
+      // https://tools.ietf.org/html/rfc2046
+      // Examples of specifying codecs in mimetypes can be found here:
+      // https://www.w3.org/TR/mediastream-recording/#check-for-mediarecorder-and-mimetype.x
+      candidate += '\;codecs=' + codecs;
+    }
+
+    return candidate || '';
+  },
+
+  _recordingChanged: function(recording, recorder) {
+    if (recorder == null || !mediaRecorderSupported) {
+      return;
+    }
+
+    if (recording &&
+        this.recorder.state === AppMedia.RecordingState.INACTIVE) {
+      this.start();
+    } else if (
+        !recording &&
+        this.recorder.state !== AppMedia.RecordingState.INACTIVE) {
+      this.stop();
+    }
+  },
+
+  _mimeTypeChanged: function(mimeType) {
+    if (!mimeType || !mediaRecorderSupported) {
+      return;
+    }
+
+    if (!MediaRecorder.isTypeSupported(mimeType)) {
+      this._warn(this._logf('Browser does not support mime-type', mimeType));
+    }
+  }
+});

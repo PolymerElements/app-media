@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/PolymerElements/app-media",
   "name": "@polymer/app-media",
-  "version": "2.0.0",
+  "version": "3.0.0-pre.20",
   "main": "app-media.js",
   "author": "The Polymer Authors",
   "license": "BSD-3-Clause",
@@ -26,10 +26,26 @@
     "@polymer/gen-typescript-declarations": "^1.2.2",
     "bower": "^1.8.4",
     "image-capture": "^0.3.0",
-    "webmat": "^0.2.0"
+    "webmat": "^0.2.0",
+    "@polymer/iron-component-page": "^3.0.0-pre.20",
+    "wct-browser-legacy": "^1.0.1",
+    "@webcomponents/webcomponentsjs": "^2.0.0",
+    "@polymer/test-fixture": "^3.0.0-pre.20",
+    "webrtc-adapter": "^3.0.0"
   },
   "scripts": {
     "update-types": "bower install && gen-typescript-declarations --deleteExisting --outDir .",
     "format": "webmat"
+  },
+  "resolutions": {
+    "inherits": "2.0.3",
+    "samsam": "1.1.3",
+    "supports-color": "3.1.2",
+    "type-detect": "1.0.0",
+    "@webcomponents/webcomponentsjs": "2.0.0-beta.2"
+  },
+  "dependencies": {
+    "@polymer/polymer": "^3.0.0",
+    "@polymer/iron-resizable-behavior": "^3.0.0-pre.20"
   }
 }
