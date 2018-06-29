@@ -9,24 +9,13 @@ function loadScript(path) {
 }
 
 window.ensureWebRtcPolyfill = new Promise(function(resolve, reject) {
-  loadScript('../../../webrtc-adapter/out/adapter.js')
-      .then(resolve)
-      .catch(function() {
-        loadScript('../../webrtc-adapter/release/adapter.js')
-            .then(resolve)
-            .catch(reject)
-      });
+  loadScript('../node_modules/webrtc-adapter/out/adapter.js').then(resolve)
 });
 
 window.ensureImageCapturePolyfill =
     new Promise(function(resolve, reject) {
-      loadScript('../../../image-capture/lib/imagecapture.js')
+      loadScript('../node_modules/image-capture/lib/imagecapture.js')
           .then(resolve)
-          .catch(function() {
-            loadScript('../../imagecapture-polyfill/index.js')
-                .then(resolve)
-                .catch(reject)
-          });
     }).then(function() {
       window.ImageCapture = window.ImageCapture || imagecapture.ImageCapture;
     });
