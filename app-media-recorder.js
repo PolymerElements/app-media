@@ -1,12 +1,31 @@
 /**
 @license
 Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+This code may only be used under the BSD style license found at
+http://polymer.github.io/LICENSE.txt The complete set of authors may be found at
+http://polymer.github.io/AUTHORS.txt The complete set of contributors may be
+found at http://polymer.github.io/CONTRIBUTORS.txt Code distributed by Google as
+part of the polymer project is also subject to an additional IP rights grant
+found at http://polymer.github.io/PATENTS.txt
 */
+import {Polymer as Polymer$0} from '@polymer/polymer/lib/legacy/polymer-fn.js';
+import {Base} from '@polymer/polymer/polymer-legacy.js';
+
+var mediaRecorderSupported = true;
+if (window.MediaRecorder == null) {
+  Base._warn('Media Recorder API is not supported in this browser!');
+  mediaRecorderSupported = false;
+}
+
+export const AppMedia = Polymer$0.AppMedia || {};
+
+/** @see https://www.w3.org/TR/mediastream-recording/#enumdef-recordingstate */
+AppMedia.RecordingState = {
+  INACTIVE: 'inactive',
+  RECORDING: 'recording',
+  PAUSED: 'paused'
+};
+
 /**
 `app-media-recorder` is an element that, when configured with a media stream,
 generates recordings based on that stream and produces them as blobs for further
@@ -35,29 +54,6 @@ you consider to be a suitable substitute, load it first and ensure that
 @group App Elements
 @demo demo/index.html
 */
-/*
-  FIXME(polymer-modulizer): the above comments were extracted
-  from HTML and may be out of place here. Review them and
-  then delete this comment!
-*/
-import { Base } from '@polymer/polymer/polymer-legacy.js';
-
-import { Polymer as Polymer$0 } from '@polymer/polymer/lib/legacy/polymer-fn.js';
-var mediaRecorderSupported = true;
-if (window.MediaRecorder == null) {
-  Base._warn('Media Recorder API is not supported in this browser!');
-  mediaRecorderSupported = false;
-}
-
-export const AppMedia = Polymer$0.AppMedia || {};
-
-/** @see https://www.w3.org/TR/mediastream-recording/#enumdef-recordingstate */
-AppMedia.RecordingState = {
-  INACTIVE: 'inactive',
-  RECORDING: 'recording',
-  PAUSED: 'paused'
-};
-
 Polymer$0({
   is: 'app-media-recorder',
 
@@ -353,8 +349,7 @@ Polymer$0({
       return;
     }
 
-    if (recording &&
-        this.recorder.state === AppMedia.RecordingState.INACTIVE) {
+    if (recording && this.recorder.state === AppMedia.RecordingState.INACTIVE) {
       this.start();
     } else if (
         !recording &&

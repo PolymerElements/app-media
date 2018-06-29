@@ -1,53 +1,18 @@
 /**
 @license
 Copyright (c) 2017 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+This code may only be used under the BSD style license found at
+http://polymer.github.io/LICENSE.txt The complete set of authors may be found at
+http://polymer.github.io/AUTHORS.txt The complete set of contributors may be
+found at http://polymer.github.io/CONTRIBUTORS.txt Code distributed by Google as
+part of the polymer project is also subject to an additional IP rights grant
+found at http://polymer.github.io/PATENTS.txt
 */
-/**
-`app-media-image-capture` implements a helpful wrapper element for the emerging
-[Image Capture API](https://www.w3.org/TR/image-capture/). This element enables
-straight-forward photographic image control and capture that cooperates nicely
-with other app-media elements.
+import {Polymer} from '@polymer/polymer/lib/legacy/polymer-fn.js';
+import {Base} from '@polymer/polymer/polymer-legacy.js';
 
-NOTE: Image Capture API is still under development. As of today (April 7th, 2017),
-the API requires a polyfill or an
-[Origin Trial](https://github.com/jpchase/OriginTrials/blob/gh-pages/developer-guide.md).
-This element will politely neglect to register itself in browsers that do not feature
-the appropriate ImageRecorder global constructor.
+import {AppMedia as AppMedia$0} from './app-media-recorder.js';
 
-Chrome and Firefox have partial support for the API behind flags. See the
-[ImageCapture API browser support](https://github.com/w3c/mediacapture-image/blob/gh-pages/implementation-status.md)
-page for details.
-
-If you wish to support browsers that do not implement the Image Capture API,
-please consider including a polyfill such as
-[this one](https://github.com/GoogleChrome/imagecapture-polyfill) in your app.
-Note that most polyfills will not enable full functionality, but they should give
-your app a reasonable fallback in browsers that do not natively support the API.
-
-ELEMENT DESIGN NOTE: Many of the properties of this element have a default
-configuration value of `null`. While this is weird, it is important to keep the
-behavior of multi-property observers in the element implementation normalized
-across Polymer 1.x and 2.x. Expect this aspect of the API to change as the
-element graduates from the current hybrid implementation to something that can
-rely on Polymer >=2.x observer semantics.
-
-@group App Elements
-@demo demo/index.html
-*/
-/*
-  FIXME(polymer-modulizer): the above comments were extracted
-  from HTML and may be out of place here. Review them and
-  then delete this comment!
-*/
-import { Base } from '@polymer/polymer/polymer-legacy.js';
-
-import { AppMedia as AppMedia$0 } from './app-media-recorder.js';
-import { Polymer as Polymer$0 } from '@polymer/polymer/lib/legacy/polymer-fn.js';
 export const AppMedia = AppMedia$0 || {};
 
 /**
@@ -95,8 +60,41 @@ var TRACK_CONSTRAINT_NAMES = [
 ];
 
 var PHOTO_SETTING_NAMES = ['fillLightMode', 'imageHeight', 'imageWidth'];
+/**
+`app-media-image-capture` implements a helpful wrapper element for the emerging
+[Image Capture API](https://www.w3.org/TR/image-capture/). This element enables
+straight-forward photographic image control and capture that cooperates nicely
+with other app-media elements.
 
-Polymer$0({
+NOTE: Image Capture API is still under development. As of today (April 7th,
+2017), the API requires a polyfill or an [Origin
+Trial](https://github.com/jpchase/OriginTrials/blob/gh-pages/developer-guide.md).
+This element will politely neglect to register itself in browsers that do not
+feature the appropriate ImageRecorder global constructor.
+
+Chrome and Firefox have partial support for the API behind flags. See the
+[ImageCapture API browser
+support](https://github.com/w3c/mediacapture-image/blob/gh-pages/implementation-status.md)
+page for details.
+
+If you wish to support browsers that do not implement the Image Capture API,
+please consider including a polyfill such as
+[this one](https://github.com/GoogleChrome/imagecapture-polyfill) in your app.
+Note that most polyfills will not enable full functionality, but they should
+give your app a reasonable fallback in browsers that do not natively support the
+API.
+
+ELEMENT DESIGN NOTE: Many of the properties of this element have a default
+configuration value of `null`. While this is weird, it is important to keep the
+behavior of multi-property observers in the element implementation normalized
+across Polymer 1.x and 2.x. Expect this aspect of the API to change as the
+element graduates from the current hybrid implementation to something that can
+rely on Polymer >=2.x observer semantics.
+
+@group App Elements
+@demo demo/index.html
+*/
+Polymer({
   is: 'app-media-image-capture',
 
   properties: {
