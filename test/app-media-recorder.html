@@ -15,14 +15,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <title>app-media-recorder test</title>
 
-    <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+    <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
     <script src="./loadPolyfills.js"></script>
-    <script src="../../../wct-browser-legacy/browser.js"></script>
-
-    <script type="module" src="./helpers-import.js"></script>
-    <script type="module" src="../app-media-devices.js"></script>
-    <script type="module" src="../app-media-stream.js"></script>
-    <script type="module" src="../app-media-recorder.js"></script>
+    <script src="../node_modules/wct-browser-legacy/browser.js"></script>
   </head>
   <body>
 
@@ -42,17 +37,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </template>
 
       <script type="module">
-import './helpers-import.js';
-import '../app-media-devices.js';
-import '../app-media-stream.js';
-import '../app-media-recorder.js';
-import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
-Polymer({
-  is: 'x-recorder',
+        import './helpers-import.js';
+        import '../app-media-devices.js';
+        import '../app-media-stream.js';
+        import '../app-media-recorder.js';
+        import {Polymer} from '@polymer/polymer/lib/legacy/polymer-fn.js';
+        Polymer({
+          is: 'x-recorder',
 
-  properties: {stream: {notify: true}}
-});
-</script>
+          properties: {stream: {notify: true}}
+        });
+      </script>
     </dom-module>
 
     <test-fixture id="basic">
@@ -62,168 +57,168 @@ Polymer({
     </test-fixture>
 
     <script type="module">
-import './helpers-import.js';
-import '../app-media-devices.js';
-import '../app-media-stream.js';
-import '../app-media-recorder.js';
-suite('app-media-recorder', function() {
-  var awaitEvent = AppMediaTestHelpers.awaitEvent;
-  var timePasses = AppMediaTestHelpers.timePasses;
-  var createDevice = AppMediaTestHelpers.createDevice;
-  var setDevices = AppMediaTestHelpers.setDevices;
+      import './helpers-import.js';
+      import '../app-media-devices.js';
+      import '../app-media-stream.js';
+      import '../app-media-recorder.js';
+      suite('app-media-recorder', function() {
+        var awaitEvent = AppMediaTestHelpers.awaitEvent;
+        var timePasses = AppMediaTestHelpers.timePasses;
+        var createDevice = AppMediaTestHelpers.createDevice;
+        var setDevices = AppMediaTestHelpers.setDevices;
 
-  suiteSetup(function() {
-    var fakeDevices = [createDevice('videoinput')];
-    setDevices(fakeDevices);
-    return window.ensureWebRtcPolyfill.then(loadScript('./helpers.js'));
-  });
-
-  setup(function() {
-    if (!window.MediaRecorder) {
-      this.skip();
-    }
-    AppMediaTestHelpers.setRecorderData(new Blob(new Uint8Array(1)));
-  });
-
-  teardown(function() {
-    AppMediaTestHelpers.restoreRecorderData();
-  });
-
-  suite('with basic configuration', function() {
-    var element;
-    var stream;
-
-    setup(function() {
-      if (!window.MediaRecorder) {
-        this.skip();
-      }
-      var recorder = fixture('basic');
-      element = recorder.$.recorder;
-      stream = recorder.$.stream;
-
-      return awaitEvent(element, 'recorder-changed');
-    });
-
-    test('can record from the stream', function() {
-      var dataChanges = awaitEvent(element, 'data-changed');
-
-      element.start();
-
-      timePasses(1).then(function() {
-        element.stop();
-      });
-
-      return dataChanges.then(function() {
-        expect(element.data).to.be.instanceof(Blob);
-      });
-    });
-
-    test('can record using the recording property', function() {
-      var dataChanges = awaitEvent(element, 'data-changed');
-
-      element.recording = true;
-
-      timePasses().then(function() {
-        element.recording = false;
-      });
-
-      return dataChanges.then(function() {
-        expect(element.data).to.be.instanceof(Blob);
-      });
-    });
-
-    test('does not throw error if stream gets deactivated', function() {
-      var dataChanges = awaitEvent(element, 'data-changed');
-
-      element.start();
-
-      timePasses(1).then(function() {
-        element.stop();
-        stream.active = false;
-      });
-
-      return dataChanges.then(function() {
-        expect(element.data).to.be.instanceof(Blob);
-        assert(element.recorder);
-      });
-    });
-  });
-
-  suite('with special configuration', function() {
-    suite('bits per second', function() {
-      var element;
-
-      setup(function() {
-        if (!window.MediaRecorder) {
-          this.skip();
-        }
-        AppMediaTestHelpers.spyMediaRecorder();
-
-        var recorder = fixture('basic');
-        element = recorder.$.recorder;
-
-        return awaitEvent(element, 'recorder-changed');
-      });
-
-      teardown(function() {
-        AppMediaTestHelpers.restoreMediaRecorder();
-      });
-
-      test('only adds user-configured bps settings to options', function() {
-        element.bitsPerSecond = 1024;
-
-        var args = MediaRecorder.args[MediaRecorder.args.length - 1];
-        var config = args && args[1];
-
-        expect(config).to.be.ok;
-        expect(config.bitsPerSecond).to.be.equal(1024);
-        expect(config).to.not.have.property('audioBitsPerSecond');
-        expect(config).to.not.have.property('videoBitsPerSecond');
-      });
-    });
-    suite('disabled blob cache', function() {
-      var element;
-
-      setup(function() {
-        if (!window.MediaRecorder) {
-          this.skip();
-        }
-        var recorder = fixture('basic');
-
-        element = recorder.$.recorder;
-        element.disableBlobCache = true;
-
-        return awaitEvent(element, 'recorder-changed');
-      });
-
-      test('never records a data blob', function() {
-        var recorderStops = awaitEvent(element, 'app-media-recorder-stopped')
-                                .then(function() {
-                                  // Give the `data-changed` event a chance to
-                                  // fire and settle the corresponding check
-                                  // in the test:
-                                  return timePasses(1);
-                                });
-        var dataChanges = awaitEvent(element, 'data-changed');
-        var dataChanged = false;
-
-        dataChanges.then(function() {
-          dataChanged = true;
+        suiteSetup(function() {
+          var fakeDevices = [createDevice('videoinput')];
+          setDevices(fakeDevices);
+          return window.ensureWebRtcPolyfill.then(loadScript('./helpers.js'));
         });
 
-        element.recording = true;
-
-        timePasses(1).then(function() {
-          element.recording = false;
+        setup(function() {
+          if (!window.MediaRecorder) {
+            this.skip();
+          }
+          AppMediaTestHelpers.setRecorderData(new Blob(new Uint8Array(1)));
         });
 
-        return recorderStops.then(function() {
-          expect(dataChanged).to.be.equal(false);
+        teardown(function() {
+          AppMediaTestHelpers.restoreRecorderData();
+        });
+
+        suite('with basic configuration', function() {
+          var element;
+          var stream;
+
+          setup(function() {
+            if (!window.MediaRecorder) {
+              this.skip();
+            }
+            var recorder = fixture('basic');
+            element = recorder.$.recorder;
+            stream = recorder.$.stream;
+
+            return awaitEvent(element, 'recorder-changed');
+          });
+
+          test('can record from the stream', function() {
+            var dataChanges = awaitEvent(element, 'data-changed');
+
+            element.start();
+
+            timePasses(1).then(function() {
+              element.stop();
+            });
+
+            return dataChanges.then(function() {
+              expect(element.data).to.be.instanceof(Blob);
+            });
+          });
+
+          test('can record using the recording property', function() {
+            var dataChanges = awaitEvent(element, 'data-changed');
+
+            element.recording = true;
+
+            timePasses().then(function() {
+              element.recording = false;
+            });
+
+            return dataChanges.then(function() {
+              expect(element.data).to.be.instanceof(Blob);
+            });
+          });
+
+          test('does not throw error if stream gets deactivated', function() {
+            var dataChanges = awaitEvent(element, 'data-changed');
+
+            element.start();
+
+            timePasses(1).then(function() {
+              element.stop();
+              stream.active = false;
+            });
+
+            return dataChanges.then(function() {
+              expect(element.data).to.be.instanceof(Blob);
+              assert(element.recorder);
+            });
+          });
+        });
+
+        suite('with special configuration', function() {
+          suite('bits per second', function() {
+            var element;
+
+            setup(function() {
+              if (!window.MediaRecorder) {
+                this.skip();
+              }
+              AppMediaTestHelpers.spyMediaRecorder();
+
+              var recorder = fixture('basic');
+              element = recorder.$.recorder;
+
+              return awaitEvent(element, 'recorder-changed');
+            });
+
+            teardown(function() {
+              AppMediaTestHelpers.restoreMediaRecorder();
+            });
+
+            test('only adds user-configured bps settings to options', function() {
+              element.bitsPerSecond = 1024;
+
+              var args = MediaRecorder.args[MediaRecorder.args.length - 1];
+              var config = args && args[1];
+
+              expect(config).to.be.ok;
+              expect(config.bitsPerSecond).to.be.equal(1024);
+              expect(config).to.not.have.property('audioBitsPerSecond');
+              expect(config).to.not.have.property('videoBitsPerSecond');
+            });
+          });
+          suite('disabled blob cache', function() {
+            var element;
+
+            setup(function() {
+              if (!window.MediaRecorder) {
+                this.skip();
+              }
+              var recorder = fixture('basic');
+
+              element = recorder.$.recorder;
+              element.disableBlobCache = true;
+
+              return awaitEvent(element, 'recorder-changed');
+            });
+
+            test('never records a data blob', function() {
+              var recorderStops =
+                  awaitEvent(element, 'app-media-recorder-stopped').then(function() {
+                    // Give the `data-changed` event a chance to
+                    // fire and settle the corresponding check
+                    // in the test:
+                    return timePasses(1);
+                  });
+              var dataChanges = awaitEvent(element, 'data-changed');
+              var dataChanged = false;
+
+              dataChanges.then(function() {
+                dataChanged = true;
+              });
+
+              element.recording = true;
+
+              timePasses(1).then(function() {
+                element.recording = false;
+              });
+
+              return recorderStops.then(function() {
+                expect(dataChanged).to.be.equal(false);
+              });
+            });
+          });
         });
       });
-    });
-  });
-});
-</script>
+    </script>
   </body>
 </html>
