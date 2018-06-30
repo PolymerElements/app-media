@@ -20,33 +20,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script src="../node_modules/wct-browser-legacy/browser.js"></script>
   </head>
   <body>
-    <dom-module id="x-camera">
-      <template>
-        <app-media-devices
-            kind="videoinput"
-            selected-device="{{device}}">
-        </app-media-devices>
-        <app-media-stream
-            video-device="[[device]]"
-            stream="{{stream}}"
-            active>
-        </app-media-stream>
-        <app-media-video autoplay id="video" source="{{stream}}"></app-media-video>
-      </template>
-      <script type="module">
-        import './helpers-import.js';
-        import '../app-media-devices.js';
-        import '../app-media-stream.js';
-        import '../app-media-video.js';
-        import {Polymer} from '@polymer/polymer/lib/legacy/polymer-fn.js';
-        Polymer({
-          is: 'x-camera',
-
-          properties: {stream: {notify: true}}
-        });
-      </script>
-    </dom-module>
-
     <test-fixture id="basic">
       <template>
         <x-camera></x-camera>
@@ -58,6 +31,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       import '../app-media-devices.js';
       import '../app-media-stream.js';
       import '../app-media-video.js';
+      import {html, Polymer} from '@polymer/polymer/polymer-legacy.js';
+
+      Polymer({
+        is: 'x-camera',
+
+        _template: html`
+          <app-media-devices
+              kind="videoinput"
+              selected-device="{{device}}">
+          </app-media-devices>
+          <app-media-stream
+              video-device="[[device]]"
+              stream="{{stream}}"
+              active>
+          </app-media-stream>
+          <app-media-video autoplay id="video" source="{{stream}}"></app-media-video>`,
+
+        properties: {stream: {notify: true}}
+      });
+
       var supportsSettingStreams = true;
       var stream = new MediaStream();
       var video = document.createElement('video');
