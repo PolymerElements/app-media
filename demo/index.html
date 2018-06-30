@@ -205,8 +205,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           _elapsedChanged: function(elapsed) {
             var progress = Math.min(100 * elapsed / this.duration, 100);
-            this.$.progress.style.transform =
-                'translateX(' + (-100 + progress) + '%)';
+            this.$.progress.style.transform = 'translateX(' + (-100 + progress) + '%)';
           },
 
           _toObjectURL: function(blob) {
