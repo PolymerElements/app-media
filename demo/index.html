@@ -16,33 +16,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <title>app-media demo</title>
 
     <script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2.0.0/webcomponents-loader.js"></script>
-    <script type="module">
-      import '@polymer/polymer/polymer-legacy.js';
-      import '../app-media-devices.js';
-      import '../app-media-stream.js';
-      import '../app-media-video.js';
-      import '../app-media-audio.js';
-      import '../app-media-waveform.js';
-      import '../app-media-recorder.js';
-      window.ensureMediaDevices = new Promise(function(resolve) {
-        if (navigator.mediaDevices == null) {
-          // try to load the polyfill from the NPM directory first
-          var npmScript = document.createElement('script');
-          npmScript.src = '../../webrtc-adapter/out/adapter.js';
-          npmScript.onload = resolve;
-          npmScript.onerror = function() {
-            // on error try loading it from the bower directory
-            var bowerScript = document.createElement('script');
-            bowerScript.src = '../../webrtc-adapter/release/adapter.js';
-            bowerScript.onload = resolve;
-            document.body.appendChild(bowerScript);
-          };
-          document.body.appendChild(npmScript);
-        } else {
-          resolve();
-        }
-      });
-    </script>
+    <script src="https://unpkg.com/webrtc-adapter@^3.0.0/out/adapter.js"></script>
     <style>
       body {
         margin: 0;
@@ -195,58 +169,49 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         import {Polymer} from '@polymer/polymer/polymer-legacy.js';
 
-        var readyToDefine = Promise.all([
-          ensureMediaDevices,
-          new Promise(function(resolve) {
-            document.addEventListener('WebComponentsReady', resolve);
-          })
-        ]);
+        Polymer({
+          is: 'x-video-camera',
 
-        readyToDefine.then(function() {
-          Polymer({
-            is: 'x-video-camera',
+          properties: {
+            recording: {type: Blob, observer: '_recordingChanged'},
 
-            properties: {
-              recording: {type: Blob, observer: '_recordingChanged'},
-
-              recordings: {
-                type: Array,
-                value: function() {
-                  return [];
-                }
-              },
-
-              duration: {type: Number, value: 3000},
-
-              elapsed: {type: Number, observer: '_elapsedChanged'}
-            },
-
-            record: function() {
-              this.classList.add('recording');
-              this.$.recorder.start();
-            },
-
-            _recordingChanged: function(recording) {
-              if (recording != null) {
-                this.push('recordings', recording);
+            recordings: {
+              type: Array,
+              value: function() {
+                return [];
               }
-
-              this.classList.remove('recording');
-              this.async(function() {
-                this.$.progress.style.transform = '';
-              }, 600);
             },
 
-            _elapsedChanged: function(elapsed) {
-              var progress = Math.min(100 * elapsed / this.duration, 100);
-              this.$.progress.style.transform =
-                  'translateX(' + (-100 + progress) + '%)';
-            },
+            duration: {type: Number, value: 3000},
 
-            _toObjectURL: function(blob) {
-              return URL.createObjectURL(blob);
+            elapsed: {type: Number, observer: '_elapsedChanged'}
+          },
+
+          record: function() {
+            this.classList.add('recording');
+            this.$.recorder.start();
+          },
+
+          _recordingChanged: function(recording) {
+            if (recording != null) {
+              this.push('recordings', recording);
             }
-          });
+
+            this.classList.remove('recording');
+            this.async(function() {
+              this.$.progress.style.transform = '';
+            }, 600);
+          },
+
+          _elapsedChanged: function(elapsed) {
+            var progress = Math.min(100 * elapsed / this.duration, 100);
+            this.$.progress.style.transform =
+                'translateX(' + (-100 + progress) + '%)';
+          },
+
+          _toObjectURL: function(blob) {
+            return URL.createObjectURL(blob);
+          }
         });
       </script>
     </dom-module>
