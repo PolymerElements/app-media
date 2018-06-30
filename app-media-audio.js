@@ -8,9 +8,8 @@ found at http://polymer.github.io/CONTRIBUTORS.txt Code distributed by Google as
 part of the polymer project is also subject to an additional IP rights grant
 found at http://polymer.github.io/PATENTS.txt
 */
-import '@polymer/polymer/polymer-legacy.js';
+import {Polymer} from '@polymer/polymer/polymer-legacy.js';
 
-import {Polymer} from '@polymer/polymer/lib/legacy/polymer-fn.js';
 /**
 `app-media-audio` is an element that converts an audio source to an audio
 analyser suitable for generating audio visualizations such as the ones made by

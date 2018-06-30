@@ -8,8 +8,7 @@ found at http://polymer.github.io/CONTRIBUTORS.txt Code distributed by Google as
 part of the polymer project is also subject to an additional IP rights grant
 found at http://polymer.github.io/PATENTS.txt
 */
-import {Polymer as Polymer$0} from '@polymer/polymer/lib/legacy/polymer-fn.js';
-import {Base} from '@polymer/polymer/polymer-legacy.js';
+import {Base, Polymer} from '@polymer/polymer/polymer-legacy.js';
 
 var mediaRecorderSupported = true;
 if (window.MediaRecorder == null) {
@@ -17,7 +16,7 @@ if (window.MediaRecorder == null) {
   mediaRecorderSupported = false;
 }
 
-export const AppMedia = Polymer$0.AppMedia || {};
+export const AppMedia = Polymer.AppMedia || {};
 
 /** @see https://www.w3.org/TR/mediastream-recording/#enumdef-recordingstate */
 AppMedia.RecordingState = {
@@ -54,7 +53,7 @@ you consider to be a suitable substitute, load it first and ensure that
 @group App Elements
 @demo demo/index.html
 */
-Polymer$0({
+Polymer({
   is: 'app-media-recorder',
 
   properties: {

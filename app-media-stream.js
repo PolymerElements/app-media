@@ -8,9 +8,7 @@ found at http://polymer.github.io/CONTRIBUTORS.txt Code distributed by Google as
 part of the polymer project is also subject to an additional IP rights grant
 found at http://polymer.github.io/PATENTS.txt
 */
-import '@polymer/polymer/polymer-legacy.js';
-
-import {Polymer} from '@polymer/polymer/lib/legacy/polymer-fn.js';
+import {Polymer} from '@polymer/polymer/polymer-legacy.js';
 /**
 `app-media-stream` is an element that converts a provided video device and/or
 audio device into a media stream.

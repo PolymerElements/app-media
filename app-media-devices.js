@@ -8,9 +8,7 @@ found at http://polymer.github.io/CONTRIBUTORS.txt Code distributed by Google as
 part of the polymer project is also subject to an additional IP rights grant
 found at http://polymer.github.io/PATENTS.txt
 */
-import '@polymer/polymer/polymer-legacy.js';
-
-import {Polymer} from '@polymer/polymer/lib/legacy/polymer-fn.js';
+import {Polymer} from '@polymer/polymer/polymer-legacy.js';
 /**
 `app-media-devices` is an element that enumerates the connected input devices
 and optionally filters them, allowing the user to cycle through categories of

@@ -186,14 +186,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       </template>
       <script type="module">
-        import '@polymer/polymer/polymer-legacy.js';
         import '../app-media-devices.js';
         import '../app-media-stream.js';
         import '../app-media-video.js';
         import '../app-media-audio.js';
         import '../app-media-waveform.js';
         import '../app-media-recorder.js';
-        import {Polymer} from '@polymer/polymer/lib/legacy/polymer-fn.js';
+
+        import {Polymer} from '@polymer/polymer/polymer-legacy.js';
+
         var readyToDefine = Promise.all([
           ensureMediaDevices,
           new Promise(function(resolve) {
