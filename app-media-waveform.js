@@ -19,8 +19,7 @@ node, such as one produced by `app-media-audio`.
 Custom property | Description | Default
 ----------------|-------------|----------
 `--app-media-waveform-background-color` | Background color | `#EF2D5E`
-`--app-media-waveform-foreground-color` | Foreground color | `rgba(255, 255,
-255, 0.85)`
+`--app-media-waveform-foreground-color` | Foreground color | `rgba(255, 255, 255, 0.85)`
 `--app-media-waveform-stroke-width` | Width of the foreground | `2px`
 
 @group App Elements
