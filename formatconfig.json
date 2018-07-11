@@ -1,9 +1,5 @@
 {
   "style": {
     "ReflowComments": false
-  },
-  "exclude": [
-    "test/app-media-recorder.html",
-    "test/app-media-video.html"
-  ]
+  }
 }
