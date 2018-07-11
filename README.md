@@ -9,6 +9,9 @@ microphones, and visualizing that data for users.
 
 _See [the full explainer](./explainer.md) for detailed usage._
 
+See: [Documentation](https://www.webcomponents.org/element/@polymer/app-media),
+  [Demo](https://www.webcomponents.org/element/@polymer/app-media/demo/demo/index.html).
+
 ### Browser support
 
 The following emerging platform APIs are used by this collection of elements:
