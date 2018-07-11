@@ -24,7 +24,7 @@
   "license": "BSD-3-Clause",
   "devDependencies": {
     "image-capture": "^0.3.0",
-    "webmat": "^0.2.0",
+    "webmat": "^0.2.2",
     "wct-browser-legacy": "^1.0.1",
     "@webcomponents/webcomponentsjs": "^2.0.0",
     "@polymer/test-fixture": "^3.0.0-pre.20",
