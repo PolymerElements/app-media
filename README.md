@@ -1,26 +1,18 @@
+[![Published on NPM](https://img.shields.io/npm/v/@polymer/app-media.svg)](https://www.npmjs.com/package/@polymer/app-media)
+[![Build status](https://travis-ci.org/PolymerElements/app-media.svg?branch=master)](https://travis-ci.org/PolymerElements/app-media)
+[![Published on webcomponents.org](https://img.shields.io/badge/webcomponents.org-published-blue.svg)](https://webcomponents.org/element/@polymer/app-media)
+
 ## App Media Elements
 
 Elements for accessing data from media input devices, such as cameras and
 microphones, and visualizing that data for users.
 
-### Introduction
+_See [the full explainer](./explainer.md) for detailed usage._
 
-Modern web browsers support a set of APIs called
-[Media Capture and Streams](https://www.w3.org/TR/mediacapture-streams/). These
-APIs allow you to access inputs such as microphones and cameras, and to a
-limited extent they also let you record and visualize the data.
+See: [Documentation](https://www.webcomponents.org/element/@polymer/app-media),
+  [Demo](https://www.webcomponents.org/element/@polymer/app-media/demo/demo/index.html).
 
-Browsers of yet greater modernity support an API called
-[MediaStream Recording](https://www.w3.org/TR/mediastream-recording/). This
-API makes recording and processing the data from these inputs really easy and
-fun.
-
-App Media is a series of elements that wrap these APIs. The intention is to make
-it easier and more fun to build apps and websites that incorporate video and
-audio recording and visualization, while relying on standardized, highly
-performant browser APIs.
-
-#### Browser support
+### Browser support
 
 The following emerging platform APIs are used by this collection of elements:
 
@@ -49,277 +41,487 @@ Element                   | Chrome | Safari 11 | Firefox | Edge  | IE 11
 `app-media-recorder`      |     ✅ |        🚫 |      ✅ |    🚫 |    🚫
 `app-media-image-capture` |     ✅ |        🚧 |      🚧 |    🚧 |    🚫
 
-### How to use
+## Usage
 
-Many apps that access cameras and microphones may wish to start by discovering
-what is possible on the current device. A laptop typically has only one camera,
-but a phone often has one or two. A microphone is often present on devices these
-days, but it's good to know for sure.
+### Installation
 
-Before you begin, make sure that you are loading the
-[WebRTC polyfill](https://github.com/webrtc/adapter) where appropriate so that
-the most up to date versions of the necessary APIs are usable in all of your
-target browsers.
-
-### `<app-media-devices>`
-
-`app-media` offers the `app-media-devices` element to assist in looking up the
-available cameras, microphones and other inputs on the current device. You can
-configure it with a string that can be matched against the kind of device you
-wish to look up, and the element will do the rest. Here is an example that
-binds an array of all available microphone-like devices to a property called
-`microphones`:
-
-```html
-<app-media-devices kind="audioinput" devices="{{microphones}}">
-</app-media-devices>
+Element:
+```
+npm install --save @polymer/app-media
 ```
 
-In the example, the available devices are filtered to those that have the string
-`'audioinput'` in their `kind` field. It is often convenient to refer to a
-single selected device. This can be done using the `selected-device` property,
-which points to a single device in the list at a time:
-
-```html
-<app-media-devices kind="audioinput" selected-device="{{microphone}}">
-</app-media-devices>
+Polyfills:
+```
+npm install --save webrtc-adapter
+npm install --save image-capture
 ```
 
-### `<app-media-stream>`
+### In an HTML file
 
-Once you have found a device that you like, you'll need to access a
-`MediaStream` of the input from the device. The `app-media-stream` makes it
-easy to convert a device reference to a `MediaStream`:
+##### `<app-media-devices>`
 
 ```html
-<app-media-stream audio-device="[[microphone]]" stream="{{microphoneStream}}">
-</app-media-stream>
+<html>
+  <head>
+    <script type="module">
+      import '@polymer/app-media/app-media-devices.js';
+    </script>
+  </head>
+  <body>
+    <app-media-devices
+        kind="audioinput"
+        devices="{{microphones}}">
+    </app-media-devices>
+  </body>
+</html>
 ```
 
-However, sometimes you don't know which device you want to use. The Media
-Capture and Streams API allows users to
-[specify constraints](https://w3c.github.io/mediacapture-main/#constrainable-properties)
-related to the input device. For example, if you wish to access a camera stream,
-and you would prefer to get the back-facing camera if available, you could do
-something like this:
+##### `<app-media-stream>`
 
 ```html
-<app-media-stream
-    video-constraints='{"facingMode":"environment"}'
-    stream="{{backFacingCameraStream}}">
-</app-media-stream>
+<html>
+  <head>
+    <script type="module">
+      import '@polymer/polymer/lib/elements/dom-bind.js';
+      import '@polymer/app-media/app-media-devices.js';
+      import '@polymer/app-media/app-media-stream.js';
+    </script>
+  </head>
+  <body>
+    <dom-bind>
+      <template>
+        <app-media-devices
+            kind="audioinput"
+            devices="{{microphone}}">
+        </app-media-devices>
+        <app-media-stream
+            audio-device="[[microphone]]"
+            stream="{{microphoneStream}}">
+        </app-media-stream>
+      </template>
+    </dom-bind>
+  </body>
+</html>
 ```
 
-You can use `app-media-stream` to record a device screen.
-
-Screen sharing in Chrome and Firefox has some differences. See
-[this](https://www.webrtc-experiment.com/Pluginfree-Screen-Sharing/#why-screen-fails)
-page for more info.
-
-To capture the screen in Chrome use `{"mandatory": {"chromeMediaSource": "screen"}}`
-video constraint:
+#### `<app-media-video>`
 
 ```html
-<app-media-stream
-    video-constraints='{"mandatory": {"chromeMediaSource": "screen"}}'
-    stream="{{stream}}"
-    active>
-</app-media-stream>
+<html>
+  <head>
+    <script type="module">
+      import '@polymer/polymer/lib/elements/dom-bind.js';
+      import '@polymer/app-media/app-media-devices.js';
+      import '@polymer/app-media/app-media-stream.js';
+      import '@polymer/app-media/app-media-video.js';
+    </script>
+  </head>
+  <body>
+    <dom-bind>
+      <template>
+        <app-media-devices
+            kind="videoinput"
+            devices="{{camera}}">
+        </app-media-devices>
+        <app-media-stream
+            video-device="[[camera]]"
+            stream="{{cameraStream}}">
+        </app-media-stream>
+        <app-media-video
+            source="[[cameraStream]]"
+            autoplay>
+        </app-media-video>
+      </template>
+    </dom-bind>
+  </body>
+</html>
 ```
 
-NOTE: As of today (April 23th, 2017), screen capturing in Chrome is available only on
-Android and requires enabling `chrome://flags#enable-usermedia-screen-capturing` flag.
-
-To capture the screen in Firefox use `{"mediaSource": "screen"}` video constraint:
+#### `<app-media-recorder>`
 
 ```html
-<app-media-stream
-    video-constraints='{"mediaSource": "screen"}'
-    stream="{{stream}}"
-    active>
-</app-media-stream>
+<html>
+  <head>
+    <script type="module">
+      import '@polymer/polymer/lib/elements/dom-bind.js';
+      import '@polymer/app-media/app-media-devices.js';
+      import '@polymer/app-media/app-media-stream.js';
+      import '@polymer/app-media/app-media-recorder.js';
+    </script>
+  </head>
+  <body>
+    <dom-bind>
+      <template>
+        <app-media-devices
+            kind="videoinput"
+            devices="{{camera}}">
+        </app-media-devices>
+        <app-media-devices
+            kind="audioinput"
+            devices="{{microphone}}">
+        </app-media-devices>
+        <app-media-stream
+            video-device="[[camera]]"
+            audio-device="[[microphone]]"
+            stream="{{cameraAndMicrophoneStream}}">
+        </app-media-stream>
+        <app-media-recorder
+            id="recorder"
+            stream="[[cameraAndMicrophoneStream]]"
+            data="{{recordedVideo}}"
+            duration="3000">
+        </app-media-recorder>
+      </template>
+    </dom-bind>
+    <script>
+      function createRecording() {
+        recorder.start();
+      }
+    </script>
+  </body>
+</html>
 ```
 
-You can also use `{"mediaSource": "window"}` to capture only application window
-and `{"mediaSource": "application"}` to capture all application windows,
-not the whole screen.
-
-NOTE: Firefox (before version 52) requires to set `media.getusermedia.screensharing.enabled`
-to `true` and add the web app domain to `media.getusermedia.screensharing.allowed_domains`
-in `about:config`.
-
-It's easy to create a stream that contains both audio and video tracks as well.
-Any combination of devices and constraints can be used when configuring:
+##### `<app-media-image-capture>`
 
 ```html
-<app-media-stream
-    audio-device="[[microphone]]"
-    video-constraints='{"facingMode":"environment"}'
-    stream="{{cameraAndMicrophoneStream}}">
-</app-media-stream>
+<html>
+  <head>
+    <script type="module">
+      import '@polymer/polymer/lib/elements/dom-bind.js';
+      import '@polymer/app-media/app-media-devices.js';
+      import '@polymer/app-media/app-media-stream.js';
+      import '@polymer/app-media/app-media-image-capture.js';
+    </script>
+  </head>
+  <body>
+    <dom-bind>
+      <template>
+        <app-media-devices
+            kind="videoinput"
+            devices="{{camera}}">
+        </app-media-devices>
+        <app-media-stream
+            video-device="[[camera]]"
+            stream="{{videoStream}}">
+        </app-media-stream>
+        <app-media-image-capture
+            id="imageCapture"
+            stream="[[videoStream]]"
+            focus-mode="single-shot"
+            red-eye-reduction
+            last-photo="{{photo}}">
+        </app-media-image-capture>
+      </template>
+    </dom-bind>
+    <script>
+      function takePhoto() {
+        imageCapture.takePhoto();
+      }
+    </script>
+  </body>
+</html>
 ```
 
-NOTE: Chrome doesn't support combining screen capture video tracks with audio tracks.
-
-### `<app-media-video>`
-
-Suppose you are planning to build an awesome camera app. At some point, you will
-need to convert your `MediaStream` instance into video that the user can see, so
-that she knows what is being recorded. Conveniently, you don't need a special
-element to make this work. You can actually just use a basic `<video>` element:
+#### `<app-media-audio>`
 
 ```html
-<video src-object="[[backFacingCameraStream]]" autoplay></video>
+<html>
+  <head>
+    <script type="module">
+      import '@polymer/polymer/lib/elements/dom-bind.js';
+      import '@polymer/app-media/app-media-devices.js';
+      import '@polymer/app-media/app-media-stream.js';
+      import '@polymer/app-media/app-media-audio.js';
+    </script>
+  </head>
+  <body>
+    <dom-bind>
+      <template>
+        <app-media-devices
+            kind="videoinput"
+            devices="{{camera}}">
+        </app-media-devices>
+        <app-media-stream
+            video-device="[[camera]]"
+            stream="{{videoStream}}">
+        </app-media-stream>
+        <app-media-audio
+            stream="[[microphoneStream]]"
+            analyser="{{microphoneAnalyzer}}">
+        </app-media-audio>
+      </template>
+    </dom-bind>
+  </body>
+</html>
 ```
 
-Once the `backFacingCameraStream` is available, the `<video>` element will
-display video from the camera. But, without further intervention, the video will
-change its size to be the pixel dimensions of the incoming video feed. If you
-are building a camera app, you may want a video that scales predictably inside
-of its container. An easy way to get this is to use `<app-media-video>`:
+#### `<app-media-waveform>`
 
 ```html
-<app-media-video source="[[backFacingCameraStream]]" autoplay>
-</app-media-video>
+<html>
+  <head>
+    <script type="module">
+      import '@polymer/polymer/lib/elements/dom-bind.js';
+      import '@polymer/app-media/app-media-devices.js';
+      import '@polymer/app-media/app-media-stream.js';
+      import '@polymer/app-media/app-media-audio.js';
+      import '@polymer/app-media/app-media-waveform.js';
+    </script>
+  </head>
+  <body>
+    <dom-bind>
+      <template>
+        <app-media-devices
+            kind="videoinput"
+            devices="{{camera}}">
+        </app-media-devices>
+        <app-media-stream
+            video-device="[[camera]]"
+            stream="{{videoStream}}">
+        </app-media-stream>
+        <app-media-audio
+            stream="[[microphoneStream]]"
+            analyser="{{microphoneAnalyzer}}">
+        </app-media-audio>
+        <app-media-waveform analyser="[[microphoneAnalyzer]]">
+        </app-media-waveform>
+      </template>
+    </dom-bind>
+  </body>
+</html>
 ```
 
-By default, `<app-media-video>` will automatically scale the video so that it
-is "full bleed" relative to the dimensions of the `<app-media-video>` element.
-It can also be configured to scale the video so that it is contained instead of
-cropped by the boundary of `<app-media-video>`:
+### In a Polymer 3 element
 
-```html
-<app-media-video source="[[backFacingCameraStream]]" autoplay contain>
-</app-media-video>
+##### `<app-media-devices>`
+
+```js
+import {PolymerElement, html} from '@polymer/polymer';
+import '@polymer/app-media/app-media-devices.js';
+
+class SampleElement extends PolymerElement {
+  static get template() {
+    return html`
+      <app-media-devices
+          kind="audioinput"
+          devices="{{microphones}}">
+      </app-media-devices>
+    `;
+  }
+}
+customElements.define('sample-element', SampleElement);
 ```
 
-Note that when using a combined stream of camera and microphone data, you may
-wish to mute the video in order to avoid creating a feedback loop.
+##### `<app-media-stream>`
 
-### `<app-media-recorder>`
+```js
+import {PolymerElement, html} from '@polymer/polymer';
+import '@polymer/app-media/app-media-devices.js';
+import '@polymer/app-media/app-media-stream.js';
 
-Eventually you will want to record actual video and audio from the
-`MediaStream`. This is where the MediaStream Recording API comes in, and there
-is an element to make it nice and declarative called `<app-media-recorder>`.
-In order to use it, configure the element with an optional duration and bind the
-stream to it:
-
-```html
-<app-media-recorder
-    id="recorder"
-    stream="[[cameraAndMicrophoneStream]]"
-    data="{{recordedVideo}}"
-    duration="3000">
-</app-media-recorder>
+class SampleElement extends PolymerElement {
+  static get template() {
+    return html`
+      <app-media-devices
+          kind="audioinput"
+          devices="{{microphone}}">
+      </app-media-devices>
+      <app-media-stream
+          audio-device="[[microphone]]"
+          stream="{{microphoneStream}}">
+      </app-media-stream>
+    `;
+  }
+}
+customElements.define('sample-element', SampleElement);
 ```
 
-When you are ready to make a recording, call the `start` method on the element:
+#### `<app-media-video>`
 
-```html
-<script>
-Polymer({
-  is: 'x-camera',
+```js
+import {PolymerElement, html} from '@polymer/polymer';
+import '@polymer/app-media/app-media-devices.js';
+import '@polymer/app-media/app-media-stream.js';
+import '@polymer/app-media/app-media-video.js';
 
-  // ...
+class SampleElement extends PolymerElement {
+  static get template() {
+    return html`
+      <app-media-devices
+          kind="videoinput"
+          devices="{{camera}}">
+      </app-media-devices>
+      <app-media-stream
+          video-device="[[camera]]"
+          stream="{{cameraStream}}">
+      </app-media-stream>
+      <app-media-video
+          source="[[cameraStream]]"
+          autoplay>
+      </app-media-video>
+    `;
+  }
+}
+customElements.define('sample-element', SampleElement);
+```
 
-  createRecording: function() {
+#### `<app-media-recorder>`
+
+```js
+import {PolymerElement, html} from '@polymer/polymer';
+import '@polymer/app-media/app-media-devices.js';
+import '@polymer/app-media/app-media-stream.js';
+import '@polymer/app-media/app-media-recorder.js';
+
+class SampleElement extends PolymerElement {
+  static get template() {
+    return html`
+      <app-media-devices
+          kind="videoinput"
+          devices="{{camera}}">
+      </app-media-devices>
+      <app-media-devices
+          kind="audioinput"
+          devices="{{microphone}}">
+      </app-media-devices>
+      <app-media-stream
+          video-device="[[camera]]"
+          audio-device="[[microphone]]"
+          stream="{{cameraAndMicrophoneStream}}">
+      </app-media-stream>
+      <app-media-recorder
+          id="recorder"
+          stream="[[cameraAndMicrophoneStream]]"
+          data="{{recordedVideo}}"
+          duration="3000">
+      </app-media-recorder>
+    `;
+  }
+
+  createRecording() {
     this.$.recorder.start();
   }
-
-  // ....
-});
-</script>
+}
+customElements.define('sample-element', SampleElement);
 ```
 
-The `<app-media-recorder>` will start recording from the configured stream and
-automatically stop after the configured duration. While the recording is taking
-place, the element will dispatch `app-media-recorder-chunk` events that contain
-individual data chunks as provided by `MediaRecorder` it the `dataavailable`
-event. Once the recording is available, it will assign it to the `data` property
-(this will also update the bound `recordedVideo` property in the example above).
+##### `<app-media-image-capture>`
 
-If you don't configure a `duration`, then the recording will continue until you
-call the `stop` method on the recorder instance.
+```js
+import {PolymerElement, html} from '@polymer/polymer';
+import '@polymer/app-media/app-media-devices.js';
+import '@polymer/app-media/app-media-stream.js';
+import '@polymer/app-media/app-media-image-capture.js';
 
-### `<app-media-image-capture>`
+class SampleElement extends PolymerElement {
+  static get template() {
+    return html`
+      <app-media-devices
+          kind="videoinput"
+          devices="{{camera}}">
+      </app-media-devices>
+      <app-media-stream
+          video-device="[[camera]]"
+          stream="{{videoStream}}">
+      </app-media-stream>
+      <app-media-image-capture
+          id="imageCapture"
+          stream="[[videoStream]]"
+          focus-mode="single-shot"
+          red-eye-reduction
+          last-photo="{{photo}}">
+      </app-media-image-capture>
+    `;
+  }
 
-An emerging standard defines the
-[Image Capture API](https://w3c.github.io/mediacapture-image/), which allows for
-more fine-grained control of camera settings such as color temperature, white
-balance, focus and flash. It also allows for direct JPEG capture of the image
-that appears in a given media device.
-
-The `<app-media-image-capture>` element offers a declarative strategy for
-configuring an `ImageCapture` instance and accessing the photos it takes:
-
-```html
-<app-media-image-capture
-    id="imageCapture"
-    stream="[[videoStream]]"
-    focus-mode="single-shot"
-    red-eye-reduction
-    last-photo="{{photo}}">
-</app-media-image-capture>
-```
-
-When you are ready to capture a photo, call the `takePhoto` method:
-
-```html
-<script>
-Polymer({
-  is: 'x-camera',
-
-  // ...
-
-  takePhoto: function() {
-    // NOTE: This method also returns a promise that resolves the photo.
+  takePhoto() {
     this.$.imageCapture.takePhoto();
   }
-
-  // ....
-});
-</script>
+}
+customElements.define('sample-element', SampleElement);
 ```
 
-### `<app-media-audio>`
+#### `<app-media-audio>`
 
-If you are building a voice memo app, you may wish to access an audio analyzer
-so that you can visualize microphone input in real time. This can be done with
-the `<app-media-audio>` element:
+```js
+import {PolymerElement, html} from '@polymer/polymer';
+import '@polymer/app-media/app-media-devices.js';
+import '@polymer/app-media/app-media-stream.js';
+import '@polymer/app-media/app-media-audio.js';
 
-```html
-<app-media-audio
-    stream="[[microphoneStream]]"
-    analyser="{{microphoneAnalyser}}">
-</app-media-audio>
-```
-
-When the `microphoneStream` becomes available, the `microphoneAnalyser` property
-will be assigned an instance of a Web Audio
-[`AnalyserNode`](https://developer.mozilla.org/en-US/docs/Web/API/AnalyserNode)
-that corresponds to the audio input from that stream. Any stream with at least
-once audio track can be used as an input for `<app-media-audio>`.
-
-### `<app-media-waveform>`
-
-There are many kinds of visualization that might be useful for demonstrating to
-your users that there is a hot mic on their devices. `<app-media-waveform>` is
-a basic SVG visualization that can suit a wide-range of visualization needs. It
-is very easy to use if you have an `AnalyzerNode` instance:
-
-```html
-<app-media-waveform analyser="[[microphoneAnalyser]]">
-</app-media-waveform>
-```
-
-The analyzer is minimal, but its foreground and background can be themed to
-achieve some level of customized look and feel:
-
-```html
-<style>
-  :host {
-    --app-media-waveform-background-color: red;
-    --app-media-waveform-foreground-color: lightblue;
+class SampleElement extends PolymerElement {
+  static get template() {
+    return html`
+      <app-media-devices
+          kind="videoinput"
+          devices="{{camera}}">
+      </app-media-devices>
+      <app-media-stream
+          video-device="[[camera]]"
+          stream="{{videoStream}}">
+      </app-media-stream>
+      <app-media-audio
+          stream="[[microphoneStream]]"
+          analyser="{{microphoneAnalyzer}}">
+      </app-media-audio>
+    `;
   }
-</style>
+}
+customElements.define('sample-element', SampleElement);
+```
+
+#### `<app-media-waveform>`
+
+```js
+import {PolymerElement, html} from '@polymer/polymer';
+import '@polymer/app-media/app-media-devices.js';
+import '@polymer/app-media/app-media-stream.js';
+import '@polymer/app-media/app-media-audio.js';
+import '@polymer/app-media/app-media-waveform.js';
+
+class SampleElement extends PolymerElement {
+  static get template() {
+    return html`
+      <app-media-devices
+          kind="videoinput"
+          devices="{{camera}}">
+      </app-media-devices>
+      <app-media-stream
+          video-device="[[camera]]"
+          stream="{{videoStream}}">
+      </app-media-stream>
+      <app-media-audio
+          stream="[[microphoneStream]]"
+          analyser="{{microphoneAnalyzer}}">
+      </app-media-audio>
+      <app-media-waveform analyser="[[microphoneAnalyzer]]">
+      </app-media-waveform>
+    `;
+  }
+}
+customElements.define('sample-element', SampleElement);
+```
+
+## Contributing
+If you want to send a PR to this element, here are
+the instructions for running the tests and demo locally:
+
+### Installation
+```sh
+git clone https://github.com/PolymerElements/app-media
+cd app-media
+npm install
+npm install -g polymer-cli
+```
+
+### Running the demo locally
+```sh
+polymer serve --npm
+open http://127.0.0.1:<port>/demo/
+```
+
+### Running the tests
+```sh
+polymer test --npm
 ```

@@ -1,4 +1,4 @@
-import { Base } from '@polymer/polymer/polymer-legacy.js';
+import {Base} from '@polymer/polymer/polymer-legacy.js';
 var mediaDevices = navigator.mediaDevices || {};
 var enumerateDevices =
     (mediaDevices.enumerateDevices || function() {}).bind(mediaDevices);

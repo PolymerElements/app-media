@@ -15,43 +15,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <title>app-media demo</title>
 
-    <script src="../../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
-    <script type="module">
-import '@polymer/polymer/polymer-legacy.js';
-import '../app-media-devices.js';
-import '../app-media-stream.js';
-import '../app-media-video.js';
-import '../app-media-audio.js';
-import '../app-media-waveform.js';
-import '../app-media-recorder.js';
-window.ensureMediaDevices = new Promise(function(resolve) {
-  if (navigator.mediaDevices == null) {
-    // try to load the polyfill from the NPM directory first
-    var npmScript = document.createElement('script');
-    npmScript.src = '../../webrtc-adapter/out/adapter.js';
-    npmScript.onload = resolve;
-    npmScript.onerror = function() {
-      // on error try loading it from the bower directory
-      var bowerScript = document.createElement('script');
-      bowerScript.src = '../../webrtc-adapter/release/adapter.js';
-      bowerScript.onload = resolve;
-      document.body.appendChild(bowerScript);
-    };
-    document.body.appendChild(npmScript);
-  } else {
-    resolve();
-  }
-});
-</script>
-
-    <script type="module" src="../../polymer/polymer-legacy.js"></script>
-    <script type="module" src="../app-media-devices.js"></script>
-    <script type="module" src="../app-media-stream.js"></script>
-    <script type="module" src="../app-media-video.js"></script>
-    <script type="module" src="../app-media-audio.js"></script>
-    <script type="module" src="../app-media-waveform.js"></script>
-    <script type="module" src="../app-media-recorder.js"></script>
-
+    <script src="https://unpkg.com/@webcomponents/webcomponentsjs@^2.0.0/webcomponents-loader.js"></script>
+    <script src="https://unpkg.com/webrtc-adapter@^3.0.0/out/adapter.js"></script>
     <style>
       body {
         margin: 0;
@@ -195,68 +160,59 @@ window.ensureMediaDevices = new Promise(function(resolve) {
 
       </template>
       <script type="module">
-import '@polymer/polymer/polymer-legacy.js';
-import '../app-media-devices.js';
-import '../app-media-stream.js';
-import '../app-media-video.js';
-import '../app-media-audio.js';
-import '../app-media-waveform.js';
-import '../app-media-recorder.js';
-import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
-var readyToDefine = Promise.all([
-  ensureMediaDevices,
-  new Promise(function(resolve) {
-    document.addEventListener('WebComponentsReady', resolve);
-  })
-]);
+        import '../app-media-devices.js';
+        import '../app-media-stream.js';
+        import '../app-media-video.js';
+        import '../app-media-audio.js';
+        import '../app-media-waveform.js';
+        import '../app-media-recorder.js';
 
-readyToDefine.then(function() {
-  Polymer({
-    is: 'x-video-camera',
+        import {Polymer} from '@polymer/polymer/polymer-legacy.js';
 
-    properties: {
-      recording: {type: Blob, observer: '_recordingChanged'},
+        Polymer({
+          is: 'x-video-camera',
 
-      recordings: {
-        type: Array,
-        value: function() {
-          return [];
-        }
-      },
+          properties: {
+            recording: {type: Blob, observer: '_recordingChanged'},
 
-      duration: {type: Number, value: 3000},
+            recordings: {
+              type: Array,
+              value: function() {
+                return [];
+              }
+            },
 
-      elapsed: {type: Number, observer: '_elapsedChanged'}
-    },
+            duration: {type: Number, value: 3000},
 
-    record: function() {
-      this.classList.add('recording');
-      this.$.recorder.start();
-    },
+            elapsed: {type: Number, observer: '_elapsedChanged'}
+          },
 
-    _recordingChanged: function(recording) {
-      if (recording != null) {
-        this.push('recordings', recording);
-      }
+          record: function() {
+            this.classList.add('recording');
+            this.$.recorder.start();
+          },
 
-      this.classList.remove('recording');
-      this.async(function() {
-        this.$.progress.style.transform = '';
-      }, 600);
-    },
+          _recordingChanged: function(recording) {
+            if (recording != null) {
+              this.push('recordings', recording);
+            }
 
-    _elapsedChanged: function(elapsed) {
-      var progress = Math.min(100 * elapsed / this.duration, 100);
-      this.$.progress.style.transform =
-          'translateX(' + (-100 + progress) + '%)';
-    },
+            this.classList.remove('recording');
+            this.async(function() {
+              this.$.progress.style.transform = '';
+            }, 600);
+          },
 
-    _toObjectURL: function(blob) {
-      return URL.createObjectURL(blob);
-    }
-  });
-});
-</script>
+          _elapsedChanged: function(elapsed) {
+            var progress = Math.min(100 * elapsed / this.duration, 100);
+            this.$.progress.style.transform = 'translateX(' + (-100 + progress) + '%)';
+          },
+
+          _toObjectURL: function(blob) {
+            return URL.createObjectURL(blob);
+          }
+        });
+      </script>
     </dom-module>
     <x-video-camera></x-video-camera>
   </body>
