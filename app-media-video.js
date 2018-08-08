@@ -40,7 +40,7 @@ Polymer({
         will-change: transform;
       }
     </style>
-    <video id="videoElement" on-loadedmetadata="_updateMetrics" muted="[[muted]]" autoplay="[[autoplay]]" loop="[[loop]]" webkit-playsinline="" playsinline="">
+    <video id="videoElement" on-loadedmetadata="_updateMetrics" muted="[[muted]]" autoplay="[[autoplay]]" loop="[[loop]]" webkit-playsinline playsinline>
     </video>
 `,
 
