@@ -47,7 +47,9 @@ you consider to be a suitable substitute, load it first and ensure that
   // <app-media-recorder> is loaded:
   window.MediaRecorder = MediaStreamRecorder;
 </script>
-<link rel="import" href="/bower_components/app-media/app-media-recorder.html">
+<script type="module">
+  import '@polymer/app-media/app-media-recorder.js';
+</script>
 ```
 
 @group App Elements
