@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/PolymerElements/app-media",
   "name": "@polymer/app-media",
-  "version": "3.0.0-pre.24",
+  "version": "3.0.0-pre.25",
   "main": "app-media.js",
   "author": "The Polymer Authors",
   "license": "BSD-3-Clause",
