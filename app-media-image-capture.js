@@ -422,7 +422,7 @@ Polymer({
   },
 
   __computeImageCapture: function(videoTrack) {
-    if (!imageCaptureSupported) {
+    if (!imageCaptureSupported || !videoTrack) {
       return;
     }
 
@@ -438,7 +438,7 @@ Polymer({
   },
 
   __updatePhotoCapabilities: function() {
-    if (!imageCaptureSupported) {
+    if (!imageCaptureSupported || !this.imageCapture) {
       return;
     }
 
