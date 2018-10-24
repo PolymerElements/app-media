@@ -57,6 +57,7 @@ you consider to be a suitable substitute, load it first and ensure that
 */
 Polymer({
   is: 'app-media-recorder',
+  _template: null,
 
   properties: {
     /**

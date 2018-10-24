@@ -18,6 +18,7 @@ audio device into a media stream.
 */
 Polymer({
   is: 'app-media-stream',
+  _template: null,
 
   properties: {
     /**
