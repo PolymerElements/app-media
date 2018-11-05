@@ -20,6 +20,7 @@ analyser suitable for generating audio visualizations such as the ones made by
 */
 Polymer({
   is: 'app-media-audio',
+  _template: null,
 
   properties: {
     /**

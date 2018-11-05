@@ -19,6 +19,7 @@ devices one at a time.
 */
 Polymer({
   is: 'app-media-devices',
+  _template: null,
 
   properties: {
     /**

@@ -95,6 +95,7 @@ rely on Polymer >=2.x observer semantics.
 */
 Polymer({
   is: 'app-media-image-capture',
+  _template: null,
 
   properties: {
     /**
