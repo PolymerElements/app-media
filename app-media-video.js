@@ -16,10 +16,10 @@ import {Polymer} from '@polymer/polymer/polymer-legacy.js';
 `app-media-video` is an element that converts a video source into a nicely
 scaled video that is displayed to the viewer of the page.
 
-@group App Elements
 @demo demo/index.html
 */
 Polymer({
+  /** @override */
   _template: html`
     <style>
       :host {
@@ -161,6 +161,7 @@ Polymer({
 
   observers: ['_updateMetrics(contain, mirror)'],
 
+  /** @override */
   attached: function() {
     this._setVideoElement(this.$.videoElement);
     this._updateMetrics();

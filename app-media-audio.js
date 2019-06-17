@@ -15,11 +15,11 @@ import {Polymer} from '@polymer/polymer/polymer-legacy.js';
 analyser suitable for generating audio visualizations such as the ones made by
 `app-media-waveform`.
 
-@group App Elements
 @demo demo/index.html
 */
 Polymer({
   is: 'app-media-audio',
+  /** @override */
   _template: null,
 
   properties: {

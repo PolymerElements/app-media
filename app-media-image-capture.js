@@ -90,11 +90,11 @@ across Polymer 1.x and 2.x. Expect this aspect of the API to change as the
 element graduates from the current hybrid implementation to something that can
 rely on Polymer >=2.x observer semantics.
 
-@group App Elements
 @demo demo/index.html
 */
 Polymer({
   is: 'app-media-image-capture',
+  /** @override */
   _template: null,
 
   properties: {

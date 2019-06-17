@@ -13,11 +13,11 @@ import {Polymer} from '@polymer/polymer/polymer-legacy.js';
 `app-media-stream` is an element that converts a provided video device and/or
 audio device into a media stream.
 
-@group App Elements
 @demo demo/index.html
 */
 Polymer({
   is: 'app-media-stream',
+  /** @override */
   _template: null,
 
   properties: {

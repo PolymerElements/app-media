@@ -14,11 +14,11 @@ import {Polymer} from '@polymer/polymer/polymer-legacy.js';
 and optionally filters them, allowing the user to cycle through categories of
 devices one at a time.
 
-@group App Elements
 @demo demo/index.html
 */
 Polymer({
   is: 'app-media-devices',
+  /** @override */
   _template: null,
 
   properties: {

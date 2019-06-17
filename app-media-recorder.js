@@ -52,11 +52,11 @@ you consider to be a suitable substitute, load it first and ensure that
 </script>
 ```
 
-@group App Elements
 @demo demo/index.html
 */
 Polymer({
   is: 'app-media-recorder',
+  /** @override */
   _template: null,
 
   properties: {
