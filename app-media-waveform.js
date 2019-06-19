@@ -22,10 +22,10 @@ Custom property | Description | Default
 `--app-media-waveform-foreground-color` | Foreground color | `rgba(255, 255, 255, 0.85)`
 `--app-media-waveform-stroke-width` | Width of the foreground | `2px`
 
-@group App Elements
 @demo demo/index.html
 */
 Polymer({
+  /** @override */
   _template: html`
     <style>
       :host {
@@ -100,6 +100,7 @@ Polymer({
 
   listeners: {'iron-resize': '_updateMetrics'},
 
+  /** @override */
   attached: function() {
     this._updateMetrics();
   },
