@@ -47,6 +47,7 @@ Polymer({
           // prefix for safari
           return new webkitAudioContext();
         }
+        return null;
       }
     },
 

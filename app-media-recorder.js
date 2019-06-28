@@ -16,10 +16,8 @@ if (window.MediaRecorder == null) {
   mediaRecorderSupported = false;
 }
 
-export const AppMedia = Polymer.AppMedia || {};
-
 /** @see https://www.w3.org/TR/mediastream-recording/#enumdef-recordingstate */
-AppMedia.RecordingState = {
+export const RecordingState = {
   INACTIVE: 'inactive',
   RECORDING: 'recording',
   PAUSED: 'paused'
@@ -265,7 +263,7 @@ Polymer({
     }
 
     this._setElapsed(0);
-    if (this.recorder.state !== AppMedia.RecordingState.INACTIVE) {
+    if (this.recorder.state !== RecordingState.INACTIVE) {
       this.recorder.stop();
       this.recording = false;
     }
@@ -287,7 +285,7 @@ Polymer({
       return;
     }
 
-    if (this.recorder.state === AppMedia.RecordingState.PAUSED) {
+    if (this.recorder.state === RecordingState.PAUSED) {
       this.recorder.resume();
     }
   },
@@ -351,11 +349,11 @@ Polymer({
       return;
     }
 
-    if (recording && this.recorder.state === AppMedia.RecordingState.INACTIVE) {
+    if (recording && this.recorder.state === RecordingState.INACTIVE) {
       this.start();
     } else if (
         !recording &&
-        this.recorder.state !== AppMedia.RecordingState.INACTIVE) {
+        this.recorder.state !== RecordingState.INACTIVE) {
       this.stop();
     }
   },
