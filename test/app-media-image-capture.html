@@ -52,7 +52,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script type="module">
       import './helpers-import.js';
       import '../app-media-image-capture.js';
-      import {AppMedia} from '../app-media-recorder.js';
+      import {MeteringMode, FillLightMode} from '../app-media-recorder.js';
       suite('app-media-image-capture', function() {
         var awaitEvent = AppMediaTestHelpers.awaitEvent;
         var fakeImageCapture = AppMediaTestHelpers.fakeImageCapture;
@@ -79,7 +79,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
               torch: true,
 
-              focusMode: [AppMedia.MeteringMode.SINGLE_SHOT]
+              focusMode: [MeteringMode.SINGLE_SHOT]
             }
           });
         });
@@ -114,7 +114,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             expect(element.photoSettings).to.be.ok;
             expect(element.photoSettings.redEyeReduction).to.be.equal(true);
             expect(element.photoSettings.fillLightMode)
-                .to.be.equal(AppMedia.FillLightMode.AUTO);
+                .to.be.equal(FillLightMode.AUTO);
           });
 
           test('ignores settings that are not supported', function() {
