@@ -52,7 +52,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script type="module">
       import './helpers-import.js';
       import '../app-media-image-capture.js';
-      import {MeteringMode, FillLightMode} from '../app-media-recorder.js';
+
+      import {FillLightMode, MeteringMode} from '../app-media-recorder.js';
+
       suite('app-media-image-capture', function() {
         var awaitEvent = AppMediaTestHelpers.awaitEvent;
         var fakeImageCapture = AppMediaTestHelpers.fakeImageCapture;
