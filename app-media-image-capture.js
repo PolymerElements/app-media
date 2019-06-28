@@ -10,15 +10,12 @@ found at http://polymer.github.io/PATENTS.txt
 */
 import {Base, Polymer} from '@polymer/polymer/polymer-legacy.js';
 
-import {AppMedia as AppMedia$0} from './app-media-recorder.js';
-
-export const AppMedia = AppMedia$0 || {};
 
 /**
  * @enum {string}
  * @see https://www.w3.org/TR/image-capture/#MeteringMode
  */
-AppMedia$0.MeteringMode = {
+export const MeteringMode = {
   SINGLE_SHOT: 'single-shot',
   CONTINUOUS: 'continuous',
   MANUAL: 'manual',
@@ -29,7 +26,7 @@ AppMedia$0.MeteringMode = {
  * @enum {string}
  * @see https://www.w3.org/TR/image-capture/#FillLightMode
  */
-AppMedia$0.FillLightMode = {
+export const FillLightMode = {
   AUTO: 'auto',
   OFF: 'off',
   FLASH: 'flash'
@@ -205,7 +202,7 @@ Polymer({
     },
 
     /**
-     * @type {Polymer.AppMedia.FillLightMode}
+     * @type {FillLightMode}
      * @see https://w3c.github.io/mediacapture-image/##photosettings-section
      */
     fillLightMode: {
@@ -273,7 +270,7 @@ Polymer({
     },
 
     /**
-     * @type {Polymer.AppMedia.MeteringMode}
+     * @type {MeteringMode}
      * @see https://w3c.github.io/mediacapture-image/#mediatracksettings-members
      */
     exposureMode: {
@@ -298,7 +295,7 @@ Polymer({
     },
 
     /**
-     * @type {Polymer.AppMedia.MeteringMode}
+     * @type {MeteringMode}
      * @see https://w3c.github.io/mediacapture-image/#mediatracksettings-members
      */
     focusMode: {

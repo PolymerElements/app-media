@@ -163,7 +163,8 @@ Polymer({
 
   /** @override */
   attached: function() {
-    this._setVideoElement(this.$.videoElement);
+    this._setVideoElement(
+        /** @type {HTMLVideoElement} */ (this.$.videoElement));
     this._updateMetrics();
   },
 
@@ -182,21 +183,23 @@ Polymer({
   },
 
   _sourceChanged: function() {
-    var oldSrc = this.$.videoElement.src;
-    var oldPaused = this.$.videoElement.paused;
+    const videoElement = /** @type {HTMLVideoElement} */ (this.$.videoElement);
+    var oldSrc = videoElement.src;
+    var oldPaused = videoElement.paused;
+
 
     if (typeof this.source === 'string') {
-      this.$.videoElement.src = this.source;
+      videoElement.src = this.source;
     } else {
       try {
         // NOTE(cdata): Chrome as of 55 does not support anything other than
         // MediaStream as the value of srcObject (even though the value is
         // allowed to be Blob, per the spec). We try the standardized way,
         // and then fall back to URL.createObjectURL if necessary.
-        this.$.videoElement.srcObject = this.source;
+        videoElement.srcObject = /** @type {MediaStream} */ (this.source);
       } catch (e) {
         if (this.source instanceof Blob) {
-          this.$.videoElement.src = URL.createObjectURL(this.source);
+          videoElement.src = URL.createObjectURL(this.source);
         } else {
           this._error(this._logf(e));
         }
@@ -212,7 +215,7 @@ Polymer({
 
     // Ensure that the video keeps playing if it was playing before we
     // changed the source:
-    if (!oldPaused && this.$.videoElement.paused) {
+    if (!oldPaused && videoElement.paused) {
       this.play();
     }
     // NOTE(cdata): No need to manually update metrics here, since the
